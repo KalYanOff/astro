@@ -1,3 +1,7 @@
+/* =========================================
+   SECTION: RoomsList  #rooms
+   Fetches rooms from Supabase, shows filter tabs + room cards grid
+   ========================================= */
 import { useState, useEffect } from 'react';
 import { useStore } from '@nanostores/react';
 import { bookingStore, numberOfNights } from '../../stores/bookingStore';
@@ -8,6 +12,7 @@ export default function RoomsList() {
   const [rooms, setRooms] = useState([]);
   const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const booking = useStore(bookingStore);
   const nights = useStore(numberOfNights);
 
@@ -24,8 +29,9 @@ export default function RoomsList() {
 
       if (error) throw error;
       setRooms(data || []);
-    } catch (error) {
-      console.error('Error fetching rooms:', error);
+    } catch (err) {
+      console.error('Error fetching rooms:', err);
+      setError(err.message || 'Ошибка загрузки');
     } finally {
       setLoading(false);
     }
@@ -40,8 +46,21 @@ export default function RoomsList() {
   if (loading) {
     return (
       <section id="rooms" className="py-20 bg-slate-50">
-        <div className="container mx-auto px-4 text-center">
-          <div className="animate-pulse">Загрузка номеров...</div>
+        <div className="container mx-auto px-4 text-center py-12">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
+            <p className="text-slate-500 text-sm">Загрузка номеров...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section id="rooms" className="py-20 bg-slate-50">
+        <div className="container mx-auto px-4 text-center py-12">
+          <p className="text-slate-500 text-sm">Не удалось загрузить номера. Попробуйте обновить страницу.</p>
         </div>
       </section>
     );

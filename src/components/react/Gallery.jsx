@@ -1,3 +1,7 @@
+/* =========================================
+   SECTION: Gallery  #gallery
+   8-photo grid with lightbox (yet-another-react-lightbox)
+   ========================================= */
 import { useState } from 'react';
 import { Search } from 'lucide-react';
 import Lightbox from 'yet-another-react-lightbox';

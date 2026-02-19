@@ -1,3 +1,7 @@
+/* =========================================
+   SECTION: FAQ  #faq
+   Accordion FAQ list from Supabase + contact block
+   ========================================= */
 import { useState, useEffect } from 'react';
 import { ChevronDown, MessageCircle, Send, Bot, Phone } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
@@ -6,6 +10,7 @@ export default function FAQ() {
   const [faqs, setFaqs] = useState([]);
   const [openIndex, setOpenIndex] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchFAQs();
@@ -20,8 +25,9 @@ export default function FAQ() {
 
       if (error) throw error;
       setFaqs(data || []);
-    } catch (error) {
-      console.error('Error fetching FAQs:', error);
+    } catch (err) {
+      console.error('Error fetching FAQs:', err);
+      setError(err.message || 'Ошибка загрузки');
     } finally {
       setLoading(false);
     }
@@ -34,8 +40,21 @@ export default function FAQ() {
   if (loading) {
     return (
       <section id="faq" className="py-20 bg-slate-50">
-        <div className="container mx-auto px-4 text-center">
-          <div className="animate-pulse">Загрузка вопросов...</div>
+        <div className="container mx-auto px-4 text-center py-12">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
+            <p className="text-slate-500 text-sm">Загрузка вопросов...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section id="faq" className="py-20 bg-slate-50">
+        <div className="container mx-auto px-4 text-center py-12">
+          <p className="text-slate-500 text-sm">Не удалось загрузить вопросы.</p>
         </div>
       </section>
     );

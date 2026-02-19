@@ -1,3 +1,10 @@
+/* =========================================
+   COMPONENT: FloatingBar
+   Mobile bottom CTA bar + scroll-to-top + messenger FAB
+   floating-bar-mobile: phone + booking buttons (mobile only)
+   floating-scroll-top: scroll-to-top button (appears after 500px)
+   floating-messengers: expandable WhatsApp/Telegram/MAX FAB
+   ========================================= */
 import { useState, useEffect } from 'react';
 import { Phone, Calendar, ArrowUp, MessageCircle, Send, Bot, X } from 'lucide-react';
 

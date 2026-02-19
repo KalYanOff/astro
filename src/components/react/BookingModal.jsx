@@ -1,3 +1,10 @@
+/* =========================================
+   COMPONENT: BookingModal
+   Full-screen modal for booking (opened via 'openBookingModal' event)
+   booking-modal-overlay: dark backdrop (click to close)
+   booking-modal-card: white form card
+   booking-modal-form: check-in / check-out / guests / wishes fields
+   ========================================= */
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { X } from 'lucide-react';

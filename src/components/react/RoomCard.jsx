@@ -1,3 +1,13 @@
+/* =========================================
+   COMPONENT: RoomCard
+   Single room card with image carousel, amenities, price, book button
+   room-card-swiper: image carousel (Swiper)
+   room-card-share: native share button
+   room-card-info: name, capacity, category badge
+   room-card-amenities: icon grid of up to 4 amenities
+   room-card-price: total price based on nights
+   room-card-book: booking CTA button
+   ========================================= */
 import { useState } from 'react';
 import { Share2, Users, Wifi, Wind, Snowflake, Tv, Droplet } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';

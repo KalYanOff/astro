@@ -1,3 +1,7 @@
+/* =========================================
+   SECTION: Reviews  #reviews
+   Auto-scrolling Swiper carousel of featured reviews from Supabase
+   ========================================= */
 import { useState, useEffect } from 'react';
 import { Star, ExternalLink } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -10,6 +14,7 @@ import 'swiper/css/pagination';
 export default function Reviews() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchReviews();
@@ -25,8 +30,9 @@ export default function Reviews() {
 
       if (error) throw error;
       setReviews(data || []);
-    } catch (error) {
-      console.error('Error fetching reviews:', error);
+    } catch (err) {
+      console.error('Error fetching reviews:', err);
+      setError(err.message || 'Ошибка загрузки');
     } finally {
       setLoading(false);
     }
@@ -44,8 +50,21 @@ export default function Reviews() {
   if (loading) {
     return (
       <section id="reviews" className="py-20 bg-slate-50">
-        <div className="container mx-auto px-4 text-center">
-          <div className="animate-pulse">Загрузка отзывов...</div>
+        <div className="container mx-auto px-4 text-center py-12">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
+            <p className="text-slate-500 text-sm">Загрузка отзывов...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section id="reviews" className="py-20 bg-slate-50">
+        <div className="container mx-auto px-4 text-center py-12">
+          <p className="text-slate-500 text-sm">Не удалось загрузить отзывы.</p>
         </div>
       </section>
     );

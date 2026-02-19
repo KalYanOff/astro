@@ -1,26 +1,32 @@
 ---
+/* =========================================
+   PAGE: index.astro
+   Main landing page — assembles all sections
+   Order: Header → Hero → RoomsList → Features → Reviews → Gallery → FAQ → Footer
+   ========================================= */
+
 import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import Hero from '../components/Hero.astro';
-import RoomsList from '../components/react/RoomsList.jsx';
-import Features from '../components/Features.astro';
-import Reviews from '../components/react/Reviews.jsx';
-import Gallery from '../components/react/Gallery.jsx';
-import FAQ from '../components/react/FAQ.jsx';
-import Footer from '../components/Footer.astro';
-import FloatingBar from '../components/react/FloatingBar.jsx';
+import Header from '../components/Header.astro';       /* header */
+import Hero from '../components/Hero.astro';           /* hero */
+import RoomsList from '../components/react/RoomsList.jsx'; /* rooms */
+import Features from '../components/Features.astro';  /* features */
+import Reviews from '../components/react/Reviews.jsx'; /* reviews */
+import Gallery from '../components/react/Gallery.jsx'; /* gallery */
+import FAQ from '../components/react/FAQ.jsx';         /* faq */
+import Footer from '../components/Footer.astro';       /* footer */
+import FloatingBar from '../components/react/FloatingBar.jsx'; /* floating-bar */
 ---
 
 <Layout>
-	<Header />
-	<main>
-		<Hero />
-		<Features />
-		<Reviews client:load />
-		<RoomsList client:load />
-		<Gallery client:load />
-		<FAQ client:load />
-	</main>
-	<Footer />
-	<FloatingBar client:load />
+  <Header />
+  <main>
+    <Hero />
+    <RoomsList client:only="react" />
+    <Features />
+    <Reviews client:only="react" />
+    <Gallery client:only="react" />
+    <FAQ client:only="react" />
+  </main>
+  <Footer />
+  <FloatingBar client:load />
 </Layout>

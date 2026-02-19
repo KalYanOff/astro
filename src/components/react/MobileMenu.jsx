@@ -1,3 +1,9 @@
+/* =========================================
+   COMPONENT: MobileMenu
+   Hamburger toggle nav for mobile (in Header)
+   mobile-menu-toggle: Menu/X icon button
+   mobile-menu-dropdown: collapsible nav links
+   ========================================= */
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 

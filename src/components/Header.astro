@@ -1,12 +1,18 @@
 ---
+/* =========================================
+   SECTION: Header
+   Sticky top navigation bar
+   ========================================= */
 import { Phone, MessageCircle, Send, Bot } from 'lucide-react';
 import MobileMenu from './react/MobileMenu.jsx';
 ---
 
+<!-- header: sticky top navbar -->
 <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm transition-shadow">
   <div class="max-w-7xl mx-auto px-4">
     <div class="flex justify-between items-center h-16">
 
+      <!-- header-logo: hotel logo + name + address -->
       <a href="/" class="flex items-stretch gap-3 h-auto py-2 group">
         <div class="h-full aspect-square bg-primary-600 rounded-lg flex items-center justify-center text-white font-bold text-2xl group-hover:scale-105 transition-transform">
           🐬
@@ -17,7 +23,9 @@ import MobileMenu from './react/MobileMenu.jsx';
         </div>
       </a>
 
+      <!-- header-contacts: phone + social links -->
       <div class="flex items-center gap-4">
+        <!-- header-phone-desktop: visible on md+ -->
         <a
           href="tel:+79181929931"
           class="hidden md:block font-semibold text-gray-800 hover:text-primary-600 transition-colors"
@@ -25,6 +33,7 @@ import MobileMenu from './react/MobileMenu.jsx';
           +7 (918) 192-99-31
         </a>
 
+        <!-- header-phone-mobile: icon on mobile -->
         <a
           href="tel:+79181929931"
           class="md:hidden p-2 text-green-600"
@@ -33,6 +42,7 @@ import MobileMenu from './react/MobileMenu.jsx';
           <Phone size={24} />
         </a>
 
+        <!-- header-socials: WhatsApp / Telegram / MAX -->
         <div class="flex items-center gap-2">
           <a
             href="https://wa.me/79181929931"
@@ -64,6 +74,7 @@ import MobileMenu from './react/MobileMenu.jsx';
         </div>
       </div>
 
+      <!-- mobile-menu: hamburger nav (React) -->
       <MobileMenu client:load />
     </div>
   </div>
