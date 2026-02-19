@@ -133,7 +133,7 @@ export default function QuickBookingForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateBooking({ checkInDate, checkOutDate, guestsCount });
+    updateBooking({ checkInDate, checkOutDate, guestsCount, searchActivated: true });
     const roomsSection = document.querySelector('#rooms');
     if (roomsSection) roomsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };

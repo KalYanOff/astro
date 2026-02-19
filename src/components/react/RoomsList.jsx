@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useStore } from '@nanostores/react';
-import { bookingStore, numberOfNights } from '../../stores/bookingStore';
+import { bookingStore, numberOfNights, updateBooking } from '../../stores/bookingStore';
 import RoomCard from './RoomCard';
 
 const ROOMS_DATA = [
@@ -60,23 +60,24 @@ export { ROOMS_DATA };
 
 export default function RoomsList() {
   const [filter, setFilter] = useState('all');
-  const [guestFilterActive, setGuestFilterActive] = useState(false);
   const booking = useStore(bookingStore);
   const nights = useStore(numberOfNights);
 
+  const guestFilterActive = booking.searchActivated;
+
   const filteredRooms = ROOMS_DATA.filter((room) => {
     const categoryMatch = filter === 'all' || room.category === filter;
-    const capacityMatch = !guestFilterActive || room.capacity === booking.guestsCount;
+    const capacityMatch = !guestFilterActive || room.capacity >= booking.guestsCount;
     return categoryMatch && capacityMatch;
   });
 
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
-    setGuestFilterActive(false);
+    if (guestFilterActive) updateBooking({ searchActivated: false });
   };
 
   const handleGuestFilter = () => {
-    setGuestFilterActive(!guestFilterActive);
+    updateBooking({ searchActivated: !guestFilterActive });
   };
 
   return (

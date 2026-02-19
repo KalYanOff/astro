@@ -10,6 +10,7 @@ export const bookingStore = atom({
   wishes: '',
   selectedRoomId: null,
   selectedRoomName: '',
+  searchActivated: false,
 });
 
 export const numberOfNights = computed(bookingStore, (booking) => {
@@ -35,5 +36,6 @@ export function resetBooking() {
     wishes: '',
     selectedRoomId: null,
     selectedRoomName: '',
+    searchActivated: false,
   });
 }
