@@ -4,7 +4,7 @@
    ========================================= */
 import { Star, ExternalLink } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -68,11 +68,10 @@ export default function Reviews() {
         </div>
 
         <Swiper
-          modules={[Navigation, Pagination, Autoplay]}
+          modules={[Navigation, Autoplay]}
           spaceBetween={30}
           slidesPerView={1}
           navigation
-          pagination={{ clickable: true }}
           autoplay={{
             delay: 5000,
             pauseOnMouseEnter: true,

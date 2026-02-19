@@ -99,7 +99,7 @@ export default function FloatingBar() {
 
         <button
           onClick={() => setShowMessengers(!showMessengers)}
-          className={`flex items-center justify-center w-16 h-16 rounded-full shadow-2xl transition-all transform hover:scale-110 ${
+          className={`flex items-center justify-center gap-2 px-4 h-16 rounded-full shadow-2xl transition-all transform hover:scale-110 ${
             showMessengers
               ? 'bg-red-500 hover:bg-red-600'
               : 'bg-accent-500 hover:bg-accent-600 animate-bounce-soft'
@@ -109,7 +109,10 @@ export default function FloatingBar() {
           {showMessengers ? (
             <X className="w-7 h-7" />
           ) : (
-            <MessageCircle className="w-7 h-7" />
+            <>
+              <MessageCircle className="w-6 h-6" />
+              <span className="text-sm font-medium hidden sm:inline whitespace-nowrap">Связаться</span>
+            </>
           )}
         </button>
       </div>

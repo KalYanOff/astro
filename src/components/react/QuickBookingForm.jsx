@@ -71,14 +71,32 @@ export default function QuickBookingForm() {
 
   useEffect(() => {
     if (!showCalendar) return;
-    const handler = (e) => {
+
+    const updatePosition = () => {
+      if (buttonRef.current) {
+        const rect = buttonRef.current.getBoundingClientRect();
+        setCalPosition({
+          top: rect.bottom + window.scrollY + 4,
+          left: rect.left + window.scrollX,
+        });
+      }
+    };
+
+    const handleClickOutside = (e) => {
       if (calRef.current && !calRef.current.contains(e.target) &&
           buttonRef.current && !buttonRef.current.contains(e.target)) {
         setShowCalendar(false);
       }
     };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+
+    updatePosition();
+    document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('scroll', updatePosition);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('scroll', updatePosition);
+    };
   }, [showCalendar]);
 
   const handleOpenCalendar = () => {
@@ -89,8 +107,8 @@ export default function QuickBookingForm() {
         left: rect.left + window.scrollX,
       });
     }
-    setShowCalendar(true);
     setSelecting('in');
+    setShowCalendar(true);
   };
 
   const handleSubmit = (e) => {
