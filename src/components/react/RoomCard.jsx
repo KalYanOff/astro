@@ -1,33 +1,24 @@
-/* =========================================
-   COMPONENT: RoomCard
-   Single room card with image carousel, amenities, price, book button
-   room-card-swiper: image carousel (Swiper)
-   room-card-share: native share button
-   room-card-info: name, capacity, category badge
-   room-card-amenities: icon grid of up to 4 amenities
-   room-card-price: total price based on nights
-   room-card-book: booking CTA button
-   ========================================= */
 import { useState } from 'react';
 import { Share2, Users, Wifi, Wind, Snowflake, Tv, Droplet } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
+import { updateBooking } from '../../stores/bookingStore';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
+const amenityIcons = {
+  'Wi-Fi': Wifi,
+  'Вентиляторы': Wind,
+  'Кондиционер': Snowflake,
+  'Телевизор': Tv,
+  'Индивидуальный санузел': Droplet,
+  'Душ и туалет общего пользования': Droplet,
+};
+
 export default function RoomCard({ room, nights }) {
   const [showLightbox, setShowLightbox] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
-
-  const amenityIcons = {
-    'Wi-Fi': Wifi,
-    'Вентиляторы': Wind,
-    'Кондиционер': Snowflake,
-    'Телевизор': Tv,
-    'Индивидуальный санузел': Droplet,
-    'Душ и туалет общего пользования': Droplet,
-  };
 
   const totalPrice = room.base_price * nights;
 
@@ -39,14 +30,17 @@ export default function RoomCard({ room, nights }) {
           text: room.description,
           url: window.location.href + '#room-' + room.id,
         });
-      } catch (err) {
-        console.log('Share failed:', err);
-      }
+      } catch (err) {}
     }
   };
 
-  const handleBooking = async () => {
-    alert('Функция бронирования будет добавлена в следующем этапе');
+  const handleBooking = () => {
+    updateBooking({
+      selectedRoomId: room.id,
+      selectedRoomName: room.name,
+    });
+    const el = document.querySelector('#booking-request');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const images = room.images && room.images.length > 0
@@ -123,7 +117,7 @@ export default function RoomCard({ room, nights }) {
           <div>
             <p className="text-sm text-slate-500">Стоимость</p>
             <p className="text-3xl font-bold text-primary-600">
-              {totalPrice.toLocaleString('ru-RU')} ₽
+              {totalPrice.toLocaleString('ru-RU')} &#8381;
             </p>
             <p className="text-xs text-slate-500">за {nights} {nights === 1 ? 'ночь' : nights < 5 ? 'ночи' : 'ночей'}</p>
           </div>

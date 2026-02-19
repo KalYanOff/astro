@@ -7,8 +7,9 @@ export const bookingStore = atom({
   checkInDate: todayISO,
   checkOutDate: tomorrowISO,
   guestsCount: 2,
-  wishes: 'Хотел бы тихий номер на втором этаже с видом на море...',
+  wishes: '',
   selectedRoomId: null,
+  selectedRoomName: '',
 });
 
 export const numberOfNights = computed(bookingStore, (booking) => {
@@ -31,7 +32,8 @@ export function resetBooking() {
     checkInDate: '',
     checkOutDate: '',
     guestsCount: 2,
-    wishes: 'Хотел бы тихий номер на втором этаже с видом на море...',
+    wishes: '',
     selectedRoomId: null,
+    selectedRoomName: '',
   });
 }

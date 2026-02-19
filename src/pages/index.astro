@@ -13,6 +13,7 @@ import Features from '../components/Features.astro';  /* features */
 import Reviews from '../components/react/Reviews.jsx'; /* reviews */
 import Gallery from '../components/react/Gallery.jsx'; /* gallery */
 import FAQ from '../components/react/FAQ.jsx';         /* faq */
+import BookingRequestForm from '../components/react/BookingRequestForm.jsx'; /* booking-request */
 import Footer from '../components/Footer.astro';       /* footer */
 import FloatingBar from '../components/react/FloatingBar.jsx'; /* floating-bar */
 ---
@@ -26,6 +27,7 @@ import FloatingBar from '../components/react/FloatingBar.jsx'; /* floating-bar *
     <Reviews client:only="react" />
     <Gallery client:only="react" />
     <FAQ client:only="react" />
+    <BookingRequestForm client:only="react" />
   </main>
   <Footer />
   <FloatingBar client:load />

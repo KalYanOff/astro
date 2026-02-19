@@ -1,7 +1,3 @@
-/* =========================================
-   SECTION: RoomsList  #rooms
-   Shows filter tabs + room cards grid (static data)
-   ========================================= */
 import { useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { bookingStore, numberOfNights } from '../../stores/bookingStore';
@@ -60,16 +56,28 @@ const ROOMS_DATA = [
   },
 ];
 
+export { ROOMS_DATA };
+
 export default function RoomsList() {
   const [filter, setFilter] = useState('all');
+  const [guestFilterActive, setGuestFilterActive] = useState(false);
   const booking = useStore(bookingStore);
   const nights = useStore(numberOfNights);
 
   const filteredRooms = ROOMS_DATA.filter((room) => {
     const categoryMatch = filter === 'all' || room.category === filter;
-    const capacityMatch = !booking.guestsCount || room.capacity === booking.guestsCount;
+    const capacityMatch = !guestFilterActive || room.capacity === booking.guestsCount;
     return categoryMatch && capacityMatch;
   });
+
+  const handleFilterChange = (newFilter) => {
+    setFilter(newFilter);
+    setGuestFilterActive(false);
+  };
+
+  const handleGuestFilter = () => {
+    setGuestFilterActive(!guestFilterActive);
+  };
 
   return (
     <section id="rooms" className="py-20 bg-slate-50">
@@ -82,17 +90,17 @@ export default function RoomsList() {
           {booking.checkInDate && booking.checkOutDate && (
             <div className="mt-4 inline-block bg-primary-100 text-primary-800 px-6 py-3 rounded-full">
               <p className="font-semibold">
-                {new Date(booking.checkInDate).toLocaleDateString('ru-RU')} - {new Date(booking.checkOutDate).toLocaleDateString('ru-RU')} • {booking.guestsCount} {booking.guestsCount === 1 ? 'гость' : booking.guestsCount < 5 ? 'гостя' : 'гостей'}
+                {new Date(booking.checkInDate).toLocaleDateString('ru-RU')} - {new Date(booking.checkOutDate).toLocaleDateString('ru-RU')} &bull; {booking.guestsCount} {booking.guestsCount === 1 ? 'гость' : booking.guestsCount < 5 ? 'гостя' : 'гостей'}
               </p>
             </div>
           )}
         </div>
 
-        <div className="flex justify-center gap-4 mb-10">
+        <div className="flex flex-wrap justify-center gap-3 mb-10">
           <button
-            onClick={() => setFilter('all')}
+            onClick={() => handleFilterChange('all')}
             className={`px-6 py-3 rounded-full font-medium transition-all ${
-              filter === 'all'
+              filter === 'all' && !guestFilterActive
                 ? 'bg-primary-600 text-white shadow-lg'
                 : 'bg-white text-slate-600 hover:bg-slate-100'
             }`}
@@ -100,7 +108,7 @@ export default function RoomsList() {
             Все номера
           </button>
           <button
-            onClick={() => setFilter('econom')}
+            onClick={() => handleFilterChange('econom')}
             className={`px-6 py-3 rounded-full font-medium transition-all ${
               filter === 'econom'
                 ? 'bg-primary-600 text-white shadow-lg'
@@ -110,7 +118,7 @@ export default function RoomsList() {
             Эконом
           </button>
           <button
-            onClick={() => setFilter('standard')}
+            onClick={() => handleFilterChange('standard')}
             className={`px-6 py-3 rounded-full font-medium transition-all ${
               filter === 'standard'
                 ? 'bg-primary-600 text-white shadow-lg'
@@ -118,6 +126,16 @@ export default function RoomsList() {
             }`}
           >
             Стандарт
+          </button>
+          <button
+            onClick={handleGuestFilter}
+            className={`px-6 py-3 rounded-full font-medium transition-all ${
+              guestFilterActive
+                ? 'bg-accent-500 text-white shadow-lg'
+                : 'bg-white text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            На {booking.guestsCount} гостей
           </button>
         </div>
 
