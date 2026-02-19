@@ -168,7 +168,7 @@ export default function QuickBookingForm() {
 
             {/* date-range-calendar: inline calendar dropdown */}
             {showCalendar && (
-              <div className="absolute top-full left-0 mt-1 z-50 bg-white rounded-xl shadow-2xl border border-gray-200 p-3 w-72">
+              <div className="absolute top-full left-0 mt-1 z-[9999] bg-white rounded-xl shadow-2xl border border-gray-200 p-3 w-72">
 
                 {/* calendar-nav: month navigation */}
                 <div className="flex items-center justify-between mb-2">

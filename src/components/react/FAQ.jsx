@@ -1,64 +1,49 @@
 /* =========================================
    SECTION: FAQ  #faq
-   Accordion FAQ list from Supabase + contact block
+   Accordion FAQ list (static data) + contact block
    ========================================= */
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ChevronDown, MessageCircle, Send, Bot, Phone } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
+
+const FAQ_DATA = [
+  {
+    id: '1',
+    question: 'Во сколько заезд и выезд?',
+    answer: 'Заезд с 14:00, выезд до 12:00. При наличии свободных номеров возможен ранний заезд или поздний выезд - уточняйте у администратора.',
+  },
+  {
+    id: '2',
+    question: 'Есть ли парковка?',
+    answer: 'Да, у нас есть бесплатная парковка для гостей отеля прямо на территории.',
+  },
+  {
+    id: '3',
+    question: 'Можно ли с животными?',
+    answer: 'Размещение с домашними животными возможно по предварительному согласованию. Пожалуйста, сообщите об этом при бронировании.',
+  },
+  {
+    id: '4',
+    question: 'Есть ли питание?',
+    answer: 'В отеле питание не предоставляется, но в номерах категории "Стандарт" есть холодильники. В 5 минутах ходьбы множество кафе и ресторанов.',
+  },
+  {
+    id: '5',
+    question: 'Какие условия отмены бронирования?',
+    answer: 'Бесплатная отмена возможна за 3 дня до заезда. При отмене позднее возвращается 50% предоплаты.',
+  },
+  {
+    id: '6',
+    question: 'Далеко ли до моря?',
+    answer: 'Отель находится в 50 метрах от пляжа - всего 1-2 минуты пешком!',
+  },
+];
 
 export default function FAQ() {
-  const [faqs, setFaqs] = useState([]);
   const [openIndex, setOpenIndex] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetchFAQs();
-  }, []);
-
-  const fetchFAQs = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('faq_items')
-        .select('*')
-        .order('order_index');
-
-      if (error) throw error;
-      setFaqs(data || []);
-    } catch (err) {
-      console.error('Error fetching FAQs:', err);
-      setError(err.message || 'Ошибка загрузки');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const toggleFAQ = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
-
-  if (loading) {
-    return (
-      <section id="faq" className="py-20 bg-slate-50">
-        <div className="container mx-auto px-4 text-center py-12">
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
-            <p className="text-slate-500 text-sm">Загрузка вопросов...</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section id="faq" className="py-20 bg-slate-50">
-        <div className="container mx-auto px-4 text-center py-12">
-          <p className="text-slate-500 text-sm">Не удалось загрузить вопросы.</p>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section id="faq" className="py-20 bg-slate-50">
@@ -71,7 +56,7 @@ export default function FAQ() {
         </div>
 
         <div className="max-w-3xl mx-auto space-y-4 mb-12">
-          {faqs.map((faq, index) => (
+          {FAQ_DATA.map((faq, index) => (
             <div
               key={faq.id}
               className="bg-white rounded-lg shadow-md overflow-hidden animate-fade-in"

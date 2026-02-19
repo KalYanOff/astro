@@ -1,43 +1,53 @@
 /* =========================================
    SECTION: Reviews  #reviews
-   Auto-scrolling Swiper carousel of featured reviews from Supabase
+   Auto-scrolling Swiper carousel of reviews (static data)
    ========================================= */
-import { useState, useEffect } from 'react';
 import { Star, ExternalLink } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-import { supabase } from '../../lib/supabase';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
+const REVIEWS_DATA = [
+  {
+    id: '1',
+    author_name: 'Анна Соколова',
+    rating: 5,
+    review_text: 'Прекрасный отель! Чистые номера, приветливый персонал. Очень близко к морю, буквально 2 минуты пешком. Обязательно вернемся!',
+    source: 'Яндекс.Карты',
+  },
+  {
+    id: '2',
+    author_name: 'Дмитрий Петров',
+    rating: 5,
+    review_text: 'Отличное соотношение цена-качество. Номер был чистым, кондиционер работал отлично. Парковка прямо у отеля - очень удобно.',
+    source: 'Яндекс.Карты',
+  },
+  {
+    id: '3',
+    author_name: 'Елена Иванова',
+    rating: 5,
+    review_text: 'Останавливались с семьей на неделю. Детям очень понравилась площадка. Хозяева отзывчивые, всегда готовы помочь. Рекомендую!',
+    source: 'Яндекс.Карты',
+  },
+  {
+    id: '4',
+    author_name: 'Сергей Михайлов',
+    rating: 4,
+    review_text: 'Хороший отель для спокойного отдыха. Близко к морю и магазинам. Единственное - в эконом номерах общий душ, но это было указано при бронировании.',
+    source: 'Яндекс.Карты',
+  },
+  {
+    id: '5',
+    author_name: 'Ольга Кузнецова',
+    rating: 5,
+    review_text: 'Чудесное место! Уютная атмосфера, чистота, до моря рукой подать. Цены адекватные. Спасибо за гостеприимство!',
+    source: 'Яндекс.Карты',
+  },
+];
+
 export default function Reviews() {
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetchReviews();
-  }, []);
-
-  const fetchReviews = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('reviews')
-        .select('*')
-        .eq('is_featured', true)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setReviews(data || []);
-    } catch (err) {
-      console.error('Error fetching reviews:', err);
-      setError(err.message || 'Ошибка загрузки');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const getInitials = (name) => {
     return name
       .split(' ')
@@ -46,29 +56,6 @@ export default function Reviews() {
       .toUpperCase()
       .slice(0, 2);
   };
-
-  if (loading) {
-    return (
-      <section id="reviews" className="py-20 bg-slate-50">
-        <div className="container mx-auto px-4 text-center py-12">
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
-            <p className="text-slate-500 text-sm">Загрузка отзывов...</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section id="reviews" className="py-20 bg-slate-50">
-        <div className="container mx-auto px-4 text-center py-12">
-          <p className="text-slate-500 text-sm">Не удалось загрузить отзывы.</p>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section id="reviews" className="py-20 bg-slate-50">
@@ -103,22 +90,14 @@ export default function Reviews() {
           }}
           className="pb-12"
         >
-          {reviews.map((review) => (
+          {REVIEWS_DATA.map((review) => (
             <SwiperSlide key={review.id}>
               <div className="bg-white rounded-xl shadow-lg p-6 h-full hover:shadow-xl transition-shadow">
                 <div className="flex items-start gap-4 mb-4">
                   <div className="flex-shrink-0">
-                    {review.author_avatar ? (
-                      <img
-                        src={review.author_avatar}
-                        alt={review.author_name}
-                        className="w-12 h-12 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 font-semibold">
-                        {getInitials(review.author_name)}
-                      </div>
-                    )}
+                    <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 font-semibold">
+                      {getInitials(review.author_name)}
+                    </div>
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-slate-900">{review.author_name}</h4>

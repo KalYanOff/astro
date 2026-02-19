@@ -1,70 +1,75 @@
 /* =========================================
    SECTION: RoomsList  #rooms
-   Fetches rooms from Supabase, shows filter tabs + room cards grid
+   Shows filter tabs + room cards grid (static data)
    ========================================= */
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { bookingStore, numberOfNights } from '../../stores/bookingStore';
-import { supabase } from '../../lib/supabase';
 import RoomCard from './RoomCard';
 
+const ROOMS_DATA = [
+  {
+    id: '1',
+    name: 'Эконом 2-местный',
+    category: 'econom',
+    capacity: 2,
+    base_price: 1000,
+    amenities: ['Душ и туалет общего пользования', 'Вентиляторы', 'Wi-Fi', 'Постельное белье'],
+    images: ['https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=800'],
+    description: 'Уютный эконом-номер для двоих с базовыми удобствами',
+  },
+  {
+    id: '2',
+    name: 'Эконом 3-местный',
+    category: 'econom',
+    capacity: 3,
+    base_price: 1200,
+    amenities: ['Душ и туалет общего пользования', 'Вентиляторы', 'Wi-Fi', 'Постельное белье'],
+    images: ['https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800'],
+    description: 'Комфортный эконом-номер для небольшой компании',
+  },
+  {
+    id: '3',
+    name: 'Эконом 4-местный',
+    category: 'econom',
+    capacity: 4,
+    base_price: 1500,
+    amenities: ['Душ и туалет общего пользования', 'Вентиляторы', 'Wi-Fi', 'Постельное белье'],
+    images: ['https://images.pexels.com/photos/1743229/pexels-photo-1743229.jpeg?auto=compress&cs=tinysrgb&w=800'],
+    description: 'Просторный эконом-номер для семьи или компании друзей',
+  },
+  {
+    id: '4',
+    name: 'Стандарт 2-местный',
+    category: 'standard',
+    capacity: 2,
+    base_price: 1500,
+    amenities: ['Индивидуальный санузел', 'Кондиционер', 'Холодильник', 'Телевизор', 'Wi-Fi', 'Постельное белье'],
+    images: ['https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800'],
+    description: 'Комфортабельный стандартный номер с удобствами',
+  },
+  {
+    id: '5',
+    name: 'Стандарт 3-местный',
+    category: 'standard',
+    capacity: 3,
+    base_price: 1800,
+    amenities: ['Индивидуальный санузел', 'Кондиционер', 'Холодильник', 'Телевизор', 'Wi-Fi', 'Постельное белье'],
+    images: ['https://images.pexels.com/photos/262048/pexels-photo-262048.jpeg?auto=compress&cs=tinysrgb&w=800'],
+    description: 'Просторный стандартный номер для троих гостей',
+  },
+];
+
 export default function RoomsList() {
-  const [rooms, setRooms] = useState([]);
   const [filter, setFilter] = useState('all');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const booking = useStore(bookingStore);
   const nights = useStore(numberOfNights);
 
-  useEffect(() => {
-    fetchRooms();
-  }, []);
-
-  const fetchRooms = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('rooms')
-        .select('*')
-        .order('order_index');
-
-      if (error) throw error;
-      setRooms(data || []);
-    } catch (err) {
-      console.error('Error fetching rooms:', err);
-      setError(err.message || 'Ошибка загрузки');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const filteredRooms = rooms.filter((room) => {
+  const filteredRooms = ROOMS_DATA.filter((room) => {
     const categoryMatch = filter === 'all' || room.category === filter;
     const capacityMatch = !booking.guestsCount || room.capacity >= booking.guestsCount;
     return categoryMatch && capacityMatch;
   });
-
-  if (loading) {
-    return (
-      <section id="rooms" className="py-20 bg-slate-50">
-        <div className="container mx-auto px-4 text-center py-12">
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
-            <p className="text-slate-500 text-sm">Загрузка номеров...</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section id="rooms" className="py-20 bg-slate-50">
-        <div className="container mx-auto px-4 text-center py-12">
-          <p className="text-slate-500 text-sm">Не удалось загрузить номера. Попробуйте обновить страницу.</p>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section id="rooms" className="py-20 bg-slate-50">
