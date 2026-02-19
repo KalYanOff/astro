@@ -1,0 +1,50 @@
+---
+import { Star, Car, Clock, Baby } from 'lucide-react';
+import BookingModal from './react/BookingModal.jsx';
+import QuickBookingForm from './react/QuickBookingForm.jsx';
+---
+
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden py-16 md:py-0">
+  <div class="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-slate-900/50 to-slate-900/70 z-10"></div>
+
+  <div
+    class="absolute inset-0 bg-cover bg-center"
+    style="background-image: url('https://images.pexels.com/photos/1450353/pexels-photo-1450353.jpeg?auto=compress&cs=tinysrgb&w=1920');"
+  ></div>
+
+  <div class="relative z-20 container mx-auto px-4 text-center animate-fade-in w-full">
+    <div class="inline-flex items-center gap-2 bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 mb-4 md:mb-6 shadow-lg">
+      <div class="flex">
+        {[1, 2, 3, 4, 5].map(() => (
+          <Star class="w-3.5 h-3.5 md:w-4 md:h-4 fill-yellow-400 text-yellow-400" />
+        ))}
+      </div>
+      <span class="text-xs md:text-sm font-medium text-slate-700">4.8 на основе 127 отзывов</span>
+    </div>
+
+    <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4 md:mb-6 drop-shadow-2xl leading-tight px-2">
+      Отель Дельфин - Джубга
+      <br />
+      <span class="text-accent-400">Отдых в 50 метрах от моря</span>
+    </h1>
+
+    <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-6 md:mb-10">
+      <div class="flex items-center gap-1.5 bg-white/90 backdrop-blur-sm rounded-full px-3 py-2 md:px-5 md:py-3 shadow-lg hover:scale-105 transition-transform">
+        <Car class="w-4 h-4 md:w-5 md:h-5 text-primary-600 shrink-0" />
+        <span class="text-xs md:text-sm font-medium text-slate-700 whitespace-nowrap">Бесплатная парковка</span>
+      </div>
+      <div class="flex items-center gap-1.5 bg-white/90 backdrop-blur-sm rounded-full px-3 py-2 md:px-5 md:py-3 shadow-lg hover:scale-105 transition-transform">
+        <Clock class="w-4 h-4 md:w-5 md:h-5 text-primary-600 shrink-0" />
+        <span class="text-xs md:text-sm font-medium text-slate-700 whitespace-nowrap">Круглосуточно</span>
+      </div>
+      <div class="flex items-center gap-1.5 bg-white/90 backdrop-blur-sm rounded-full px-3 py-2 md:px-5 md:py-3 shadow-lg hover:scale-105 transition-transform">
+        <Baby class="w-4 h-4 md:w-5 md:h-5 text-primary-600 shrink-0" />
+        <span class="text-xs md:text-sm font-medium text-slate-700 whitespace-nowrap">Детская площадка</span>
+      </div>
+    </div>
+
+    <QuickBookingForm client:only="react" />
+  </div>
+</section>
+
+<BookingModal client:only="react" />

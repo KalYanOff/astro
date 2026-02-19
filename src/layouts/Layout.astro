@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+
+		<title>Отель Дельфин - Джубга | Отдых в 50 метрах от моря</title>
+		<meta name="description" content="Уютный семейный отель в Джубге в 50 метрах от моря. Номера эконом и стандарт от 1000₽. Бесплатная парковка, детская площадка, круглосуточная регистрация." />
+		<meta name="keywords" content="отель Джубга, гостиница Джубга, отдых у моря, Дельфин Джубга, номера в Джубге, жилье у моря" />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="Отель Дельфин - Джубга | Отдых в 50 метрах от моря" />
+		<meta property="og:description" content="Уютный семейный отель в 50 метрах от моря. Номера от 1000₽. Бесплатная парковка, круглосуточная регистрация." />
+		<meta property="og:url" content="https://delfinstay.ru" />
+		<meta property="og:site_name" content="Отель Дельфин" />
+
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content="Отель Дельфин - Джубга" />
+		<meta name="twitter:description" content="Уютный отдых в 50 метрах от моря" />
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+		<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "Hotel",
+			"name": "Отель Дельфин",
+			"description": "Уютный семейный отель в Джубге в 50 метрах от моря",
+			"address": {
+				"@type": "PostalAddress",
+				"streetAddress": "Набережная 7",
+				"addressLocality": "Джубга",
+				"addressRegion": "Краснодарский край",
+				"postalCode": "352844",
+				"addressCountry": "RU"
+			},
+			"telephone": "+7(918)192-99-31",
+			"priceRange": "₽₽",
+			"starRating": {
+				"@type": "Rating",
+				"ratingValue": "4.8"
+			}
+		}
+		</script>
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>
+
+<style is:global>
+	html,
+	body {
+		margin: 0;
+		padding: 0;
+		width: 100%;
+		height: 100%;
+		font-family: 'Inter', system-ui, sans-serif;
+		scroll-behavior: smooth;
+	}
+
+	* {
+		box-sizing: border-box;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		*,
+		*::before,
+		*::after {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
+		}
+	}
+</style>

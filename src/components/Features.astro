@@ -1,0 +1,71 @@
+---
+import { Waves, Car, Baby, Clock, Home, MapPin } from 'lucide-react';
+
+const features = [
+  {
+    icon: 'waves',
+    title: '50 метров до моря',
+    description: 'Всего 1-2 минуты пешком до пляжа',
+  },
+  {
+    icon: 'car',
+    title: 'Бесплатная парковка',
+    description: 'Охраняемая парковка на территории',
+  },
+  {
+    icon: 'baby',
+    title: 'Детская площадка',
+    description: 'Безопасное место для игр детей',
+  },
+  {
+    icon: 'clock',
+    title: 'Круглосуточная регистрация',
+    description: 'Приезжайте в удобное время',
+  },
+  {
+    icon: 'home',
+    title: 'Семейная атмосфера',
+    description: 'Уютно как дома, заботливый персонал',
+  },
+  {
+    icon: 'mappin',
+    title: 'Центр Джубги',
+    description: 'Рядом магазины, кафе и развлечения',
+  },
+];
+---
+
+<section id="features" class="py-20 bg-white">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-bold text-slate-900 mb-4">Почему выбирают нас</h2>
+      <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+        Мы создали все условия для комфортного и незабываемого отдыха
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {features.map((feature, index) => (
+        <div
+          class="flex gap-4 p-6 rounded-xl hover:bg-slate-50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-fade-in"
+          style={`animation-delay: ${index * 100}ms`}
+        >
+          <div class="flex-shrink-0">
+            <div class="w-14 h-14 rounded-full bg-primary-100 flex items-center justify-center">
+              {feature.icon === 'waves' && <Waves class="w-7 h-7 text-primary-600" />}
+              {feature.icon === 'car' && <Car class="w-7 h-7 text-primary-600" />}
+              {feature.icon === 'baby' && <Baby class="w-7 h-7 text-primary-600" />}
+              {feature.icon === 'clock' && <Clock class="w-7 h-7 text-primary-600" />}
+              {feature.icon === 'home' && <Home class="w-7 h-7 text-primary-600" />}
+              {feature.icon === 'mappin' && <MapPin class="w-7 h-7 text-primary-600" />}
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 mb-2">{feature.title}</h3>
+            <p class="text-slate-600">{feature.description}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

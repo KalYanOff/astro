@@ -1,0 +1,97 @@
+---
+import { Phone, Mail, MapPin, MessageCircle, Send, Bot, Navigation } from 'lucide-react';
+---
+
+<footer class="bg-slate-900 text-white pt-16 pb-8">
+  <div class="container mx-auto px-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+      <div>
+        <h3 class="text-xl font-bold mb-6">Контакты</h3>
+        <div class="space-y-4">
+          <a
+            href="tel:+79181929931"
+            class="flex items-center gap-3 text-white hover:text-accent-400 transition-colors text-lg font-semibold"
+          >
+            <Phone class="w-5 h-5" />
+            +7 (918) 192-99-31
+          </a>
+          <div class="flex items-start gap-3 text-slate-300">
+            <MapPin class="w-5 h-5 flex-shrink-0 mt-1" />
+            <span>Набережная 7, Джубга, Краснодарский край, 352844</span>
+          </div>
+          <div class="flex items-center gap-3 mt-6">
+            <a
+              href="https://wa.me/79181929931"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="p-3 rounded-full bg-green-600 hover:bg-green-700 transition-colors"
+              aria-label="WhatsApp"
+            >
+              <MessageCircle class="w-5 h-5" />
+            </a>
+            <a
+              href="https://t.me/+79181929931"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="p-3 rounded-full bg-blue-600 hover:bg-blue-700 transition-colors"
+              aria-label="Telegram"
+            >
+              <Send class="w-5 h-5" />
+            </a>
+            <a
+              href="https://max.ru"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="p-3 rounded-full bg-purple-600 hover:bg-purple-700 transition-colors"
+              aria-label="MAX"
+            >
+              <Bot class="w-5 h-5" />
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-bold mb-6">Навигация</h3>
+        <div class="space-y-3">
+          <a
+            href="https://yandex.ru/maps/?rtext=~44.333333,38.783333"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center gap-2 text-slate-300 hover:text-white transition-colors mb-4 font-semibold"
+          >
+            <Navigation class="w-5 h-5" />
+            Построить маршрут
+          </a>
+          <a href="#rooms" class="block text-slate-300 hover:text-white transition-colors">Номера</a>
+          <a href="#features" class="block text-slate-300 hover:text-white transition-colors">О нас</a>
+          <a href="#gallery" class="block text-slate-300 hover:text-white transition-colors">Галерея</a>
+          <a href="#reviews" class="block text-slate-300 hover:text-white transition-colors">Отзывы</a>
+          <a href="#faq" class="block text-slate-300 hover:text-white transition-colors">FAQ</a>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-bold mb-6">Юридическая информация</h3>
+        <div class="space-y-3">
+          <a href="/docs/offer" class="block text-slate-300 hover:text-white transition-colors">
+            Публичная оферта
+          </a>
+          <a href="/docs/privacy" class="block text-slate-300 hover:text-white transition-colors">
+            Политика конфиденциальности
+          </a>
+          <a href="/docs/rules" class="block text-slate-300 hover:text-white transition-colors">
+            Правила проживания
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-slate-800 pt-8">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-slate-400 text-sm">
+        <p>&copy; 2024-2025 Отель Дельфин. Все права защищены.</p>
+        <p>Разработано с заботой о конверсии</p>
+      </div>
+    </div>
+  </div>
+</footer>
