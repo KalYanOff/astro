@@ -47,11 +47,14 @@ const galleryImages = [
 export default function Gallery() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [showAll, setShowAll] = useState(false);
 
   const openLightbox = (index) => {
     setLightboxIndex(index);
     setLightboxOpen(true);
   };
+
+  const displayedImages = showAll ? galleryImages : galleryImages.slice(0, 3);
 
   return (
     <section id="gallery" className="py-20 bg-white">
@@ -63,8 +66,8 @@ export default function Gallery() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {galleryImages.map((image, index) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {displayedImages.map((image, index) => (
             <div
               key={index}
               className="relative aspect-square overflow-hidden rounded-lg cursor-pointer group animate-fade-in"
@@ -85,12 +88,21 @@ export default function Gallery() {
         </div>
 
         <div className="text-center mt-10">
-          <button
-            onClick={() => openLightbox(0)}
-            className="px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
-          >
-            Показать все фото ({galleryImages.length})
-          </button>
+          {!showAll ? (
+            <button
+              onClick={() => setShowAll(true)}
+              className="px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+            >
+              Показать все фото ({galleryImages.length})
+            </button>
+          ) : (
+            <button
+              onClick={() => setShowAll(false)}
+              className="px-8 py-4 bg-slate-600 hover:bg-slate-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+            >
+              Свернуть
+            </button>
+          )}
         </div>
       </div>
 

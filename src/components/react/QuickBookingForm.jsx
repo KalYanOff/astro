@@ -65,18 +65,33 @@ export default function QuickBookingForm() {
   const [calYear, setCalYear] = useState(new Date().getFullYear());
   const [calMonth, setCalMonth] = useState(new Date().getMonth());
   const [selecting, setSelecting] = useState(null);
+  const [calPosition, setCalPosition] = useState({ top: 0, left: 0 });
   const calRef = useRef(null);
+  const buttonRef = useRef(null);
 
   useEffect(() => {
     if (!showCalendar) return;
     const handler = (e) => {
-      if (calRef.current && !calRef.current.contains(e.target)) {
+      if (calRef.current && !calRef.current.contains(e.target) &&
+          buttonRef.current && !buttonRef.current.contains(e.target)) {
         setShowCalendar(false);
       }
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [showCalendar]);
+
+  const handleOpenCalendar = () => {
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setCalPosition({
+        top: rect.bottom + window.scrollY + 4,
+        left: rect.left + window.scrollX,
+      });
+    }
+    setShowCalendar(true);
+    setSelecting('in');
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -148,7 +163,7 @@ export default function QuickBookingForm() {
         <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-2">
 
           {/* date-range-field */}
-          <div className="flex-1 min-w-0 relative" ref={calRef}>
+          <div className="flex-1 min-w-0">
             <label className="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">
               <Calendar className="w-3 h-3 inline mr-1" />
               Даты заезда — выезда
@@ -156,19 +171,25 @@ export default function QuickBookingForm() {
 
             {/* date-range-button: opens/closes calendar */}
             <button
+              ref={buttonRef}
               type="button"
-              onClick={() => {
-                setShowCalendar(v => !v);
-                if (!showCalendar) setSelecting('in');
-              }}
+              onClick={handleOpenCalendar}
               className="w-full text-left px-3 py-2 border border-gray-300 rounded-lg text-gray-900 text-sm bg-white hover:border-primary-400 transition-colors font-medium"
             >
               {dateRangeLabel}
             </button>
+          </div>
 
-            {/* date-range-calendar: inline calendar dropdown */}
-            {showCalendar && (
-              <div className="absolute top-full left-0 mt-1 z-[9999] bg-white rounded-xl shadow-2xl border border-gray-200 p-3 w-72">
+          {/* date-range-calendar: fixed position calendar portal */}
+          {showCalendar && (
+            <div
+              ref={calRef}
+              style={{
+                position: 'fixed',
+                top: `${calPosition.top}px`,
+                left: `${calPosition.left}px`,
+              }}
+              className="z-[9999] bg-white rounded-xl shadow-2xl border border-gray-200 p-3 w-72">
 
                 {/* calendar-nav: month navigation */}
                 <div className="flex items-center justify-between mb-2">
@@ -240,8 +261,7 @@ export default function QuickBookingForm() {
                   />
                 </div>
               </div>
-            )}
-          </div>
+          )}
 
           {/* guests-select: 2-4 guests */}
           <div className="sm:w-40">
