@@ -67,7 +67,7 @@ export default function RoomsList() {
 
   const filteredRooms = ROOMS_DATA.filter((room) => {
     const categoryMatch = filter === 'all' || room.category === filter;
-    const capacityMatch = !booking.guestsCount || room.capacity >= booking.guestsCount;
+    const capacityMatch = !booking.guestsCount || room.capacity === booking.guestsCount;
     return categoryMatch && capacityMatch;
   });
 

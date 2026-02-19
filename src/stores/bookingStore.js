@@ -1,8 +1,11 @@
 import { atom, computed } from 'nanostores';
 
+const todayISO = new Date().toISOString().split('T')[0];
+const tomorrowISO = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+
 export const bookingStore = atom({
-  checkInDate: '',
-  checkOutDate: '',
+  checkInDate: todayISO,
+  checkOutDate: tomorrowISO,
   guestsCount: 2,
   wishes: 'Хотел бы тихий номер на втором этаже с видом на море...',
   selectedRoomId: null,
