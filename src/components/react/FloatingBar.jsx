@@ -110,8 +110,8 @@ export default function FloatingBar() {
             <X className="w-7 h-7" />
           ) : (
             <>
+              <span className="text-sm font-medium whitespace-nowrap">Связаться с нами</span>
               <MessageCircle className="w-6 h-6" />
-              <span className="text-sm font-medium hidden sm:inline whitespace-nowrap">Связаться</span>
             </>
           )}
         </button>

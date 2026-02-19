@@ -75,10 +75,25 @@ export default function QuickBookingForm() {
     const updatePosition = () => {
       if (buttonRef.current) {
         const rect = buttonRef.current.getBoundingClientRect();
-        setCalPosition({
-          top: rect.bottom + window.scrollY + 4,
-          left: rect.left + window.scrollX,
-        });
+        const calendarWidth = 288;
+        const calendarHeight = 400;
+
+        let top = rect.bottom + window.scrollY + 4;
+        let left = rect.left + window.scrollX;
+
+        if (left + calendarWidth > window.innerWidth) {
+          left = window.innerWidth - calendarWidth - 16;
+        }
+
+        if (left < 16) {
+          left = 16;
+        }
+
+        if (rect.bottom + calendarHeight > window.innerHeight) {
+          top = rect.top + window.scrollY - calendarHeight - 4;
+        }
+
+        setCalPosition({ top, left });
       }
     };
 
@@ -92,10 +107,12 @@ export default function QuickBookingForm() {
     updatePosition();
     document.addEventListener('mousedown', handleClickOutside);
     window.addEventListener('scroll', updatePosition);
+    window.addEventListener('resize', updatePosition);
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       window.removeEventListener('scroll', updatePosition);
+      window.removeEventListener('resize', updatePosition);
     };
   }, [showCalendar]);
 
