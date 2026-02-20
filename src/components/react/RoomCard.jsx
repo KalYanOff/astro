@@ -1,11 +1,6 @@
 import { useState } from 'react';
-import { Share2, Users, Wifi, Wind, Snowflake, Tv, Droplet } from 'lucide-react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination } from 'swiper/modules';
+import { Share2, Users, Wifi, Wind, Snowflake, Tv, Droplet, ChevronLeft, ChevronRight } from 'lucide-react';
 import { updateBooking } from '../../stores/bookingStore';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 
 const amenityIcons = {
   'Wi-Fi': Wifi,
@@ -19,8 +14,19 @@ const amenityIcons = {
 export default function RoomCard({ room, nights }) {
   const [showLightbox, setShowLightbox] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [activeSlide, setActiveSlide] = useState(0);
 
   const totalPrice = room.base_price * nights;
+
+  const prevSlide = (e) => {
+    e.stopPropagation();
+    setActiveSlide((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const nextSlide = (e) => {
+    e.stopPropagation();
+    setActiveSlide((prev) => (prev + 1) % images.length);
+  };
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -49,28 +55,59 @@ export default function RoomCard({ room, nights }) {
 
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
-      <div className="relative">
-        <Swiper
-          modules={[Navigation, Pagination]}
-          navigation
-          pagination={{ clickable: true }}
-          className="h-64"
+      <div className="relative h-64 overflow-hidden">
+        <div
+          className="flex h-full transition-transform duration-300 ease-in-out"
+          style={{ transform: `translateX(-${activeSlide * 100}%)` }}
         >
           {images.map((image, index) => (
-            <SwiperSlide key={index}>
-              <img
-                src={image}
-                alt={`${room.name} - фото ${index + 1}`}
-                className="w-full h-64 object-cover cursor-pointer"
-                onClick={() => {
-                  setLightboxIndex(index);
-                  setShowLightbox(true);
-                }}
-                loading="lazy"
-              />
-            </SwiperSlide>
+            <img
+              key={index}
+              src={image}
+              alt={`${room.name} - фото ${index + 1}`}
+              className="w-full h-64 object-cover cursor-pointer flex-shrink-0"
+              onClick={() => {
+                setLightboxIndex(index);
+                setShowLightbox(true);
+              }}
+              loading="lazy"
+            />
           ))}
-        </Swiper>
+        </div>
+
+        {images.length > 1 && (
+          <>
+            <button
+              onClick={prevSlide}
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center bg-black/40 hover:bg-black/60 text-white rounded-full transition-all hover:scale-110"
+              aria-label="Предыдущее фото"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={nextSlide}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center bg-black/40 hover:bg-black/60 text-white rounded-full transition-all hover:scale-110"
+              aria-label="Следующее фото"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5">
+              {images.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={(e) => { e.stopPropagation(); setActiveSlide(index); }}
+                  className={`rounded-full transition-all duration-200 ${
+                    index === activeSlide
+                      ? 'w-4 h-2 bg-white'
+                      : 'w-2 h-2 bg-white/50 hover:bg-white/75'
+                  }`}
+                  aria-label={`Фото ${index + 1}`}
+                />
+              ))}
+            </div>
+          </>
+        )}
 
         <button
           onClick={handleShare}
