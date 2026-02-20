@@ -11,6 +11,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useStore } from '@nanostores/react';
 import { createPortal } from 'react-dom';
 import { bookingStore, numberOfNights, updateBooking } from '../../stores/bookingStore';
+import { ROOMS_DATA } from './RoomsList';
 import {
   Mail, User, CheckCircle, AlertCircle,
   Calendar, Users, Pencil, X, ChevronLeft, ChevronRight,
@@ -382,6 +383,7 @@ export default function BookingRequestForm() {
   const [checkInDate, setCheckInDate] = useState(booking.checkInDate || today);
   const [checkOutDate, setCheckOutDate] = useState(booking.checkOutDate || tomorrow);
   const [selectedRoomId, setSelectedRoomId] = useState(booking.selectedRoomId || '');
+  const [roomPricePerNight, setRoomPricePerNight] = useState(booking.selectedRoomPrice || 0);
   const [contactMethod, setContactMethod] = useState('');
   const [guestName, setGuestName] = useState('');
   const [phone, setPhone] = useState('+7');
@@ -397,7 +399,8 @@ export default function BookingRequestForm() {
 
   useEffect(() => {
     if (booking.selectedRoomId) setSelectedRoomId(booking.selectedRoomId);
-  }, [booking.selectedRoomId]);
+    if (booking.selectedRoomPrice) setRoomPricePerNight(booking.selectedRoomPrice);
+  }, [booking.selectedRoomId, booking.selectedRoomPrice]);
 
   useEffect(() => {
     if (booking.selectedRoomName) {
@@ -418,7 +421,10 @@ export default function BookingRequestForm() {
     setSelectedRoomId(roomId);
     const allRooms = ROOM_OPTIONS.flatMap((g) => g.rooms);
     const found = allRooms.find((r) => r.id === roomId);
-    updateBooking({ selectedRoomId: roomId || null, selectedRoomName: found ? found.name : '' });
+    const roomData = ROOMS_DATA.find((r) => r.id === roomId);
+    const price = roomData ? roomData.base_price : 0;
+    setRoomPricePerNight(price);
+    updateBooking({ selectedRoomId: roomId || null, selectedRoomName: found ? found.name : '', selectedRoomPrice: price });
     setErrors((e) => ({ ...e, room: undefined }));
   };
 
@@ -449,6 +455,8 @@ export default function BookingRequestForm() {
   const allRooms = ROOM_OPTIONS.flatMap((g) => g.rooms);
   const selectedRoom = allRooms.find((r) => r.id === selectedRoomId);
 
+  const totalCost = roomPricePerNight * Math.max(localNights, 0);
+
   const buildMessage = () => {
     const lines = [
       'Заявка на бронирование',
@@ -460,6 +468,7 @@ export default function BookingRequestForm() {
       `Выезд: ${formatDateRu(checkOutDate)}`,
       `Ночей: ${localNights}`,
     ];
+    if (totalCost > 0) lines.push(`Сумма: ${totalCost.toLocaleString('ru-RU')} ₽`);
     if (wishes.trim()) lines.push(`Пожелания: ${wishes.trim()}`);
     return lines.join('\n');
   };
@@ -511,6 +520,26 @@ export default function BookingRequestForm() {
         </div>
 
         <form onSubmit={handleSubmit} className="bg-slate-50 rounded-2xl p-6 md:p-10 shadow-lg space-y-8">
+
+          {/* ---- price summary banner ---- */}
+          {selectedRoomId && localNights > 0 && roomPricePerNight > 0 && (
+            <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl p-6 text-white shadow-lg">
+              <p className="text-sm font-medium text-primary-200 mb-1 uppercase tracking-wide">Итоговая стоимость</p>
+              <p className="text-4xl font-bold mb-3">
+                {totalCost.toLocaleString('ru-RU')} ₽
+              </p>
+              <div className="flex items-center gap-2 text-primary-100 text-sm">
+                <span>{localNights}</span>
+                <span>{localNights === 1 ? 'ночь' : localNights < 5 ? 'ночи' : 'ночей'}</span>
+                <span>×</span>
+                <span>{roomPricePerNight.toLocaleString('ru-RU')} ₽</span>
+                <span className="text-primary-300">/ ночь</span>
+              </div>
+              {booking.selectedRoomName && (
+                <p className="text-primary-200 text-xs mt-2">{booking.selectedRoomName}</p>
+              )}
+            </div>
+          )}
 
           {/* ---- booking params: dates + room ---- */}
           <div className="space-y-5">

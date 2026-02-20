@@ -1,10 +1,14 @@
 /* =========================================
    COMPONENT: RoomCard
-   Wide card: photo slider with price badge + CTA badge,
-   vertical amenity list, total price in footer
+   Wide card: photo slider, amenities, inline
+   date picker with real-time price calc, book CTA
    ========================================= */
-import { useState, useCallback } from 'react';
-import { Share2, Users, Wifi, Wind, Snowflake, Tv, Droplet, ChevronLeft, ChevronRight, Flame, AlertCircle } from 'lucide-react';
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import {
+  Share2, Users, Wifi, Wind, Snowflake, Tv, Droplet,
+  ChevronLeft, ChevronRight, Flame, AlertCircle, Calendar,
+} from 'lucide-react';
 import { updateBooking } from '../../stores/bookingStore';
 
 const AMENITY_ICONS = {
@@ -16,12 +20,6 @@ const AMENITY_ICONS = {
   'Душ и туалет общего пользования': Droplet,
 };
 
-/*
-  CTA_BADGES — promotional labels per room id.
-  Edit here to add/change/remove badges for any room.
-  Set to null to show no badge for that room.
-  Supported icons: 'flame', 'alert'
-*/
 const CTA_BADGES = {
   '1': null,
   '2': { label: 'Осталось 2 номера', icon: 'alert', color: 'bg-red-500' },
@@ -30,8 +28,173 @@ const CTA_BADGES = {
   '5': { label: 'Осталось 2 номера', icon: 'alert', color: 'bg-red-500' },
 };
 
-export default function RoomCard({ room, nights }) {
+const MONTH_NAMES = [
+  'Январь','Февраль','Март','Апрель','Май','Июнь',
+  'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь',
+];
+const DAY_NAMES = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+
+function getDaysInMonth(year, month) {
+  return new Date(year, month + 1, 0).getDate();
+}
+function getFirstDayOfWeek(year, month) {
+  const d = new Date(year, month, 1).getDay();
+  return d === 0 ? 6 : d - 1;
+}
+function isoToDate(iso) {
+  if (!iso) return null;
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+function calcNights(ci, co) {
+  if (!ci || !co) return 0;
+  const diff = new Date(co) - new Date(ci);
+  return Math.max(0, Math.ceil(diff / 86400000));
+}
+function toShort(iso) {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-');
+  return `${d}.${m}.${y.slice(2)}`;
+}
+
+/* ---- Mini inline calendar popup ---- */
+function CardCalendar({ checkIn, checkOut, onChange, onClose, anchorRef }) {
+  const today = new Date().toISOString().split('T')[0];
+  const [calYear, setCalYear] = useState(new Date().getFullYear());
+  const [calMonth, setCalMonth] = useState(new Date().getMonth());
+  const [selecting, setSelecting] = useState(checkIn && !checkOut ? 'out' : 'in');
+  const [pos, setPos] = useState({ top: 0, left: 0 });
+  const [mounted, setMounted] = useState(false);
+  const calRef = useRef(null);
+
+  useEffect(() => { setMounted(true); }, []);
+
+  useEffect(() => {
+    if (!anchorRef.current) return;
+    const rect = anchorRef.current.getBoundingClientRect();
+    const calW = 300;
+    const calH = 370;
+    let top = rect.bottom + window.scrollY + 6;
+    let left = rect.left + window.scrollX;
+    if (left + calW > window.innerWidth - 8) left = window.innerWidth - calW - 8;
+    if (left < 8) left = 8;
+    const viewTop = rect.bottom + 6;
+    if (viewTop + calH > window.innerHeight - 8) {
+      top = rect.top + window.scrollY - calH - 6;
+    }
+    setPos({ top, left });
+  }, [anchorRef]);
+
+  useEffect(() => {
+    const handleOutside = (e) => {
+      if (
+        calRef.current && !calRef.current.contains(e.target) &&
+        anchorRef.current && !anchorRef.current.contains(e.target)
+      ) {
+        onClose();
+      }
+    };
+    document.addEventListener('mousedown', handleOutside);
+    return () => document.removeEventListener('mousedown', handleOutside);
+  }, [onClose, anchorRef]);
+
+  const handleDayClick = (iso) => {
+    if (selecting === 'out' && checkIn && iso > checkIn) {
+      onChange(checkIn, iso);
+      onClose();
+    } else {
+      onChange(iso, '');
+      setSelecting('out');
+    }
+  };
+
+  const prevMonth = () => {
+    if (calMonth === 0) { setCalMonth(11); setCalYear((y) => y - 1); }
+    else setCalMonth((m) => m - 1);
+  };
+  const nextMonth = () => {
+    if (calMonth === 11) { setCalMonth(0); setCalYear((y) => y + 1); }
+    else setCalMonth((m) => m + 1);
+  };
+
+  const daysInMonth = getDaysInMonth(calYear, calMonth);
+  const firstDow = getFirstDayOfWeek(calYear, calMonth);
+  const inDate = isoToDate(checkIn);
+  const outDate = isoToDate(checkOut);
+
+  if (!mounted) return null;
+
+  return createPortal(
+    <div
+      ref={calRef}
+      style={{ position: 'absolute', top: pos.top, left: pos.left, zIndex: 99999, width: 300 }}
+      className="bg-white rounded-2xl shadow-2xl border border-slate-200 p-4"
+    >
+      <div className="flex items-center justify-between mb-2">
+        <button type="button" onClick={prevMonth} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
+          <ChevronLeft className="w-4 h-4 text-slate-600" />
+        </button>
+        <span className="text-sm font-bold text-slate-800">{MONTH_NAMES[calMonth]} {calYear}</span>
+        <button type="button" onClick={nextMonth} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
+          <ChevronRight className="w-4 h-4 text-slate-600" />
+        </button>
+      </div>
+
+      <p className="text-center text-xs text-primary-600 font-semibold mb-2">
+        {selecting === 'out' ? '▸ Выберите дату выезда' : '▸ Выберите дату заезда'}
+      </p>
+
+      <div className="grid grid-cols-7 mb-1">
+        {DAY_NAMES.map((d) => (
+          <div key={d} className="text-center text-[10px] font-semibold text-slate-400 py-1">{d}</div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-7 gap-px">
+        {Array.from({ length: firstDow }).map((_, i) => <div key={`e${i}`} />)}
+        {Array.from({ length: daysInMonth }).map((_, i) => {
+          const day = i + 1;
+          const iso = `${calYear}-${String(calMonth + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+          const isPast = iso < today;
+          const isCI = iso === checkIn;
+          const isCO = iso === checkOut;
+          const cellDate = isoToDate(iso);
+          const inRange = inDate && outDate && cellDate > inDate && cellDate < outDate;
+
+          return (
+            <button
+              type="button"
+              key={iso}
+              disabled={isPast}
+              onClick={() => !isPast && handleDayClick(iso)}
+              className={[
+                'text-xs py-1.5 text-center transition-colors rounded-lg',
+                isPast ? 'text-slate-300 cursor-not-allowed' : 'hover:bg-primary-50 cursor-pointer text-slate-800',
+                (isCI || isCO) ? '!bg-primary-600 !text-white font-bold hover:!bg-primary-700' : '',
+                inRange ? '!bg-primary-100 !text-primary-800 !rounded-none' : '',
+              ].filter(Boolean).join(' ')}
+            >
+              {day}
+            </button>
+          );
+        })}
+      </div>
+    </div>,
+    document.body
+  );
+}
+
+export default function RoomCard({ room }) {
+  const today = new Date().toISOString().split('T')[0];
+  const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+
   const [activeSlide, setActiveSlide] = useState(0);
+  const [checkIn, setCheckIn] = useState(today);
+  const [checkOut, setCheckOut] = useState(tomorrow);
+  const [showCal, setShowCal] = useState(false);
+  const calAnchorRef = useRef(null);
+  const checkInBtnRef = useRef(null);
+  const checkOutBtnRef = useRef(null);
 
   const images =
     room.images && room.images.length > 0
@@ -39,7 +202,8 @@ export default function RoomCard({ room, nights }) {
       : ['https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800'];
 
   const badge = CTA_BADGES[room.id] ?? null;
-  const totalPrice = room.base_price * (nights || 1);
+  const nights = calcNights(checkIn, checkOut);
+  const totalPrice = room.base_price * Math.max(nights, 1);
 
   const prevSlide = useCallback(
     (e) => {
@@ -69,8 +233,21 @@ export default function RoomCard({ room, nights }) {
     }
   };
 
+  const handleCalChange = (ci, co) => {
+    setCheckIn(ci || today);
+    setCheckOut(co || '');
+  };
+
   const handleBooking = () => {
-    updateBooking({ selectedRoomId: room.id, selectedRoomName: room.name });
+    const n = calcNights(checkIn, checkOut);
+    updateBooking({
+      selectedRoomId: room.id,
+      selectedRoomName: room.name,
+      selectedRoomPrice: room.base_price,
+      checkInDate: checkIn,
+      checkOutDate: checkOut || tomorrow,
+      guestsCount: room.capacity,
+    });
     const el = document.querySelector('#booking-request');
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
@@ -82,13 +259,14 @@ export default function RoomCard({ room, nights }) {
       ? `${room.capacity} гостя`
       : `${room.capacity} гостей`;
 
+  const nightsLabel =
+    nights === 1 ? 'ночь' : nights < 5 ? 'ночи' : 'ночей';
+
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full">
 
       {/* ---- photo slider ---- */}
       <div className="relative h-64 flex-shrink-0 overflow-hidden">
-
-        {/* slider track: width = 100% * count, each slide = 100% / count */}
         <div
           className="flex h-full transition-transform duration-300 ease-in-out"
           style={{
@@ -108,7 +286,6 @@ export default function RoomCard({ room, nights }) {
           ))}
         </div>
 
-        {/* top-left: CTA badge */}
         {badge && (
           <div
             className={`absolute top-3 left-3 z-10 flex items-center gap-1.5 ${badge.color} text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg`}
@@ -119,7 +296,6 @@ export default function RoomCard({ room, nights }) {
           </div>
         )}
 
-        {/* top-right: share */}
         <button
           onClick={handleShare}
           className="absolute top-3 right-3 z-10 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow hover:scale-110 transition-transform"
@@ -128,7 +304,6 @@ export default function RoomCard({ room, nights }) {
           <Share2 className="w-4 h-4 text-slate-700" />
         </button>
 
-        {/* bottom-right: price badge */}
         <div className="absolute bottom-3 right-3 z-10 bg-black/60 backdrop-blur-sm rounded-xl px-3 py-2 text-right leading-none">
           <span className="block text-[10px] text-white/70 mb-1">от</span>
           <span className="block text-lg font-bold text-white">
@@ -137,7 +312,6 @@ export default function RoomCard({ room, nights }) {
           <span className="block text-[10px] text-white/70 mt-1">/ ночь</span>
         </div>
 
-        {/* slider arrows + dots */}
         {images.length > 1 && (
           <>
             <button
@@ -200,7 +374,7 @@ export default function RoomCard({ room, nights }) {
         {/* description */}
         <p className="text-sm text-slate-600 mb-4 line-clamp-2">{room.description}</p>
 
-        {/* amenities: vertical single-column list */}
+        {/* amenities */}
         {room.amenities && room.amenities.length > 0 && (
           <ul className="flex flex-col gap-2 mb-4">
             {room.amenities.map((amenity, i) => {
@@ -215,17 +389,88 @@ export default function RoomCard({ room, nights }) {
           </ul>
         )}
 
-        {/* footer: total + book button */}
+        {/* ---- date picker ---- */}
         <div className="mt-auto pt-4 border-t border-slate-100">
-          {nights > 0 && (
-            <p className="text-sm text-slate-500 mb-3">
-              Итого за {nights}{' '}
-              {nights === 1 ? 'ночь' : nights < 5 ? 'ночи' : 'ночей'}:{' '}
-              <span className="font-bold text-slate-800">
-                {totalPrice.toLocaleString('ru-RU')} ₽
-              </span>
-            </p>
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Выберите даты</p>
+
+          <div className="grid grid-cols-2 gap-2 mb-3">
+            {/* check-in */}
+            <div>
+              <label className="block text-xs text-slate-500 mb-1">Заезд</label>
+              <button
+                ref={checkInBtnRef}
+                type="button"
+                onClick={() => {
+                  calAnchorRef.current = checkInBtnRef.current;
+                  setShowCal((v) => !v);
+                }}
+                className={`w-full flex items-center gap-1.5 px-3 py-2 border rounded-lg text-sm transition-all text-left ${
+                  showCal
+                    ? 'border-primary-500 ring-2 ring-primary-100 bg-white'
+                    : 'border-slate-300 bg-slate-50 hover:bg-white hover:border-slate-400'
+                }`}
+              >
+                <Calendar className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                <span className={checkIn ? 'text-slate-800 font-medium' : 'text-slate-400'}>
+                  {checkIn ? toShort(checkIn) : 'дд.мм.гг'}
+                </span>
+              </button>
+            </div>
+
+            {/* check-out */}
+            <div>
+              <label className="block text-xs text-slate-500 mb-1">Выезд</label>
+              <button
+                ref={checkOutBtnRef}
+                type="button"
+                onClick={() => {
+                  calAnchorRef.current = checkOutBtnRef.current;
+                  setShowCal((v) => !v);
+                }}
+                className={`w-full flex items-center gap-1.5 px-3 py-2 border rounded-lg text-sm transition-all text-left ${
+                  showCal
+                    ? 'border-primary-500 ring-2 ring-primary-100 bg-white'
+                    : 'border-slate-300 bg-slate-50 hover:bg-white hover:border-slate-400'
+                }`}
+              >
+                <Calendar className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                <span className={checkOut ? 'text-slate-800 font-medium' : 'text-slate-400'}>
+                  {checkOut ? toShort(checkOut) : 'дд.мм.гг'}
+                </span>
+              </button>
+            </div>
+          </div>
+
+          {/* calendar portal */}
+          {showCal && (
+            <CardCalendar
+              checkIn={checkIn}
+              checkOut={checkOut}
+              onChange={handleCalChange}
+              onClose={() => setShowCal(false)}
+              anchorRef={calAnchorRef}
+            />
           )}
+
+          {/* price breakdown */}
+          {nights > 0 && checkOut ? (
+            <div className="bg-primary-50 rounded-xl px-4 py-3 mb-3">
+              <div className="flex items-center justify-between text-sm text-slate-600 mb-1">
+                <span>{nights} {nightsLabel} × {room.base_price.toLocaleString('ru-RU')} ₽</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold text-slate-700">Итого</span>
+                <span className="text-xl font-bold text-primary-700">
+                  {totalPrice.toLocaleString('ru-RU')} ₽
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div className="text-xs text-slate-400 text-center mb-3">
+              Выберите даты для расчёта стоимости
+            </div>
+          )}
+
           <button
             onClick={handleBooking}
             className="w-full bg-accent-500 hover:bg-accent-600 text-white font-semibold py-3 rounded-xl transition-all hover:shadow-lg active:scale-95"

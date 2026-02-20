@@ -4,8 +4,6 @@
    Capacity filter: exact match only (2, 3, or 4 people)
    ========================================= */
 import { useState } from 'react';
-import { useStore } from '@nanostores/react';
-import { bookingStore, numberOfNights, updateBooking } from '../../stores/bookingStore';
 import RoomCard from './RoomCard';
 
 const ROOMS_DATA = [
@@ -84,8 +82,6 @@ function filterRooms(rooms, { category, capacity }) {
 
 export default function RoomsList() {
   const [filter, setFilter] = useState(INITIAL_FILTER);
-  const booking = useStore(bookingStore);
-  const nights = useStore(numberOfNights);
 
   const setCategory = (category) => setFilter((f) => ({ ...f, category }));
   const setCapacity = (capacity) =>
@@ -107,43 +103,48 @@ export default function RoomsList() {
         </div>
 
         {/* filter bar */}
-        <div className="flex flex-wrap justify-center gap-3 mb-10">
+        <div className="flex flex-col items-center gap-3 mb-10">
 
-          {/* category filters */}
-          {[
-            { value: 'all', label: 'Все номера' },
-            { value: 'econom', label: 'Эконом' },
-            { value: 'standard', label: 'Стандарт' },
-          ].map(({ value, label }) => (
-            <button
-              key={value}
-              onClick={() => setCategory(value)}
-              className={`px-6 py-3 rounded-full font-medium transition-all ${
-                filter.category === value && filter.capacity === null
-                  ? 'bg-primary-600 text-white shadow-lg'
-                  : filter.category === value
-                  ? 'bg-primary-100 text-primary-700 shadow'
-                  : 'bg-white text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+          {/* row 1: category filters */}
+          <div className="flex flex-wrap justify-center gap-3">
+            {[
+              { value: 'all', label: 'Все номера' },
+              { value: 'econom', label: 'Эконом' },
+              { value: 'standard', label: 'Стандарт' },
+            ].map(({ value, label }) => (
+              <button
+                key={value}
+                onClick={() => setCategory(value)}
+                className={`px-6 py-3 rounded-full font-medium transition-all ${
+                  filter.category === value && filter.capacity === null
+                    ? 'bg-primary-600 text-white shadow-lg'
+                    : filter.category === value
+                    ? 'bg-primary-100 text-primary-700 shadow'
+                    : 'bg-white text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
 
-          {/* capacity filters: exact seat count (2 / 3 / 4 человека) */}
-          {CAPACITY_FILTERS.map((cap) => (
-            <button
-              key={cap}
-              onClick={() => setCapacity(cap)}
-              className={`px-6 py-3 rounded-full font-medium transition-all ${
-                filter.capacity === cap
-                  ? 'bg-accent-500 text-white shadow-lg'
-                  : 'bg-white text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              {cap} человека
-            </button>
-          ))}
+          {/* row 2: capacity filters */}
+          <div className="flex flex-wrap justify-center gap-3">
+            <span className="self-center text-sm text-slate-400 font-medium mr-1">Гостей:</span>
+            {CAPACITY_FILTERS.map((cap) => (
+              <button
+                key={cap}
+                onClick={() => setCapacity(cap)}
+                className={`px-5 py-2.5 rounded-full font-medium text-sm transition-all ${
+                  filter.capacity === cap
+                    ? 'bg-accent-500 text-white shadow-lg'
+                    : 'bg-white text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                {cap} {cap === 1 ? 'гость' : cap < 5 ? 'гостя' : 'гостей'}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* room grid or empty state */}
@@ -167,7 +168,7 @@ export default function RoomsList() {
                 style={{ animationDelay: `${index * 80}ms` }}
                 className="animate-fade-in"
               >
-                <RoomCard room={room} nights={nights} />
+                <RoomCard room={room} />
               </div>
             ))}
           </div>

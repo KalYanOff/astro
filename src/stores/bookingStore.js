@@ -10,6 +10,7 @@ export const bookingStore = atom({
   wishes: '',
   selectedRoomId: null,
   selectedRoomName: '',
+  selectedRoomPrice: 0,
   searchActivated: false,
 });
 
@@ -36,6 +37,7 @@ export function resetBooking() {
     wishes: '',
     selectedRoomId: null,
     selectedRoomName: '',
+    selectedRoomPrice: 0,
     searchActivated: false,
   });
 }
