@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useStore } from '@nanostores/react';
 import { bookingStore, numberOfNights, updateBooking } from '../../stores/bookingStore';
-import { MessageCircle, Send, Mail, Phone, User, CheckCircle, AlertCircle, Calendar, Users } from 'lucide-react';
+import { MessageCircle, Send, Mail, Phone, User, CheckCircle, AlertCircle, Calendar, Users, Pencil, X } from 'lucide-react';
 
 const CONTACT_METHODS = [
   { id: 'whatsapp', label: 'WhatsApp', icon: MessageCircle, color: 'bg-green-500', hoverColor: 'hover:bg-green-50', borderColor: 'border-green-500', textColor: 'text-green-600' },
@@ -37,6 +37,8 @@ export default function BookingRequestForm() {
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [highlight, setHighlight] = useState(false);
+  const [editingParams, setEditingParams] = useState(false);
+  const [editDraft, setEditDraft] = useState({});
   const formRef = useRef(null);
 
   useEffect(() => {
@@ -218,35 +220,149 @@ export default function BookingRequestForm() {
           </div>
 
           {booking.selectedRoomId ? (
-            <div className={`rounded-xl border-2 p-5 transition-all duration-500 ${highlight ? 'border-accent-400 bg-accent-50 shadow-md' : 'border-slate-200 bg-white'}`}>
-              <p className="text-sm font-semibold text-slate-700 mb-3 uppercase tracking-wide">
-                Параметры бронирования
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-                <div>
-                  <span className="text-slate-500">Номер</span>
-                  <p className="font-bold text-slate-900 mt-0.5">
-                    {booking.selectedRoomName}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-slate-500">Даты</span>
-                  <p className="font-bold text-slate-900 mt-0.5">
-                    {booking.checkInDate && booking.checkOutDate
-                      ? `${new Date(booking.checkInDate).toLocaleDateString('ru-RU')} — ${new Date(booking.checkOutDate).toLocaleDateString('ru-RU')}`
-                      : 'Не выбраны'}
-                  </p>
-                  {nights > 0 && booking.checkInDate && booking.checkOutDate && (
-                    <span className="text-slate-500 text-xs">{nights} {nights === 1 ? 'ночь' : nights < 5 ? 'ночи' : 'ночей'}</span>
-                  )}
-                </div>
-                <div>
-                  <span className="text-slate-500">Гостей</span>
-                  <p className="font-bold text-slate-900 mt-0.5">
-                    {booking.guestsCount} {booking.guestsCount < 5 ? 'гостя' : 'гостей'}
-                  </p>
-                </div>
+            <div className={`rounded-xl border-2 p-5 transition-all duration-500 ${highlight && !editingParams ? 'border-accent-400 bg-accent-50 shadow-md' : editingParams ? 'border-primary-400 bg-primary-50 shadow-md' : 'border-slate-200 bg-white'}`}>
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-sm font-semibold text-slate-700 uppercase tracking-wide">
+                  Параметры бронирования
+                </p>
+                {!editingParams ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditDraft({
+                        checkInDate: booking.checkInDate,
+                        checkOutDate: booking.checkOutDate,
+                        guestsCount: booking.guestsCount,
+                        selectedRoomId: booking.selectedRoomId,
+                        selectedRoomName: booking.selectedRoomName,
+                      });
+                      setEditingParams(true);
+                    }}
+                    className="flex items-center gap-1.5 text-primary-600 hover:text-primary-800 text-xs font-semibold border border-primary-300 hover:border-primary-500 px-3 py-1.5 rounded-full transition-all hover:bg-primary-50"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                    Изменить
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateBooking({
+                          checkInDate: editDraft.checkInDate,
+                          checkOutDate: editDraft.checkOutDate,
+                          guestsCount: editDraft.guestsCount,
+                          selectedRoomId: editDraft.selectedRoomId,
+                          selectedRoomName: editDraft.selectedRoomName,
+                        });
+                        setEditingParams(false);
+                      }}
+                      className="flex items-center gap-1.5 bg-primary-600 hover:bg-primary-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full transition-all"
+                    >
+                      <CheckCircle className="w-3.5 h-3.5" />
+                      Сохранить
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditingParams(false)}
+                      className="flex items-center gap-1.5 text-slate-500 hover:text-slate-700 text-xs font-semibold border border-slate-300 hover:border-slate-400 px-3 py-1.5 rounded-full transition-all"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                      Отмена
+                    </button>
+                  </div>
+                )}
               </div>
+
+              {!editingParams ? (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                  <div>
+                    <span className="text-slate-500">Номер</span>
+                    <p className="font-bold text-slate-900 mt-0.5">{booking.selectedRoomName}</p>
+                  </div>
+                  <div>
+                    <span className="text-slate-500">Даты</span>
+                    <p className="font-bold text-slate-900 mt-0.5">
+                      {booking.checkInDate && booking.checkOutDate
+                        ? `${new Date(booking.checkInDate).toLocaleDateString('ru-RU')} — ${new Date(booking.checkOutDate).toLocaleDateString('ru-RU')}`
+                        : 'Не выбраны'}
+                    </p>
+                    {nights > 0 && booking.checkInDate && booking.checkOutDate && (
+                      <span className="text-slate-500 text-xs">{nights} {nights === 1 ? 'ночь' : nights < 5 ? 'ночи' : 'ночей'}</span>
+                    )}
+                  </div>
+                  <div>
+                    <span className="text-slate-500">Гостей</span>
+                    <p className="font-bold text-slate-900 mt-0.5">
+                      {booking.guestsCount} {booking.guestsCount < 5 ? 'гостя' : 'гостей'}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                        <Calendar className="w-3.5 h-3.5 inline mr-1" />
+                        Дата заезда
+                      </label>
+                      <input
+                        type="date"
+                        value={editDraft.checkInDate || ''}
+                        min={new Date().toISOString().split('T')[0]}
+                        onChange={(e) => setEditDraft(d => ({ ...d, checkInDate: e.target.value }))}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white text-slate-900 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                        <Calendar className="w-3.5 h-3.5 inline mr-1" />
+                        Дата выезда
+                      </label>
+                      <input
+                        type="date"
+                        value={editDraft.checkOutDate || ''}
+                        min={editDraft.checkInDate || new Date().toISOString().split('T')[0]}
+                        onChange={(e) => setEditDraft(d => ({ ...d, checkOutDate: e.target.value }))}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white text-slate-900 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                        <Users className="w-3.5 h-3.5 inline mr-1" />
+                        Гостей
+                      </label>
+                      <select
+                        value={editDraft.guestsCount || 2}
+                        onChange={(e) => setEditDraft(d => ({ ...d, guestsCount: parseInt(e.target.value) }))}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white text-slate-900 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+                      >
+                        <option value="2">2 гостя</option>
+                        <option value="3">3 гостя</option>
+                        <option value="4">4 гостя</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1.5">Выбранный номер</label>
+                    <div className="flex items-center justify-between px-3 py-2 border border-slate-300 rounded-lg bg-white">
+                      <span className="text-sm text-slate-800 font-medium">{editDraft.selectedRoomName}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditDraft(d => ({ ...d, selectedRoomId: null, selectedRoomName: '' }));
+                        }}
+                        className="text-xs text-slate-400 hover:text-red-500 transition-colors flex items-center gap-1"
+                        title="Снять выбор номера"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                        Снять выбор
+                      </button>
+                    </div>
+                    <p className="text-xs text-slate-400 mt-1">Если снять выбор — выберите номер заново в списке выше</p>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="rounded-xl border-2 border-slate-200 bg-white p-5 space-y-4">
