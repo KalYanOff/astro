@@ -38,13 +38,21 @@ const IconMax = ({ className }) => (
 export default function FloatingBar() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showMessengers, setShowMessengers] = useState(false);
+  const [bookingVisible, setBookingVisible] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 500);
+
+      const bookingEl = document.querySelector('#booking-request');
+      if (bookingEl) {
+        const rect = bookingEl.getBoundingClientRect();
+        setBookingVisible(rect.top < window.innerHeight && rect.bottom > 0);
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -59,7 +67,11 @@ export default function FloatingBar() {
 
   return (
     <>
-      <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white shadow-2xl border-t border-slate-200 animate-slide-up">
+      <div
+        className={`fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white shadow-2xl border-t border-slate-200 transition-transform duration-300 ${
+          bookingVisible ? 'translate-y-full' : 'translate-y-0'
+        }`}
+      >
         <div className="h-16">
           <button
             onClick={scrollToBooking}

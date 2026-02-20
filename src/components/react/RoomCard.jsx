@@ -193,8 +193,7 @@ export default function RoomCard({ room }) {
   const [checkOut, setCheckOut] = useState(tomorrow);
   const [showCal, setShowCal] = useState(false);
   const calAnchorRef = useRef(null);
-  const checkInBtnRef = useRef(null);
-  const checkOutBtnRef = useRef(null);
+  const dateRangeBtnRef = useRef(null);
 
   const images =
     room.images && room.images.length > 0
@@ -391,55 +390,32 @@ export default function RoomCard({ room }) {
 
         {/* ---- date picker ---- */}
         <div className="mt-auto pt-4 border-t border-slate-100">
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Выберите даты</p>
+          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+            Даты заезда / выезда
+          </label>
 
-          <div className="grid grid-cols-2 gap-2 mb-3">
-            {/* check-in */}
-            <div>
-              <label className="block text-xs text-slate-500 mb-1">Заезд</label>
-              <button
-                ref={checkInBtnRef}
-                type="button"
-                onClick={() => {
-                  calAnchorRef.current = checkInBtnRef.current;
-                  setShowCal((v) => !v);
-                }}
-                className={`w-full flex items-center gap-1.5 px-3 py-2 border rounded-lg text-sm transition-all text-left ${
-                  showCal
-                    ? 'border-primary-500 ring-2 ring-primary-100 bg-white'
-                    : 'border-slate-300 bg-slate-50 hover:bg-white hover:border-slate-400'
-                }`}
-              >
-                <Calendar className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-                <span className={checkIn ? 'text-slate-800 font-medium' : 'text-slate-400'}>
-                  {checkIn ? toShort(checkIn) : 'дд.мм.гг'}
-                </span>
-              </button>
-            </div>
-
-            {/* check-out */}
-            <div>
-              <label className="block text-xs text-slate-500 mb-1">Выезд</label>
-              <button
-                ref={checkOutBtnRef}
-                type="button"
-                onClick={() => {
-                  calAnchorRef.current = checkOutBtnRef.current;
-                  setShowCal((v) => !v);
-                }}
-                className={`w-full flex items-center gap-1.5 px-3 py-2 border rounded-lg text-sm transition-all text-left ${
-                  showCal
-                    ? 'border-primary-500 ring-2 ring-primary-100 bg-white'
-                    : 'border-slate-300 bg-slate-50 hover:bg-white hover:border-slate-400'
-                }`}
-              >
-                <Calendar className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-                <span className={checkOut ? 'text-slate-800 font-medium' : 'text-slate-400'}>
-                  {checkOut ? toShort(checkOut) : 'дд.мм.гг'}
-                </span>
-              </button>
-            </div>
-          </div>
+          <button
+            ref={dateRangeBtnRef}
+            type="button"
+            onClick={() => {
+              calAnchorRef.current = dateRangeBtnRef.current;
+              setShowCal((v) => !v);
+            }}
+            className={`w-full flex items-center gap-2 px-3 py-2.5 border rounded-xl text-sm transition-all text-left mb-3 ${
+              showCal
+                ? 'border-primary-500 ring-2 ring-primary-100 bg-white'
+                : 'border-slate-300 bg-slate-50 hover:bg-white hover:border-slate-400'
+            }`}
+          >
+            <Calendar className="w-4 h-4 text-slate-400 flex-shrink-0" />
+            <span className="flex-1 text-slate-800 font-medium">
+              {checkIn ? toShort(checkIn) : 'дд.мм.гг'}
+            </span>
+            <span className="text-slate-400 mx-0.5">→</span>
+            <span className={checkOut ? 'text-slate-800 font-medium' : 'text-slate-400'}>
+              {checkOut ? toShort(checkOut) : 'дд.мм.гг'}
+            </span>
+          </button>
 
           {/* calendar portal */}
           {showCal && (

@@ -58,8 +58,8 @@ import BookingModal from './react/BookingModal.jsx';
       </div>
     </div>
 
-    <!-- hero-cta: scroll-to-booking button -->
-    <div class="flex justify-center">
+    <!-- hero-cta: scroll-to-booking + view-rooms buttons -->
+    <div class="flex flex-col items-center gap-5">
       <a
         href="#booking-request"
         onclick="event.preventDefault(); document.querySelector('#booking-request').scrollIntoView({ behavior: 'smooth', block: 'start' });"
@@ -72,6 +72,28 @@ import BookingModal from './react/BookingModal.jsx';
           <line x1="3" y1="10" x2="21" y2="10"/>
         </svg>
         Забронировать номер
+      </a>
+
+      <!-- hero-view-rooms: animated scroll-to-rooms link -->
+      <a
+        href="#rooms"
+        onclick="event.preventDefault(); document.querySelector('#rooms').scrollIntoView({ behavior: 'smooth', block: 'start' });"
+        class="group flex flex-col items-center gap-1 text-white/70 hover:text-white transition-colors duration-200 cursor-pointer"
+        aria-label="Смотреть номера"
+      >
+        <span class="text-sm font-medium tracking-wide">Смотреть номера</span>
+        <svg
+          class="w-6 h-6 animate-bounce-soft"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
       </a>
     </div>
 
