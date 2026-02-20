@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useStore } from '@nanostores/react';
-import { bookingStore, numberOfNights, updateBooking } from '../../stores/bookingStore';
+import { bookingStore, numberOfNights, updateBooking, resetBooking } from '../../stores/bookingStore';
+import { RefreshCw } from 'lucide-react';
 import RoomCard from './RoomCard';
 
 const ROOMS_DATA = [
@@ -89,10 +90,22 @@ export default function RoomsList() {
             Выберите комфортный номер для вашего отдыха
           </p>
           {booking.checkInDate && booking.checkOutDate && (
-            <div className="mt-4 inline-block bg-primary-100 text-primary-800 px-6 py-3 rounded-full">
+            <div className="mt-4 inline-flex items-center gap-3 bg-primary-100 text-primary-800 px-6 py-3 rounded-full">
               <p className="font-semibold">
                 {new Date(booking.checkInDate).toLocaleDateString('ru-RU')} - {new Date(booking.checkOutDate).toLocaleDateString('ru-RU')} &bull; {booking.guestsCount} {booking.guestsCount === 1 ? 'гость' : booking.guestsCount < 5 ? 'гостя' : 'гостей'}
               </p>
+              <button
+                onClick={() => {
+                  resetBooking();
+                  const el = document.querySelector('#booking-request');
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                className="flex items-center gap-1.5 bg-primary-600 hover:bg-primary-700 text-white text-xs font-semibold px-3 py-1.5 rounded-full transition-all hover:scale-105"
+                title="Изменить параметры поиска"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Изменить</span>
+              </button>
             </div>
           )}
         </div>

@@ -47,7 +47,7 @@ export default function FloatingBar() {
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-24 md:bottom-6 right-6 z-40 p-4 bg-slate-900 hover:bg-slate-800 text-white rounded-full shadow-2xl transition-all transform hover:scale-110 animate-fade-in"
+          className="fixed bottom-24 md:bottom-6 left-6 z-40 p-4 bg-slate-900 hover:bg-slate-800 text-white rounded-full shadow-2xl transition-all transform hover:scale-110 animate-fade-in"
           aria-label="Наверх"
         >
           <ArrowUp className="w-6 h-6" />
