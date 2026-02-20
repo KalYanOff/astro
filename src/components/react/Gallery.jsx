@@ -94,7 +94,7 @@ export default function Gallery() {
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-slate-900 mb-4">Галерея</h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Посмотрите фотографии наших номеров и территории
+            Посмотрите фотографии наших комнат и территории
           </p>
         </div>
 
