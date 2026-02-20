@@ -53,16 +53,16 @@ const ROOM_OPTIONS = [
   {
     group: 'Стандарт',
     rooms: [
-      { id: '4', name: 'Стандарт 2-местный' },
-      { id: '5', name: 'Стандарт 3-местный' },
+      { id: '12-1', name: 'Стандарт 2-местный' },
+      { id: '13-1', name: 'Стандарт 3-местный' },
     ],
   },
   {
     group: 'Эконом',
     rooms: [
-      { id: '1', name: 'Эконом 2-местный' },
-      { id: '2', name: 'Эконом 3-местный' },
-      { id: '3', name: 'Эконом 4-местный' },
+      { id: '2-1', name: 'Эконом 2-местный' },
+      { id: '3-1', name: 'Эконом 3-местный' },
+      { id: '4-1', name: 'Эконом 4-местный' },
     ],
   },
 ];
@@ -227,9 +227,9 @@ function DateRangeField({ checkInDate, checkOutDate, onChange }) {
 
   const displayValue =
     checkInDate && checkOutDate
-      ? `${toShort(checkInDate)}-${toShort(checkOutDate)}`
+      ? `${toShort(checkInDate)} — ${toShort(checkOutDate)}`
       : checkInDate
-      ? `${toShort(checkInDate)}-...`
+      ? `${toShort(checkInDate)} — ...`
       : '';
 
   const daysInMonth = getDaysInMonth(calYear, calMonth);
@@ -296,13 +296,13 @@ function DateRangeField({ checkInDate, checkOutDate, onChange }) {
       <div className="mt-3 border-t border-slate-100 pt-3">
         <input
           type="text"
-          placeholder="21.02.26-23.02.26"
+          placeholder="21.02.26 — 23.02.26"
           value={manualInput}
           onChange={handleManualChange}
           onBlur={handleManualBlur}
           className="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 outline-none text-slate-700"
         />
-        <p className="text-[10px] text-slate-400 mt-1 text-center">формат: ДД.ММ.ГГ-ДД.ММ.ГГ</p>
+        <p className="text-[10px] text-slate-400 mt-1 text-center">формат: ДД.ММ.ГГ — ДД.ММ.ГГ</p>
       </div>
     </div>
   ) : null;
@@ -320,7 +320,7 @@ function DateRangeField({ checkInDate, checkOutDate, onChange }) {
           onChange={handleManualChange}
           onBlur={handleManualBlur}
           onFocus={() => { if (!showCal) { calcPos(); setShowCal(true); } }}
-          placeholder="21.02.26-23.02.26"
+          placeholder="21.02.26 - 23.02.26"
           className="flex-1 px-4 py-3 border border-r-0 border-slate-300 rounded-l-xl bg-white text-slate-900 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
         />
         <button
@@ -350,14 +350,14 @@ function RoomSelect({ value, onChange }) {
     <div>
       <label className="block text-sm font-semibold text-slate-700 mb-2">
         <Users className="w-4 h-4 inline mr-1" />
-        Номер
+        Комната
       </label>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className="w-full px-4 py-3 border border-slate-300 rounded-xl bg-white text-slate-900 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all appearance-none cursor-pointer"
       >
-        <option value="">— Выберите номер —</option>
+        <option value="">— Выберите комнату —</option>
         {ROOM_OPTIONS.map(({ group, rooms }) => (
           <optgroup key={group} label={`── ${group} ──`}>
             {rooms.map((r) => (
@@ -444,7 +444,7 @@ export default function BookingRequestForm() {
   const validate = () => {
     const errs = {};
     if (!checkInDate || !checkOutDate) errs.dates = 'Укажите даты заезда и выезда';
-    if (!selectedRoomId) errs.room = 'Выберите номер';
+    if (!selectedRoomId) errs.room = 'Выберите комнату';
     if (!contactMethod) errs.contactMethod = 'Выберите способ связи';
     if (!guestName.trim()) errs.guestName = 'Укажите ваше имя';
     if (phone.replace(/\D/g, '').length < 11) errs.phone = 'Введите полный номер телефона';
@@ -463,7 +463,7 @@ export default function BookingRequestForm() {
       '',
       `Имя: ${guestName.trim()}`,
       `Телефон: ${phone}`,
-      `Номер: ${selectedRoom ? selectedRoom.name : 'Не выбран'}`,
+      `Комната: ${selectedRoom ? selectedRoom.name : 'Не выбран'}`,
       `Заезд: ${formatDateRu(checkInDate)}`,
       `Выезд: ${formatDateRu(checkOutDate)}`,
       `Ночей: ${localNights}`,
@@ -667,7 +667,7 @@ export default function BookingRequestForm() {
               value={wishes}
               onChange={(e) => setWishes(e.target.value)}
               rows="3"
-              placeholder="Хотел бы тихий номер на втором этаже с видом на море..."
+              placeholder="В комнате с каким дизайном вы бы хотели остановиться?"
               className="w-full px-4 py-3 border border-slate-300 rounded-xl bg-white text-slate-900 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all resize-none"
             />
           </div>

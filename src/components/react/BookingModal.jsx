@@ -17,7 +17,7 @@ export default function BookingModal() {
       checkInDate: '',
       checkOutDate: '',
       guestsCount: 2,
-      wishes: 'Хотел бы тихий номер на втором этаже с видом на море...',
+      wishes: 'Хотелось бы комнату с картиной зебры | Можно ли организовать трансфер?...',
     },
   });
 
@@ -69,7 +69,7 @@ export default function BookingModal() {
         </button>
 
         <h2 className="text-2xl font-bold text-slate-900 mb-6">
-          Проверить свободные номера
+          Проверить свободные комнаты
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -119,7 +119,7 @@ export default function BookingModal() {
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
-              Пожелания к номеру
+              Пожелания к комнате
             </label>
             <textarea
               {...register('wishes')}
@@ -132,7 +132,7 @@ export default function BookingModal() {
             type="submit"
             className="w-full bg-accent-500 hover:bg-accent-600 text-white font-semibold py-4 rounded-lg transition-all transform hover:scale-105 hover:shadow-lg"
           >
-            Посмотреть свободные номера
+            Посмотреть свободные комнаты
           </button>
         </form>
       </div>
