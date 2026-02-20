@@ -1,3 +1,8 @@
+/* =========================================
+   COMPONENT: RoomsList
+   Section #rooms — filter bar + responsive grid of RoomCard
+   Capacity filter: exact match only (2, 3, or 4 people)
+   ========================================= */
 import { useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { bookingStore, numberOfNights, updateBooking, resetBooking } from '../../stores/bookingStore';
@@ -59,40 +64,61 @@ const ROOMS_DATA = [
 
 export { ROOMS_DATA };
 
+/* Capacity filters: exact person counts available in ROOMS_DATA */
+const CAPACITY_FILTERS = [2, 3, 4];
+
+/*
+  Filter state shape:
+    category: 'all' | 'econom' | 'standard'
+    capacity: null | 2 | 3 | 4   (null = no capacity filter)
+*/
+const INITIAL_FILTER = { category: 'all', capacity: null };
+
+function filterRooms(rooms, { category, capacity }) {
+  return rooms.filter((room) => {
+    const categoryOk = category === 'all' || room.category === category;
+    /* Exact match: capacity filter shows only rooms with that exact seat count */
+    const capacityOk = capacity === null || room.capacity === capacity;
+    return categoryOk && capacityOk;
+  });
+}
+
 export default function RoomsList() {
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState(INITIAL_FILTER);
   const booking = useStore(bookingStore);
   const nights = useStore(numberOfNights);
 
-  const guestFilterActive = booking.searchActivated;
+  const setCategory = (category) => setFilter((f) => ({ ...f, category }));
+  const setCapacity = (capacity) =>
+    setFilter((f) => ({ ...f, capacity: f.capacity === capacity ? null : capacity }));
 
-  const filteredRooms = ROOMS_DATA.filter((room) => {
-    const categoryMatch = filter === 'all' || room.category === filter;
-    const capacityMatch = !guestFilterActive || room.capacity >= booking.guestsCount;
-    return categoryMatch && capacityMatch;
-  });
-
-  const handleFilterChange = (newFilter) => {
-    setFilter(newFilter);
-    if (guestFilterActive) updateBooking({ searchActivated: false });
-  };
-
-  const handleGuestFilter = () => {
-    updateBooking({ searchActivated: !guestFilterActive });
-  };
+  const filteredRooms = filterRooms(ROOMS_DATA, filter);
 
   return (
     <section id="rooms" className="py-20 bg-slate-50">
       <div className="container mx-auto px-4">
+
+        {/* section header */}
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-slate-900 mb-4">Наши номера</h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
             Выберите комфортный номер для вашего отдыха
           </p>
+
+          {/* active search summary */}
           {booking.checkInDate && booking.checkOutDate && (
             <div className="mt-4 inline-flex items-center gap-3 bg-primary-100 text-primary-800 px-6 py-3 rounded-full">
               <p className="font-semibold">
-                {new Date(booking.checkInDate).toLocaleDateString('ru-RU')} - {new Date(booking.checkOutDate).toLocaleDateString('ru-RU')} &bull; {booking.guestsCount} {booking.guestsCount === 1 ? 'гость' : booking.guestsCount < 5 ? 'гостя' : 'гостей'}
+                {new Date(booking.checkInDate).toLocaleDateString('ru-RU')}
+                {' — '}
+                {new Date(booking.checkOutDate).toLocaleDateString('ru-RU')}
+                {' · '}
+                {booking.guestsCount}{' '}
+                {booking.guestsCount === 1
+                  ? 'гость'
+                  : booking.guestsCount < 5
+                  ? 'гостя'
+                  : 'гостей'}
               </p>
               <button
                 onClick={() => {
@@ -110,61 +136,65 @@ export default function RoomsList() {
           )}
         </div>
 
+        {/* filter bar */}
         <div className="flex flex-wrap justify-center gap-3 mb-10">
-          <button
-            onClick={() => handleFilterChange('all')}
-            className={`px-6 py-3 rounded-full font-medium transition-all ${
-              filter === 'all' && !guestFilterActive
-                ? 'bg-primary-600 text-white shadow-lg'
-                : 'bg-white text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            Все номера
-          </button>
-          <button
-            onClick={() => handleFilterChange('econom')}
-            className={`px-6 py-3 rounded-full font-medium transition-all ${
-              filter === 'econom'
-                ? 'bg-primary-600 text-white shadow-lg'
-                : 'bg-white text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            Эконом
-          </button>
-          <button
-            onClick={() => handleFilterChange('standard')}
-            className={`px-6 py-3 rounded-full font-medium transition-all ${
-              filter === 'standard'
-                ? 'bg-primary-600 text-white shadow-lg'
-                : 'bg-white text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            Стандарт
-          </button>
-          <button
-            onClick={handleGuestFilter}
-            className={`px-6 py-3 rounded-full font-medium transition-all ${
-              guestFilterActive
-                ? 'bg-accent-500 text-white shadow-lg'
-                : 'bg-white text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            На {booking.guestsCount} гостей
-          </button>
+
+          {/* category filters */}
+          {[
+            { value: 'all', label: 'Все номера' },
+            { value: 'econom', label: 'Эконом' },
+            { value: 'standard', label: 'Стандарт' },
+          ].map(({ value, label }) => (
+            <button
+              key={value}
+              onClick={() => setCategory(value)}
+              className={`px-6 py-3 rounded-full font-medium transition-all ${
+                filter.category === value && filter.capacity === null
+                  ? 'bg-primary-600 text-white shadow-lg'
+                  : filter.category === value
+                  ? 'bg-primary-100 text-primary-700 shadow'
+                  : 'bg-white text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+
+          {/* capacity filters: exact seat count (2 / 3 / 4 человека) */}
+          {CAPACITY_FILTERS.map((cap) => (
+            <button
+              key={cap}
+              onClick={() => setCapacity(cap)}
+              className={`px-6 py-3 rounded-full font-medium transition-all ${
+                filter.capacity === cap
+                  ? 'bg-accent-500 text-white shadow-lg'
+                  : 'bg-white text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              {cap} человека
+            </button>
+          ))}
         </div>
 
+        {/* room grid or empty state */}
         {filteredRooms.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-xl text-slate-600">
-              К сожалению, нет номеров с выбранными параметрами
+          <div className="text-center py-16">
+            <p className="text-xl text-slate-500">
+              Нет номеров с выбранными параметрами
             </p>
+            <button
+              onClick={() => setFilter(INITIAL_FILTER)}
+              className="mt-4 px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-full text-sm font-medium transition-all"
+            >
+              Сбросить фильтры
+            </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {filteredRooms.map((room, index) => (
               <div
                 key={room.id}
-                style={{ animationDelay: `${index * 100}ms` }}
+                style={{ animationDelay: `${index * 80}ms` }}
                 className="animate-fade-in"
               >
                 <RoomCard room={room} nights={nights} />
@@ -173,7 +203,7 @@ export default function RoomsList() {
           </div>
         )}
 
-        <p className="text-center text-sm text-slate-500 mt-12">
+        <p className="text-center text-sm text-slate-400 mt-12">
           * Интерьер номеров может незначительно отличаться от фотографий
         </p>
       </div>
