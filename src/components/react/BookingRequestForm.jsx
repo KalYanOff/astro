@@ -1,13 +1,40 @@
 import { useState, useEffect, useRef } from 'react';
 import { useStore } from '@nanostores/react';
 import { bookingStore, numberOfNights, updateBooking } from '../../stores/bookingStore';
-import { MessageCircle, Send, Mail, Phone, User, CheckCircle, AlertCircle, Calendar, Users, Pencil, X } from 'lucide-react';
+import { Mail, User, CheckCircle, AlertCircle, Calendar, Users, Pencil, X } from 'lucide-react';
+import { CONTACT_LINKS, SITE_PHONE_RAW, SITE_EMAIL } from '../../config/site.js';
+
+/* ICON STUBS for contact method buttons — replace SVG content with custom icons */
+const IconWhatsApp = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
+  </svg>
+);
+
+const IconTelegram = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+  </svg>
+);
+
+const IconMax = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+  </svg>
+);
+
+const IconPhone = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.44 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 5.59 5.59l.93-.94a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+  </svg>
+);
 
 const CONTACT_METHODS = [
-  { id: 'whatsapp', label: 'WhatsApp', icon: MessageCircle, color: 'bg-green-500', hoverColor: 'hover:bg-green-50', borderColor: 'border-green-500', textColor: 'text-green-600' },
-  { id: 'telegram', label: 'Telegram', icon: Send, color: 'bg-blue-500', hoverColor: 'hover:bg-blue-50', borderColor: 'border-blue-500', textColor: 'text-blue-600' },
-  { id: 'email', label: 'Email', icon: Mail, color: 'bg-amber-500', hoverColor: 'hover:bg-amber-50', borderColor: 'border-amber-500', textColor: 'text-amber-600' },
-  { id: 'phone', label: 'Звонок', icon: Phone, color: 'bg-teal-500', hoverColor: 'hover:bg-teal-50', borderColor: 'border-teal-500', textColor: 'text-teal-600' },
+  { id: 'whatsapp', label: 'WhatsApp', Icon: IconWhatsApp, color: 'bg-green-500', hoverColor: 'hover:bg-green-50', borderColor: 'border-green-500', textColor: 'text-green-600' },
+  { id: 'telegram', label: 'Telegram', Icon: IconTelegram, color: 'bg-blue-500', hoverColor: 'hover:bg-blue-50', borderColor: 'border-blue-500', textColor: 'text-blue-600' },
+  { id: 'max', label: 'MAX', Icon: IconMax, color: 'bg-slate-600', hoverColor: 'hover:bg-slate-50', borderColor: 'border-slate-500', textColor: 'text-slate-600' },
+  { id: 'phone', label: 'Звонок', Icon: IconPhone, color: 'bg-teal-500', hoverColor: 'hover:bg-teal-50', borderColor: 'border-teal-500', textColor: 'text-teal-600' },
 ];
 
 function formatPhone(value) {
@@ -88,17 +115,15 @@ export default function BookingRequestForm() {
 
     const msg = buildMessage();
     const encodedMsg = encodeURIComponent(msg);
-    const hotelPhone = '79181929931';
 
     if (contactMethod === 'whatsapp') {
-      window.open(`https://wa.me/${hotelPhone}?text=${encodedMsg}`, '_blank');
+      window.open(`${CONTACT_LINKS.whatsapp}?text=${encodedMsg}`, '_blank');
     } else if (contactMethod === 'telegram') {
-      window.open(`https://t.me/+${hotelPhone}`, '_blank');
-    } else if (contactMethod === 'email') {
-      const subject = encodeURIComponent('Заявка на бронирование — Отель Дельфин');
-      window.open(`mailto:info@delfinstay.ru?subject=${subject}&body=${encodedMsg}`, '_blank');
+      window.open(CONTACT_LINKS.telegram, '_blank');
+    } else if (contactMethod === 'max') {
+      window.open(CONTACT_LINKS.max, '_blank');
     } else if (contactMethod === 'phone') {
-      window.open(`tel:+${hotelPhone}`, '_self');
+      window.open(CONTACT_LINKS.phone, '_self');
     }
 
     if (wishes.trim()) {
@@ -148,7 +173,7 @@ export default function BookingRequestForm() {
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {CONTACT_METHODS.map((method) => {
-                const Icon = method.icon;
+                const Icon = method.Icon;
                 const isSelected = contactMethod === method.id;
                 return (
                   <button
@@ -201,7 +226,7 @@ export default function BookingRequestForm() {
 
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">
-                <Phone className="w-4 h-4 inline mr-1" />
+                <IconPhone className="w-4 h-4 inline mr-1" />
                 Телефон
               </label>
               <input
@@ -440,7 +465,7 @@ export default function BookingRequestForm() {
           >
             {selectedMethod ? (
               <>
-                {(() => { const Icon = selectedMethod.icon; return <Icon className="w-5 h-5" />; })()}
+                {(() => { const Icon = selectedMethod.Icon; return <Icon className="w-5 h-5" />; })()}
                 Забронировать через {selectedMethod.label}
               </>
             ) : (
