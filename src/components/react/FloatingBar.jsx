@@ -25,25 +25,18 @@ export default function FloatingBar() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const openBookingModal = () => {
-    const event = new CustomEvent('openBookingModal');
-    window.dispatchEvent(event);
+  const scrollToBooking = () => {
+    const el = document.querySelector('#booking-request');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
     <>
       <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white shadow-2xl border-t border-slate-200 animate-slide-up">
-        <div className="grid grid-cols-2 h-16">
-          <a
-            href="tel:+79181929931"
-            className="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold transition-colors"
-          >
-            <Phone className="w-5 h-5" />
-            <span>Позвонить</span>
-          </a>
+        <div className="h-16">
           <button
-            onClick={openBookingModal}
-            className="flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold transition-colors"
+            onClick={scrollToBooking}
+            className="flex items-center justify-center gap-2 w-full h-full bg-primary-600 hover:bg-primary-700 text-white font-semibold transition-colors"
           >
             <Calendar className="w-5 h-5" />
             <span>Забронировать</span>
@@ -64,6 +57,13 @@ export default function FloatingBar() {
       <div className="fixed bottom-24 md:bottom-24 right-6 z-40">
         {showMessengers && (
           <div className="mb-4 space-y-3 animate-slide-up">
+            <a
+              href="tel:+79181929931"
+              className="flex items-center justify-center w-14 h-14 bg-teal-500 hover:bg-teal-600 text-white rounded-full shadow-lg transition-all transform hover:scale-110"
+              aria-label="Позвонить"
+            >
+              <Phone className="w-6 h-6" />
+            </a>
             <a
               href="https://wa.me/79181929931"
               target="_blank"
@@ -88,7 +88,7 @@ export default function FloatingBar() {
               href="https://max.ru"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center w-14 h-14 bg-purple-500 hover:bg-purple-600 text-white rounded-full shadow-lg transition-all transform hover:scale-110"
+              className="flex items-center justify-center w-14 h-14 bg-sky-500 hover:bg-sky-600 text-white rounded-full shadow-lg transition-all transform hover:scale-110"
               aria-label="MAX"
               style={{ animationDelay: '150ms' }}
             >

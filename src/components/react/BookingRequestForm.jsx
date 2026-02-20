@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useStore } from '@nanostores/react';
 import { bookingStore, numberOfNights, updateBooking } from '../../stores/bookingStore';
-import { MessageCircle, Send, Mail, Phone, User, CheckCircle, AlertCircle } from 'lucide-react';
+import { MessageCircle, Send, Mail, Phone, User, CheckCircle, AlertCircle, Calendar, Users } from 'lucide-react';
 
 const CONTACT_METHODS = [
   { id: 'whatsapp', label: 'WhatsApp', icon: MessageCircle, color: 'bg-green-500', hoverColor: 'hover:bg-green-50', borderColor: 'border-green-500', textColor: 'text-green-600' },
@@ -217,41 +217,90 @@ export default function BookingRequestForm() {
             </div>
           </div>
 
-          <div className={`rounded-xl border-2 p-5 transition-all duration-500 ${highlight ? 'border-accent-400 bg-accent-50 shadow-md' : 'border-slate-200 bg-white'}`}>
-            <p className="text-sm font-semibold text-slate-700 mb-3 uppercase tracking-wide">
-              Параметры бронирования
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-              <div>
-                <span className="text-slate-500">Номер</span>
-                <p className="font-bold text-slate-900 mt-0.5">
-                  {booking.selectedRoomName || 'Не выбран'}
-                </p>
-              </div>
-              <div>
-                <span className="text-slate-500">Даты</span>
-                <p className="font-bold text-slate-900 mt-0.5">
-                  {booking.checkInDate && booking.checkOutDate
-                    ? `${new Date(booking.checkInDate).toLocaleDateString('ru-RU')} — ${new Date(booking.checkOutDate).toLocaleDateString('ru-RU')}`
-                    : 'Не выбраны'}
-                </p>
-                {nights > 0 && booking.checkInDate && booking.checkOutDate && (
-                  <span className="text-slate-500 text-xs">{nights} {nights === 1 ? 'ночь' : nights < 5 ? 'ночи' : 'ночей'}</span>
-                )}
-              </div>
-              <div>
-                <span className="text-slate-500">Гостей</span>
-                <p className="font-bold text-slate-900 mt-0.5">
-                  {booking.guestsCount} {booking.guestsCount < 5 ? 'гостя' : 'гостей'}
-                </p>
+          {booking.selectedRoomId ? (
+            <div className={`rounded-xl border-2 p-5 transition-all duration-500 ${highlight ? 'border-accent-400 bg-accent-50 shadow-md' : 'border-slate-200 bg-white'}`}>
+              <p className="text-sm font-semibold text-slate-700 mb-3 uppercase tracking-wide">
+                Параметры бронирования
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                <div>
+                  <span className="text-slate-500">Номер</span>
+                  <p className="font-bold text-slate-900 mt-0.5">
+                    {booking.selectedRoomName}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-slate-500">Даты</span>
+                  <p className="font-bold text-slate-900 mt-0.5">
+                    {booking.checkInDate && booking.checkOutDate
+                      ? `${new Date(booking.checkInDate).toLocaleDateString('ru-RU')} — ${new Date(booking.checkOutDate).toLocaleDateString('ru-RU')}`
+                      : 'Не выбраны'}
+                  </p>
+                  {nights > 0 && booking.checkInDate && booking.checkOutDate && (
+                    <span className="text-slate-500 text-xs">{nights} {nights === 1 ? 'ночь' : nights < 5 ? 'ночи' : 'ночей'}</span>
+                  )}
+                </div>
+                <div>
+                  <span className="text-slate-500">Гостей</span>
+                  <p className="font-bold text-slate-900 mt-0.5">
+                    {booking.guestsCount} {booking.guestsCount < 5 ? 'гостя' : 'гостей'}
+                  </p>
+                </div>
               </div>
             </div>
-            {!booking.selectedRoomName && (
-              <p className="text-xs text-slate-500 mt-3 bg-slate-50 rounded-lg px-3 py-2">
-                Нажмите &laquo;Забронировать номер&raquo; в карточке номера выше, чтобы выбрать номер
+          ) : (
+            <div className="rounded-xl border-2 border-slate-200 bg-white p-5 space-y-4">
+              <p className="text-sm font-semibold text-slate-700 mb-1 uppercase tracking-wide">
+                Параметры бронирования
               </p>
-            )}
-          </div>
+              <p className="text-xs text-slate-500 mb-2">
+                Тип номера можно уточнить в мессенджере при подтверждении
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    <Calendar className="w-4 h-4 inline mr-1" />
+                    Дата заезда
+                  </label>
+                  <input
+                    type="date"
+                    value={booking.checkInDate}
+                    min={new Date().toISOString().split('T')[0]}
+                    onChange={(e) => updateBooking({ checkInDate: e.target.value })}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl bg-white text-slate-900 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    <Calendar className="w-4 h-4 inline mr-1" />
+                    Дата выезда
+                  </label>
+                  <input
+                    type="date"
+                    value={booking.checkOutDate}
+                    min={booking.checkInDate || new Date().toISOString().split('T')[0]}
+                    onChange={(e) => updateBooking({ checkOutDate: e.target.value })}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl bg-white text-slate-900 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    <Users className="w-4 h-4 inline mr-1" />
+                    Гостей
+                  </label>
+                  <select
+                    value={booking.guestsCount}
+                    onChange={(e) => updateBooking({ guestsCount: parseInt(e.target.value) })}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl bg-white text-slate-900 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+                  >
+                    <option value="2">2 гостя</option>
+                    <option value="3">3 гостя</option>
+                    <option value="4">4 гостя</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-2">
