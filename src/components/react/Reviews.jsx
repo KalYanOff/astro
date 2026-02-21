@@ -166,10 +166,24 @@ export default function Reviews() {
 
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-slate-900 mb-4">Отзывы наших гостей</h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Более 250 довольных гостей уже оставили свои отзывы
-          </p>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-4">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            Отзывы гостей
+          </div>
+          <h2 className="text-4xl font-bold text-slate-900 mb-4">Что говорят наши гости</h2>
+          <div class="flex items-center justify-center gap-3 mb-4">
+            <div class="flex gap-1">
+            {[1,2,3,4,5].map(i => (
+                <svg class="w-6 h-6 text-amber-400" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              ))}
+            </div>
+            <span class="text-2xl font-display font-bold text-brand-dark">4.9</span>
+            <span class="text-gray-500">из 5 на основе 250+ отзывов</span>
+          </div>
         </div>
 
         <Swiper
@@ -181,6 +195,7 @@ export default function Reviews() {
             delay: 5000,
             pauseOnMouseEnter: true,
           }}
+          onSlideChange={() => setExpandedReviewId(null)}
           breakpoints={{
             768: { slidesPerView: 2 },
             1024: { slidesPerView: 3 },

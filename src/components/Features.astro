@@ -10,6 +10,12 @@
   and swap the <svg> content with your own SVG markup.
 */
 
+const stats = [
+  { value: '30+', label: 'лет принимаем гостей' },
+  { value: '4.9★', label: 'средняя оценка' },
+  { value: '1000+', label: 'довольных семей' },
+];
+
 const features = [
   {
     icon: 'waves',
@@ -64,11 +70,30 @@ const features = [
   <div class="container mx-auto px-4">
     <!-- features-header: section title + description -->
     <div class="text-center mb-16">
-      <h2 class="text-4xl font-bold text-slate-900 mb-4">Почему выбирают нас</h2>
+
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-4">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+        Почему выбирают нас
+      </div>
+      <h2 class="text-4xl font-bold text-slate-900 mb-4">Отдых, который запомнится</h2>
       <p class="text-lg text-slate-600 max-w-2xl mx-auto">
         Мы создаём не просто место для ночлега — мы создаём воспоминания о море, уюте и заботе.
       </p>
     </div>
+
+
+
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+      {stats.map(stat => (
+        <div class="text-center p-5 bg-white rounded-2xl shadow-card border border-gray-100 hover:bg-slate-50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-fade-in">
+          <div class="font-display font-bold text-3xl sm:text-4xl text-brand-primary mb-1">{stat.value}</div>
+          <div class="text-sm text-gray-600 font-medium">{stat.label}</div>
+        </div>
+      ))}
+    </div>
+
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {features.map((feature, index) => (

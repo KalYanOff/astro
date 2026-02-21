@@ -92,9 +92,15 @@ export default function Gallery() {
     <section id="gallery" className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-slate-900 mb-4">Галерея</h2>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-4">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Фотогалерея
+          </div>
+          <h2 className="text-4xl font-bold text-slate-900 mb-4">Посмотрите сами</h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Посмотрите фотографии наших комнат и территории
+            Реальные фотографии комнат, территории и нашего уголка у Черного моря.
           </p>
         </div>
 
