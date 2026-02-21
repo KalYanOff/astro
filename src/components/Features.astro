@@ -39,24 +39,29 @@ const features = [
     description: 'Уютно как дома, заботливый персонал',
   },
   {
-    icon: 'mappin',
+    icon: 'location',
     title: 'Удобное местоположение',
     description: 'Всё, что нужно — рядом, в нескольких минутах ходьбы!',
   },
   {
-    icon: 'mappin',
+    icon: 'fire',
     title: 'Мангальная зона',
     description: 'Отдельная зона отдыха с мангалом и большим столом!',
   },
   {
-    icon: 'mappin',
+    icon: 'green',
     title: 'Зелёная территория',
     description: 'Уютные уголки, утопающие в зелени, созданы для спокойного отдыха!',
   },
   {
-    icon: 'mappin',
+    icon: 'wifi',
     title: 'Быстрый Wi‑Fi',
     description: 'Надёжный быстрый интернет, чтобы Вы всегда были на связи!',
+  },
+  {
+    icon: 'price',
+    title: 'Бюджетно',
+    description: 'Дешевле, чем у конкурентов!',
   },
 ];
 ---
@@ -81,10 +86,10 @@ const features = [
 
 
 
-    <div class="grid grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
       {stats.map(stat => (
-        <div class="text-center p-5 bg-white rounded-2xl shadow-card border border-gray-100 hover:bg-slate-50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-fade-in">
-          <div class="font-display font-bold text-3xl sm:text-4xl text-brand-primary mb-1">{stat.value}</div>
+        <div class="text-center p-5 bg-white rounded-2xl shadow-lg border border-white-500 hover:bg-slate-50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-fade-in">
+          <div class="font-display font-bold text-3xl sm:text-4xl text-primary-600 mb-1">{stat.value}</div>
           <div class="text-sm text-gray-600 font-medium">{stat.label}</div>
         </div>
       ))}
@@ -98,60 +103,49 @@ const features = [
           style={`animation-delay: ${index * 100}ms`}
         >
           <div class="flex-shrink-0">
-            <div class="w-14 h-14 rounded-full bg-primary-100 flex items-center justify-center">
-
-              {/* ICON STUB: waves — replace SVG with custom icon */}
-              {feature.icon === 'waves' && (
-                <svg class="w-7 h-7 text-primary-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>
-                  <path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>
-                  <path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>
-                </svg>
-              )}
+            <div class="w-14 h-14 rounded-full bg-white-100 flex items-center justify-center">
 
               {/* ICON STUB: car — replace SVG with custom icon */}
               {feature.icon === 'car' && (
-                <svg class="w-7 h-7 text-primary-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M19 17H5a2 2 0 0 1-2-2V9l2.4-6h11.2L19 9v6a2 2 0 0 1-2 2z"/>
-                  <circle cx="7.5" cy="17" r="1.5"/>
-                  <circle cx="16.5" cy="17" r="1.5"/>
-                  <path d="M3 9h18"/>
-                </svg>
+                <img src="/img/icons/parking.png" class="w-10 h-10 object-contain">
               )}
 
               {/* ICON STUB: baby — replace SVG with custom icon */}
               {feature.icon === 'baby' && (
-                <svg class="w-7 h-7 text-primary-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M9 12h.01"/>
-                  <path d="M15 12h.01"/>
-                  <path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"/>
-                  <path d="M19 6.3a9 9 0 0 1 1.8 3.9 2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1"/>
-                </svg>
+                <img src="/img/icons/child.png" class="w-10 h-10 object-contain">
               )}
 
               {/* ICON STUB: clock — replace SVG with custom icon */}
               {feature.icon === 'clock' && (
-                <svg class="w-7 h-7 text-primary-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <circle cx="12" cy="12" r="10"/>
-                  <polyline points="12 6 12 12 16 14"/>
-                </svg>
+                <img src="/img/icons/open.png" class="w-10 h-10 object-contain">
               )}
 
               {/* ICON STUB: home — replace SVG with custom icon */}
               {feature.icon === 'home' && (
-                <svg class="w-7 h-7 text-primary-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                  <polyline points="9 22 9 12 15 12 15 22"/>
-                </svg>
+                <img src="/img/icons/love.png" class="w-10 h-10 object-contain">
               )}
 
               {/* ICON STUB: mappin — replace SVG with custom icon */}
-              {feature.icon === 'mappin' && (
-                <svg class="w-7 h-7 text-primary-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
-                  <circle cx="12" cy="10" r="3"/>
-                </svg>
+              {feature.icon === 'location' && (
+                <img src="/img/icons/location.png" class="w-10 h-10 object-contain">
               )}
+
+              {feature.icon === 'wifi' && (
+                <img src="/img/icons/wifi.png" class="w-10 h-10 object-contain">
+              )}
+
+              {feature.icon === 'green' && (
+                <img src="/img/icons/green.png" class="w-10 h-10 object-contain">
+              )}
+
+              {feature.icon === 'price' && (
+                <img src="/img/icons/price.png" class="w-10 h-10 object-contain">
+              )}
+
+              {feature.icon === 'fire' && (
+                <img src="/img/icons/fire.png" class="w-10 h-10 object-contain">
+              )}
+
 
             </div>
           </div>

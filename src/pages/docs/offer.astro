@@ -10,94 +10,135 @@ import Layout from '../../layouts/Layout.astro';
           <a href="/" class="text-primary-600 hover:text-primary-700 font-medium">← На главную</a>
         </div>
 
-        <h1 class="text-4xl font-bold text-slate-900 mb-8">Публичная оферта</h1>
-
-        <div class="prose prose-slate max-w-none">
-          <section class="mb-8">
-            <h2 class="text-2xl font-bold text-slate-900 mb-4">1. Общие положения</h2>
-            <p class="text-slate-600 mb-4 leading-relaxed">
-              Настоящая публичная оферта определяет условия предоставления гостиничных услуг отелем "Дельфин" (далее - Исполнитель) физическим и юридическим лицам (далее - Заказчик).
-            </p>
-            <p class="text-slate-600 mb-4 leading-relaxed">
-              Акцептом настоящей оферты является факт бронирования номера и/или оплаты услуг.
-            </p>
-          </section>
-
-          <section class="mb-8">
-            <h2 class="text-2xl font-bold text-slate-900 mb-4">2. Предмет договора</h2>
-            <p class="text-slate-600 mb-4 leading-relaxed">
-              Исполнитель обязуется предоставить Заказчику гостиничный номер для временного проживания, а Заказчик обязуется оплатить услуги в соответствии с установленными тарифами.
-            </p>
-          </section>
-
-          <section class="mb-8">
-            <h2 class="text-2xl font-bold text-slate-900 mb-4">3. Бронирование и оплата</h2>
-            <p class="text-slate-600 mb-4 leading-relaxed">
-              3.1. Бронирование номера осуществляется по телефону, через мессенджеры или на сайте отеля.
-            </p>
-            <p class="text-slate-600 mb-4 leading-relaxed">
-              3.2. Для подтверждения бронирования требуется предоплата в размере 30% от стоимости проживания.
-            </p>
-            <p class="text-slate-600 mb-4 leading-relaxed">
-              3.3. Полная оплата производится при заезде или в течение срока проживания.
-            </p>
-            <p class="text-slate-600 mb-4 leading-relaxed">
-              3.4. Оплата может производиться наличными или безналичным способом.
-            </p>
-          </section>
-
-          <section class="mb-8">
-            <h2 class="text-2xl font-bold text-slate-900 mb-4">4. Заезд и выезд</h2>
-            <p class="text-slate-600 mb-4 leading-relaxed">
-              4.1. Расчетный час заезда - 14:00, выезда - 12:00.
-            </p>
-            <p class="text-slate-600 mb-4 leading-relaxed">
-              4.2. Ранний заезд и поздний выезд возможны по согласованию с администрацией при наличии свободных номеров.
-            </p>
-            <p class="text-slate-600 mb-4 leading-relaxed">
-              4.3. При заезде необходимо предъявить документ, удостоверяющий личность.
-            </p>
-          </section>
-
-          <section class="mb-8">
-            <h2 class="text-2xl font-bold text-slate-900 mb-4">5. Отмена бронирования и возврат средств</h2>
-            <p class="text-slate-600 mb-4 leading-relaxed">
-              5.1. При отмене бронирования более чем за 3 дня до даты заезда предоплата возвращается в полном объеме.
-            </p>
-            <p class="text-slate-600 mb-4 leading-relaxed">
-              5.2. При отмене бронирования менее чем за 3 дня до даты заезда предоплата не возвращается.
-            </p>
-            <p class="text-slate-600 mb-4 leading-relaxed">
-              5.3. В случае досрочного выезда оплата за неиспользованные дни не возвращается.
-            </p>
-          </section>
-
-          <section class="mb-8">
-            <h2 class="text-2xl font-bold text-slate-900 mb-4">6. Ответственность сторон</h2>
-            <p class="text-slate-600 mb-4 leading-relaxed">
-              6.1. Заказчик несет материальную ответственность за причиненный ущерб имуществу отеля.
-            </p>
-            <p class="text-slate-600 mb-4 leading-relaxed">
-              6.2. Исполнитель не несет ответственности за ценности, не сданные на хранение администрации.
-            </p>
-            <p class="text-slate-600 mb-4 leading-relaxed">
-              6.3. Исполнитель не несет ответственности за неисполнение обязательств по причинам форс-мажора.
-            </p>
-          </section>
-
-          <section class="mb-8">
-            <h2 class="text-2xl font-bold text-slate-900 mb-4">7. Контактная информация</h2>
-            <p class="text-slate-600 mb-4 leading-relaxed">
-              Отель "Дельфин"<br />
-              Адрес: Набережная 7, Джубга, Краснодарский край, 352844<br />
-              Телефон: +7 (918) 192-99-31
-            </p>
-          </section>
-
-          <p class="text-sm text-slate-500 mt-8">
-            Дата публикации: 01.01.2024
-          </p>
+    <div class="max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl border border-slate-200">
+        
+        <!-- Заголовок -->
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-t-2xl p-8 md:p-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-center mb-2">ПРАВИЛА ПРЕДОСТАВЛЕНИЯ УСЛУГ В «ДЕЛЬФИН»</h1>
+            <p class="text-blue-100 text-center opacity-90">Редакция от: 22.02.2026</p>
         </div>
+
+        <!-- Контактная информация -->
+        <div class="p-8 md:p-12 border-b border-slate-200 bg-slate-50/50">
+            <div class="grid md:grid-cols-2 gap-6 text-sm">
+                <div>
+                    <p class="font-semibold text-slate-800 mb-1">Собственник:</p>
+                    <p class="text-slate-700">Индивидуальный предприниматель Кильян Олег Гамазович</p>
+                    <p class="text-slate-600 mt-1">ИНН 235500192294</p>
+                    <p class="text-slate-600">ОГРНИП 325237500266231</p>
+                </div>
+                <div class="space-y-2">
+                    <p><strong class="text-slate-800">e‑mail:</strong> <a href="mailto:delfin.dzhubga@yandex.ru" class="text-blue-600 hover:text-blue-800 underline font-medium">delfin.dzhubga@yandex.ru</a></p>
+                    <p><strong class="text-slate-800">телефон:</strong> <span class="font-mono font-semibold text-slate-900">+7 (918) 192‑99‑31</span></p>
+                    <p><strong class="text-slate-800">Адрес объекта размещения:</strong> <span class="font-medium">пгт Джубга, ул. Набережная, 7.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Основная часть -->
+        <div class="p-8 md:p-12 space-y-8 leading-relaxed">
+            
+            <!-- Введение -->
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 md:p-8">
+                <p class="text-slate-800 text-lg leading-relaxed mb-4">
+                    Настоящие Правила разработаны в соответствии с действующим законодательством РФ, включая Гражданский кодекс РФ; Закон РФ от 07.02.1992 № 2300‑1 «О защите прав потребителей»; Федеральный закон от 21.12.1994 № 69‑ФЗ «О пожарной безопасности» и Федеральный закон от 22.07.2008 № 123‑ФЗ «Технический регламент о требованиях пожарной безопасности»; Федеральный закон от 23.02.2013 № 15‑ФЗ «Об охране здоровья граждан от воздействия окружающего табачного дыма и последствий потребления табака»; Федеральный закон от 27.07.2006 № 152‑ФЗ «О персональных данных».
+                </p>
+                <p class="text-slate-800 text-lg font-semibold">Правила обязательны для всех Арендаторов и Посетителей.</p>
+            </div>
+
+            <!-- Разделы -->
+            <div class="space-y-8">
+                
+                <!-- 1. Термины -->
+                <section class="border-l-4 border-blue-500 bg-gradient-to-r from-blue-50/50 to-indigo-50/30 rounded-r-xl pl-6 md:pl-10 pr-6 md:pr-10 py-8">
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mb-6 flex items-center"><span class="w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center text-xl font-bold mr-4">1</span>1. Термины</h2>
+                    <div class="grid md:grid-cols-2 gap-6 text-slate-700 leading-relaxed">
+                        <p><span class="font-semibold">Арендатор</span> - физическое лицо, использующее нежилое помещение на основании договора.</p>
+                        <p><span class="font-semibold">Посетитель</span> - иное лицо, временно находящееся на территории по приглашению Арендатора.</p>
+                        <p><span class="font-semibold">Администрация</span> - уполномоченные представители Собственника.</p>
+                        <p><span class="font-semibold">Помещение</span> - предоставляемое по договору аренды нежилое помещение.</p>
+                        <p><span class="font-semibold">Территория</span> - здание, прилегающий участок, парковка и общие зоны.</p>
+                    </div>
+                </section>
+
+                <!-- 2. Акцепт Правил -->
+                <section class="border-l-4 border-emerald-500 bg-gradient-to-r from-emerald-50/50 to-green-50/30 rounded-r-xl pl-6 md:pl-10 pr-6 md:pr-10 py-8">
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mb-6 flex items-center"><span class="w-12 h-12 bg-emerald-500 text-white rounded-full flex items-center justify-center text-xl font-bold mr-4">2</span>2. Акцепт Правил и договор</h2>
+                    <div class="space-y-3 text-slate-700">
+                        <p><strong>2.1.</strong> Оформляя бронирование (в т.ч. через онлайн‑площадки), Арендатор подтверждает ознакомление и согласие с Правилами.</p>
+                        <p><strong>2.2.</strong> Экземпляр Правил размещается в общественной зоне и на сайте/страницах бронирования.</p>
+                        <p><strong>2.3.</strong> Изменения Правил вступают в силу с момента публикации и действуют бессрочно.</p>
+                    </div>
+                </section>
+
+                <!-- 3. Бронирование -->
+                <section class="border-l-4 border-amber-500 bg-gradient-to-r from-amber-50/50 to-yellow-50/30 rounded-r-xl pl-6 md:pl-10 pr-6 md:pr-10 py-8">
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mb-6 flex items-center"><span class="w-12 h-12 bg-amber-500 text-white rounded-full flex items-center justify-center text-xl font-bold mr-4">3</span>3. Бронирование, тарифы и оплата</h2>
+                    <div class="space-y-3 text-slate-700">
+                        <p><strong>Доступный тариф: Стандартный.</strong></p>
+                        <p><strong>3.1. Стандартный.</strong> Гарантированное бронирование подтверждается при внесении задатка:</p>
+                        <ul class="list-disc list-inside ml-6 space-y-1 mt-2">
+                            <li>при бронировании более 3 суток - в размере стоимости 3 суток;</li>
+                            <li>при бронировании 3 и менее суток - в размере 100% общей стоимости услуг.</li>
+                        </ul>
+                        <p><strong>Бесплатная отмена</strong> - не менее чем за 7 календарных дней до дня заезда (задаток возвращается).</p>
+                        <p><strong>При отмене менее чем за 7 дней, незаезде или досрочном выезде</strong> - задаток не возвращается.</p>
+                        <p><strong>3.3.</strong> Перенос дат возможен по наличию, с пересчётом по тарифам на новые даты и возможной доплатой/удержанием.</p>
+                        <p><strong>3.4.</strong> Незаезд - отсутствие Арендатора до 22:00 (по местному времени, МСК, UTC+3) дня заезда без уведомления. В этом случае задаток не возвращается, бронирование аннулируется.</p>
+                        <p><strong>3.5.</strong> Очевидная техническая ошибка в цене: Администрация вправе предложить услуги по корректной цене либо отменить бронирование с полным возвратом задатка.</p>
+                        <p><strong>3.6.</strong> Возвраты денежных средств, если они подлежат осуществлению, производятся в срок до 10 рабочих дней со дня согласования основания для возврата. Размер возврата определяется с учётом фактических расходов Администрации.</p>
+                    </div>
+                </section>
+
+                <!-- Остальные разделы (аналогично) -->
+                <section class="border-l-4 border-purple-500 bg-gradient-to-r from-purple-50/50 to-violet-50/30 rounded-r-xl pl-6 md:pl-10 pr-6 md:pr-10 py-8">
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mb-6 flex items-center"><span class="w-12 h-12 bg-purple-500 text-white rounded-full flex items-center justify-center text-xl font-bold mr-4">4</span>4. Заселение и выезд</h2>
+                    <div class="space-y-2 text-slate-700 text-sm md:text-base">
+                        <p><strong>4.1.</strong> Время заезда: с 12:00. Время выезда: до 10:00.</p>
+                        <p><strong>4.2.</strong> Ранний заезд/поздний выезд - по предварительному согласованию (по наличию свободных помещений).</p>
+                        <p><strong>4.3.</strong> При заключении договора предъявляется документ, удостоверяющий личность (паспорт). Для детей - свидетельство о рождении.</p>
+                        <p><strong>4.4.</strong> Размещение несовершеннолетних без сопровождения законных представителей допускается только при наличии надлежащего письменного согласия законного представителя и на условиях Администрации.</p>
+                        <p><strong>4.5.</strong> Продление договора оформляется до 10:00 дня выезда при наличии свободных помещений и полной оплаты.</p>
+                        <p><strong>4.6.</strong> При несвоевременном освобождении помещения без согласования взимается полная суточная стоимость услуг аренды.</p>
+                        <p><strong>4.7.</strong> Ключ от помещения подлежит возврату при выезде.</p>
+                        <p><strong>4.8.</strong> Администрация вправе отказать в заключении договора лицам без документа, удостоверяющего личность, а также лицам в состоянии выраженного опьянения или с агрессивным поведением, создающим угрозу безопасности и/или имуществу, либо при отказе от согласия с Правилами.</p>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- Приложение A -->
+            <div class="mt-16 pt-12 border-t-4 border-slate-300 bg-gradient-to-r from-slate-50 to-slate-100 rounded-2xl p-8 md:p-12">
+                <h3 class="text-2xl md:text-3xl font-bold text-slate-900 mb-6">&nbsp;</h3>
+                <h3 class="text-2xl md:text-3xl font-bold text-slate-900 mb-8">Приложение A. Ориентировочные расходы на восстановление</h3>
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-6 md:p-8 mb-8">
+                    <p class="font-semibold text-amber-900 mb-4">Компенсация предназначена для покрытия расходов на восстановление качества услуги (уборка, озонация, химчистка, административные работы, простой помещения) и не является штрафом. Фактический ущерб и простой комнаты подлежат дополнительной компенсации при наличии оснований.</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-4 text-sm md:text-base">
+                    <div class="space-y-2">
+                        <p class="font-semibold bg-white p-3 rounded-lg shadow-sm border-l-4 border-amber-400"><span class="font-mono text-lg">2 000 руб.</span><br>Озонация помещения после выявления факта курения – 2 000 руб. + компенсация суточной стоимости аренды помещения за время простоя.</p>
+                        <p class="font-semibold bg-white p-3 rounded-lg shadow-sm border-l-4 border-amber-400"><span class="font-mono text-lg">4 000 руб.</span><br>Химчистка матраса – 4 000 руб.</p>
+                        <p class="font-semibold bg-white p-3 rounded-lg shadow-sm border-l-4 border-amber-400"><span class="font-mono text-lg">500 руб.</span><br>Утеря ключа – 500 руб.</p>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="font-semibold bg-white p-3 rounded-lg shadow-sm border-l-4 border-amber-400"><span class="font-mono text-lg">2 000 руб.</span><br>Замена стула – 2 000 руб.</p>
+                        <p class="font-semibold bg-white p-3 rounded-lg shadow-sm border-l-4 border-amber-400"><span class="font-mono text-lg">4 500 руб.</span><br>Замена стола – 4 500 руб.</p>
+                        <p class="font-semibold bg-white p-3 rounded-lg shadow-sm border-l-4 border-amber-400"><span class="font-mono text-lg">500 руб.</span><br>Очистка и дезинфекция территории при оставлении мусора около помещения – 500 руб.</p>
+                    </div>
+                </div>
+                
+                <div class="mt-8 pt-6 border-t border-slate-200">
+                    <p class="font-semibold text-slate-800 mb-2">Примечания:</p>
+                    <ul class="list-disc list-inside space-y-1 text-sm text-slate-700">
+                        <li>– Указанные суммы являются частью условий договора аренды и подлежат применению при выявлении соответствующих нарушений.</li>
+                        <li>– Внутренний прейскурант может быть дополнен или изменён администрацией; актуальная версия размещается в Правилах и является неотъемлемой частью договора.</li>
+                        <li>– Возмещение ущерба производится по стоимости нового имущества без учёта износа.</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div> 
       </div>
     </div>
   </div>

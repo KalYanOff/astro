@@ -13,8 +13,8 @@ export default function MobileMenu() {
   const menuItems = [
     { label: 'Комнаты', href: '#rooms' },
     { label: 'О нас', href: '#features' },
-    { label: 'Галерея', href: '#gallery' },
     { label: 'Отзывы', href: '#reviews' },
+    { label: 'Галерея', href: '#gallery' },
     { label: 'FAQ', href: '#faq' },
   ];
 

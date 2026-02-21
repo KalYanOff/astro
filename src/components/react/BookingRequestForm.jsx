@@ -30,10 +30,7 @@ const IconTelegram = ({ className }) => (
   </svg>
 );
 const IconMax = ({ className }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-  </svg>
+  <img src="/img/icons/max.svg" class="w-10 h-10 object-contain rounded-full"></img>
 );
 const IconPhone = ({ className }) => (
   <svg className={className} width="24" height="24" fill="currentColor"  viewBox="0 0 16 16" aria-hidden="true">
@@ -44,7 +41,7 @@ const IconPhone = ({ className }) => (
 const CONTACT_METHODS = [
   { id: 'whatsapp', label: 'WhatsApp', Icon: IconWhatsApp, color: 'bg-green-500', hoverColor: 'hover:bg-green-50', borderColor: 'border-green-500', textColor: 'text-green-600' },
   { id: 'telegram', label: 'Telegram', Icon: IconTelegram, color: 'bg-blue-500', hoverColor: 'hover:bg-blue-50', borderColor: 'border-blue-500', textColor: 'text-blue-600' },
-  { id: 'max', label: 'MAX', Icon: IconMax, color: 'bg-slate-600', hoverColor: 'hover:bg-slate-50', borderColor: 'border-slate-500', textColor: 'text-slate-600' },
+  { id: 'max', label: 'MAX', Icon: IconMax, color: 'bg-purple-500', hoverColor: 'hover:bg-purple-100', borderColor: 'border-purple-600', textColor: 'text-slate-600' },
   { id: 'phone', label: 'Звонок', Icon: IconPhone, color: 'bg-teal-500', hoverColor: 'hover:bg-teal-50', borderColor: 'border-teal-500', textColor: 'text-teal-600' },
 ];
 
