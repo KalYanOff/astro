@@ -95,9 +95,15 @@ export default function RoomsList() {
 
         {/* section header */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-slate-900 mb-4">Наши номера</h2>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-4">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/>
+            </svg>
+            Комнаты и цены
+          </div>
+          <h2 className="text-4xl font-bold text-slate-900 mb-4">Наши комнаты</h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Выберите комфортный номер для вашего отдыха
+            Выберите комфортный вариант для вашего отдыха
           </p>
 
         </div>
@@ -109,7 +115,7 @@ export default function RoomsList() {
           <div className="w-full overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <div className="flex justify-start md:justify-center gap-3 px-1 min-w-max md:min-w-0">
               {[
-                { value: 'all', label: 'Все номера' },
+                { value: 'all', label: 'Все комнаты' },
                 { value: 'econom', label: 'Эконом' },
                 { value: 'standard', label: 'Стандарт' },
               ].map(({ value, label }) => (
@@ -155,7 +161,7 @@ export default function RoomsList() {
         {filteredRooms.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-xl text-slate-500">
-              Нет номеров с выбранными параметрами
+              Нет комнат с выбранными параметрами
             </p>
             <button
               onClick={() => setFilter(INITIAL_FILTER)}
@@ -179,7 +185,7 @@ export default function RoomsList() {
         )}
 
         <p className="text-center text-sm text-slate-400 mt-12">
-          * Интерьер номеров может незначительно отличаться от фотографий
+          * Все наши комнаты оформлены в индивидуальном дизайне для вашего комфорта. При бронировании выбранный интерьер не гарантируется, но мы всегда стараемся учитывать ваши пожелания!
         </p>
       </div>
     </section>
