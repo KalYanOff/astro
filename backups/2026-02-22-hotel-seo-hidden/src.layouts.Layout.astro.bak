@@ -1,5 +1,6 @@
 ---
 import {
+  SITE_ADDRESS,
   SITE_COORDS,
   SITE_EMAIL,
   SITE_PHONE_DISPLAY,
@@ -9,9 +10,7 @@ import {
   DEFAULT_OG_IMAGE,
   DEFAULT_TITLE,
   type BreadcrumbItem,
-  getSeoProfile,
   ORG_NAME,
-  type SeoProfileId,
   SITE_URL,
   toCanonical,
 } from '../config/seo';
@@ -24,8 +23,6 @@ interface Props {
   breadcrumbs?: BreadcrumbItem[];
   ogImage?: string;
   schemaPageName?: string;
-  seoProfileId?: SeoProfileId;
-  extraJsonLd?: Record<string, unknown>[];
 }
 
 const {
@@ -36,22 +33,11 @@ const {
   breadcrumbs = [],
   ogImage = DEFAULT_OG_IMAGE,
   schemaPageName,
-  seoProfileId,
-  extraJsonLd = [],
 } = Astro.props;
 
-const seoProfile = getSeoProfile(seoProfileId);
-
-const resolvedTitle = seoProfile?.title ?? title;
-const resolvedDescription = seoProfile?.description ?? description;
-const resolvedCanonicalPath = seoProfile?.canonicalPath ?? canonicalPath;
-const resolvedOgTitle = seoProfile?.ogTitle ?? resolvedTitle;
-const resolvedOgDescription = seoProfile?.ogDescription ?? resolvedDescription;
-const keywordsContent = seoProfile?.focusKeywords.join(', ');
-
-const canonicalUrl = toCanonical(resolvedCanonicalPath);
+const canonicalUrl = toCanonical(canonicalPath);
 const robotsContent = noindex ? 'noindex,follow' : 'index,follow';
-const pageName = schemaPageName || resolvedTitle;
+const pageName = schemaPageName || title;
 const ogImageUrl = ogImage.startsWith('http') ? ogImage : toCanonical(ogImage);
 
 const [latitude, longitude] = SITE_COORDS.split(',').map((value) => Number(value.trim()));
@@ -79,7 +65,6 @@ const webpageSchema = {
   '@type': 'WebPage',
   name: pageName,
   url: canonicalUrl,
-  description: resolvedDescription,
   inLanguage: 'ru-RU',
   isPartOf: {
     '@type': 'WebSite',
@@ -109,95 +94,10 @@ const localBusinessSchema = {
     longitude,
   },
   areaServed: 'RU',
-  description: resolvedDescription,
+  description,
   priceRange: '₽₽',
   openingHours: 'Mo-Su 00:00-23:59',
 };
-
-const hotelAmenityFeatures = [
-  {
-    '@type': 'LocationFeatureSpecification',
-    name: 'Wi-Fi',
-    value: true,
-  },
-  {
-    '@type': 'LocationFeatureSpecification',
-    name: 'Парковка',
-    value: true,
-  },
-  {
-    '@type': 'LocationFeatureSpecification',
-    name: 'Близость к пляжу',
-    value: true,
-  },
-  {
-    '@type': 'LocationFeatureSpecification',
-    name: 'Семейный формат',
-    value: true,
-  },
-];
-
-const hotelSchema =
-  seoProfile && !noindex
-    ? {
-        '@context': 'https://schema.org',
-        '@type': 'Hotel',
-        name: ORG_NAME,
-        url: canonicalUrl,
-        description: resolvedDescription,
-        image: ogImageUrl,
-        telephone: SITE_PHONE_DISPLAY,
-        priceRange: '₽₽',
-        checkinTime: '14:00',
-        checkoutTime: '12:00',
-        address: {
-          '@type': 'PostalAddress',
-          streetAddress: 'Набережная 7',
-          addressLocality: 'Джубга',
-          addressRegion: 'Краснодарский край',
-          postalCode: '352844',
-          addressCountry: 'RU',
-        },
-        geo: {
-          '@type': 'GeoCoordinates',
-          latitude,
-          longitude,
-        },
-        amenityFeature: hotelAmenityFeatures,
-        keywords: seoProfile.focusKeywords.join(', '),
-      }
-    : null;
-
-const lodgingBusinessSchema =
-  seoProfile && !noindex
-    ? {
-        '@context': 'https://schema.org',
-        '@type': 'LodgingBusiness',
-        name: ORG_NAME,
-        url: canonicalUrl,
-        description: resolvedDescription,
-        image: ogImageUrl,
-        telephone: SITE_PHONE_DISPLAY,
-        priceRange: '₽₽',
-        checkinTime: '14:00',
-        checkoutTime: '12:00',
-        address: {
-          '@type': 'PostalAddress',
-          streetAddress: 'Набережная 7',
-          addressLocality: 'Джубга',
-          addressRegion: 'Краснодарский край',
-          postalCode: '352844',
-          addressCountry: 'RU',
-        },
-        geo: {
-          '@type': 'GeoCoordinates',
-          latitude,
-          longitude,
-        },
-        amenityFeature: hotelAmenityFeatures,
-        keywords: seoProfile.focusKeywords.join(', '),
-      }
-    : null;
 
 const breadcrumbSchema = breadcrumbs.length
   ? {
@@ -211,17 +111,6 @@ const breadcrumbSchema = breadcrumbs.length
       })),
     }
   : null;
-
-const jsonLdSchemas = [
-  organizationSchema,
-  websiteSchema,
-  webpageSchema,
-  localBusinessSchema,
-  ...(hotelSchema ? [hotelSchema] : []),
-  ...(lodgingBusinessSchema ? [lodgingBusinessSchema] : []),
-  ...(breadcrumbSchema ? [breadcrumbSchema] : []),
-  ...extraJsonLd,
-];
 ---
 
 <!doctype html>
@@ -232,32 +121,35 @@ const jsonLdSchemas = [
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
 
-    <title>{resolvedTitle}</title>
-    <meta name="description" content={resolvedDescription} />
-    {keywordsContent && <meta name="keywords" content={keywordsContent} />}
+    <title>{title}</title>
+    <meta name="description" content={description} />
     <meta name="robots" content={robotsContent} />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="canonical" href={canonicalUrl} />
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ru_RU" />
-    <meta property="og:title" content={resolvedOgTitle} />
-    <meta property="og:description" content={resolvedOgDescription} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:site_name" content={ORG_NAME} />
     <meta property="og:image" content={ogImageUrl} />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={resolvedOgTitle} />
-    <meta name="twitter:description" content={resolvedOgDescription} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
     <meta name="application-name" content={ORG_NAME} />
     <meta name="apple-mobile-web-app-title" content={ORG_NAME} />
 
-    {jsonLdSchemas.map((schema) => (
-      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
-    ))}
+    <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(webpageSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
+    {breadcrumbSchema && (
+      <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    )}
 
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">

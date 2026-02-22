@@ -1,0 +1,6 @@
+https://www.delfinstay.ru/* https://delfinstay.ru/:splat 301!
+/index.html / 301!
+/docs/offer/index.html /docs/offer 301!
+/docs/privacy/index.html /docs/privacy 301!
+/docs/offer/ /docs/offer 301!
+/docs/privacy/ /docs/privacy 301!

@@ -11,10 +11,12 @@ import Gallery from '../components/react/Gallery.jsx';
 import Reviews from '../components/react/Reviews.jsx';
 import RoomsList from '../components/react/RoomsList.jsx';
 import Layout from '../layouts/Layout.astro';
+import { DEFAULT_DESCRIPTION, DEFAULT_TITLE } from '../config/seo';
 ---
 
 <Layout
-  seoProfileId="home_hotel_cluster"
+  title={DEFAULT_TITLE}
+  description={DEFAULT_DESCRIPTION}
   canonicalPath="/"
   schemaPageName="Главная"
   breadcrumbs={[{ name: 'Главная', path: '/' }]}

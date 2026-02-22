@@ -2,14 +2,7 @@ import type { APIRoute } from 'astro';
 import { toCanonical } from '../config/seo';
 
 export const GET: APIRoute = () => {
-  const urls = [
-    '/',
-    '/oteli-dzhubga',
-    '/gostinicy-dzhubga',
-    '/otel-dzhubga-u-morya',
-    '/docs/offer',
-    '/docs/privacy',
-  ];
+  const urls = ['/', '/docs/offer', '/docs/privacy'];
   const lastmod = new Date().toISOString();
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

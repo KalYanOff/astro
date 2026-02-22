@@ -71,13 +71,21 @@ const REVIEWS_DATA = [
 
 const TRUNCATE_LENGTH = 120;
 
+function sanitizeVisibleText(text) {
+  return text
+    .replace(/\bhotel\b/giu, 'пространство')
+    .replace(/гостиниц[а-яё]*/giu, 'пространства')
+    .replace(/отел[а-яё]*/giu, 'пространство');
+}
+
 function ReviewCard({ review, expandedReviewId, onToggleExpand }) {
   const isExpanded = expandedReviewId === review.id;
-  const needsTruncation = review.review_text.length > TRUNCATE_LENGTH;
+  const safeReviewText = sanitizeVisibleText(review.review_text);
+  const needsTruncation = safeReviewText.length > TRUNCATE_LENGTH;
   const displayText =
     !needsTruncation || isExpanded
-      ? review.review_text
-      : review.review_text.slice(0, TRUNCATE_LENGTH).trimEnd() + '…';
+      ? safeReviewText
+      : safeReviewText.slice(0, TRUNCATE_LENGTH).trimEnd() + '…';
 
   const getInitials = (name) =>
     name.split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2);

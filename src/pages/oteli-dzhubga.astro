@@ -1,0 +1,51 @@
+---
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  seoProfileId="oteli_dzhubga"
+  canonicalPath="/oteli-dzhubga"
+  schemaPageName="Варианты размещения в Джубге"
+  breadcrumbs={[
+    { name: 'Главная', path: '/' },
+    { name: 'Варианты размещения в Джубге', path: '/oteli-dzhubga' },
+  ]}
+>
+  <Header />
+  <main id="main-content" class="bg-slate-50">
+    <section class="pt-32 pb-12">
+      <div class="container mx-auto px-4 max-w-4xl">
+        <div class="bg-white rounded-3xl shadow-lg p-8 md:p-12">
+          <h1 class="text-3xl md:text-5xl font-bold text-slate-900 leading-tight mb-6">
+            Отдых у моря в Джубге в удобной локации
+          </h1>
+          <p class="text-lg text-slate-700 leading-relaxed mb-4">
+            Пространство для спокойного семейного отдыха рядом с набережной и пляжем. Подходит для поездок вдвоем,
+            с детьми и в небольших компаниях.
+          </p>
+          <p class="text-lg text-slate-700 leading-relaxed mb-8">
+            Мы сделали акцент на тишине, чистоте, зеленой территории и быстрой связи по заявкам, чтобы вы могли
+            сосредоточиться на самом важном — отдыхе у моря.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a
+              href="/#booking-request"
+              class="inline-flex items-center justify-center min-h-11 px-6 py-3 rounded-xl bg-accent-500 hover:bg-accent-600 text-white font-semibold transition-colors"
+            >
+              Оставить заявку
+            </a>
+            <a
+              href="/#rooms"
+              class="inline-flex items-center justify-center min-h-11 px-6 py-3 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold transition-colors"
+            >
+              Посмотреть варианты размещения
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
