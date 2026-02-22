@@ -686,6 +686,13 @@ export default function BookingRequestForm() {
               'Забронировать'
             )}
           </button>
+          <p className="text-xs text-slate-500 mt-2 text-center">
+            Нажимая кнопку, вы соглашаетесь с нашей{' '}
+            <a href="/docs/privacy" className="text-primary-600 hover:underline">
+              политикой конфиденциальности
+            </a>
+            и даете нам согласие на обработку персональных данных.
+          </p>
         </form>
       </div>
     </section>

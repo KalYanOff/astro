@@ -16,6 +16,7 @@ import FAQ from '../components/react/FAQ.jsx';         /* faq */
 import BookingRequestForm from '../components/react/BookingRequestForm.jsx'; /* booking-request */
 import Footer from '../components/Footer.astro';       /* footer */
 import FloatingBar from '../components/react/FloatingBar.jsx'; /* floating-bar */
+import CookieConsent from '../components/react/CookieConsent';
 ---
 
 <Layout>
@@ -31,4 +32,5 @@ import FloatingBar from '../components/react/FloatingBar.jsx'; /* floating-bar *
   </main>
   <Footer />
   <FloatingBar client:load />
+  <CookieConsent client:load />
 </Layout>
