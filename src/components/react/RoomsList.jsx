@@ -3,7 +3,7 @@
    Section #rooms — filter bar + responsive grid of RoomCard
    Capacity filter: exact match only (2, 3, or 4 people)
    ========================================= */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import RoomCard from './RoomCard';
 import { applyPricingToRoom } from '../../config/roomPricing';
 
@@ -360,6 +360,7 @@ function filterRooms(rooms, { category, capacity }) {
 
 export default function RoomsList() {
   const [filter, setFilter] = useState(INITIAL_FILTER);
+  const [activeRoomAnchor, setActiveRoomAnchor] = useState('');
 
   const setCategory = (category) =>
     setFilter((f) => ({
@@ -370,6 +371,24 @@ export default function RoomsList() {
     setFilter((f) => ({ ...f, capacity: f.capacity === capacity ? null : capacity }));
 
   const filteredRooms = filterRooms(ROOMS_DATA, filter);
+
+  useEffect(() => {
+    const updateActiveFromHash = () => {
+      const hash = window.location.hash || '';
+      setActiveRoomAnchor(hash.startsWith('#room') ? hash.slice(1) : '');
+    };
+
+    updateActiveFromHash();
+    window.addEventListener('hashchange', updateActiveFromHash);
+    return () => window.removeEventListener('hashchange', updateActiveFromHash);
+  }, []);
+
+  useEffect(() => {
+    if (!activeRoomAnchor) return;
+    const target = document.getElementById(activeRoomAnchor);
+    if (!target) return;
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [activeRoomAnchor, filteredRooms]);
 
   return (
     <section id="rooms" className="py-20 bg-slate-50">
@@ -455,7 +474,7 @@ export default function RoomsList() {
                 style={{ animationDelay: `${index * 80}ms` }}
                 className="animate-fade-in"
               >
-                <RoomCard room={room} />
+                <RoomCard room={room} isActive={activeRoomAnchor === `room${room.id}`} />
               </div>
             ))}
           </div>

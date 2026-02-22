@@ -200,7 +200,7 @@ function CardCalendar({ checkIn, checkOut, onChange, onClose, anchorRef }) {
   );
 }
 
-export default function RoomCard({ room }) {
+export default function RoomCard({ room, isActive = false }) {
   const defaultDates = getDefaultBookingDates();
   const today = new Date().toISOString().split('T')[0];
   const defaultCheckIn = defaultDates.checkIn;
@@ -220,6 +220,7 @@ export default function RoomCard({ room }) {
 
   const roomCategory = getRoomCategoryMeta(room.roomCategoryId);
   const badge = CTA_BADGES[room.roomCategoryId] ?? null;
+  const roomAnchor = `room${room.id}`;
   const nights = calcNights(checkIn, checkOut);
   const checkInNightPrice = getNightPrice(room, checkIn || defaultCheckIn);
   const todayNightPrice = getNightPrice(room, today);
@@ -247,7 +248,7 @@ export default function RoomCard({ room }) {
         await navigator.share({
           title: room.name,
           text: room.description,
-          url: window.location.href + '#room-' + room.id,
+          url: `${window.location.origin}/#${roomAnchor}`,
         });
       } catch (_) {}
     }
@@ -289,7 +290,12 @@ export default function RoomCard({ room }) {
     nights === 1 ? 'ночь' : nights < 5 ? 'ночи' : 'ночей';
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full">
+    <div
+      id={roomAnchor}
+      className={`bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full ${
+        isActive ? 'ring-4 ring-primary-500 bg-primary-100 shadow-2xl border-2 border-primary-400 -translate-y-1' : ''
+      }`}
+    >
 
       {/* ---- photo slider ---- */}
       <div className="relative h-64 flex-shrink-0 overflow-hidden">
