@@ -23,12 +23,12 @@ import CookieConsent from '../components/react/CookieConsent';
   <Header />
   <main>
     <Hero />
-    <RoomsList client:only="react" />
+    <RoomsList client:load />
     <Features />
-    <Reviews client:only="react" />
-    <Gallery client:only="react" />
-    <FAQ client:only="react" />
-    <BookingRequestForm client:only="react" />
+    <Reviews client:load />
+    <Gallery client:load />
+    <FAQ client:load />
+    <BookingRequestForm client:load />
   </main>
   <Footer />
   <FloatingBar client:load />

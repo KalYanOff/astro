@@ -27,6 +27,9 @@ import {
   isDateInBookingSeason,
 } from '../../lib/bookingDates';
 
+const DEFAULT_BOOKING_WEBHOOK_URL = 'https://hook.us2.make.com/hpmckws8tr685rrflpbndcnqjxrn76vp';
+const BOOKING_WEBHOOK_URL = import.meta.env.PUBLIC_MAKE_WEBHOOK_URL || DEFAULT_BOOKING_WEBHOOK_URL;
+
 /* ---- contact method icons ---- */
 const IconWhatsApp = ({ className }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -125,6 +128,59 @@ function formatDateRu(iso) {
   if (!iso) return '';
   const d = new Date(iso);
   return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function toShortDate(isoDate) {
+  if (!isoDate || typeof isoDate !== 'string') return '';
+  const parts = isoDate.split('-');
+  if (parts.length !== 3) return isoDate;
+  const [year, month, day] = parts;
+  return `${day}.${month}.${year.slice(2)}`;
+}
+
+function asCleanString(value, fallback = '') {
+  if (typeof value !== 'string') return fallback;
+  const clean = value.replace(/\s+/g, ' ').trim();
+  return clean || fallback;
+}
+
+function asPrice(value) {
+  const num = Number(value);
+  if (!Number.isFinite(num) || num <= 0) return 'Не рассчитана';
+  return `${num.toLocaleString('ru-RU')} ₽`;
+}
+
+function normalizePhone(phone) {
+  const digitsOnly = String(phone || '').replace(/\D/g, '');
+  if (!digitsOnly) return '';
+
+  let normalized = digitsOnly;
+  if (normalized.length === 10) normalized = `7${normalized}`;
+  if (normalized.length === 11 && normalized.startsWith('8')) {
+    normalized = `7${normalized.slice(1)}`;
+  }
+
+  if (!/^7\d{10}$/.test(normalized)) return '';
+  return normalized;
+}
+
+function buildContactLink(contactMethod, normalizedPhone, phoneLink) {
+  const method = String(contactMethod || '').toLowerCase();
+  if (!normalizedPhone) return '';
+
+  if (method.includes('whatsapp')) {
+    return `https://wa.me/${normalizedPhone}`;
+  }
+  if (method.includes('telegram')) {
+    return `https://t.me/+${normalizedPhone}`;
+  }
+  if (method.includes('звон') || method.includes('phone')) {
+    return phoneLink;
+  }
+  if (method.includes('max')) {
+    return '';
+  }
+  return '';
 }
 
 /* =========================================
@@ -521,20 +577,59 @@ export default function BookingRequestForm() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('/api/booking', {
+      if (!BOOKING_WEBHOOK_URL) {
+        throw new Error('missing_webhook_url');
+      }
+
+      const cleanGuestName = asCleanString(guestName);
+      const cleanPhone = asCleanString(phone);
+      const cleanContactMethod = asCleanString(selectedMethod ? selectedMethod.label : 'Не выбран');
+      const cleanCategory = asCleanString(selectedRoom ? selectedRoom.name : 'Не выбрана');
+      const cleanWishes = asCleanString(wishes, 'Нет');
+      const dates = `${toShortDate(checkInDate)} - ${toShortDate(checkOutDate)}`;
+      const price = asPrice(totalCost);
+      const normalizedPhone = normalizePhone(cleanPhone);
+      const phoneDisplay = normalizedPhone ? `+${normalizedPhone}` : cleanPhone;
+      const phoneLink = normalizedPhone ? `tel:+${normalizedPhone}` : '';
+      const contactLink = buildContactLink(cleanContactMethod, normalizedPhone, phoneLink);
+      const contactMethodLine =
+        cleanContactMethod === 'MAX' && !contactLink
+          ? `${cleanContactMethod} (в MAX нет публичной ссылки на чат по номеру)`
+          : cleanContactMethod;
+
+      const text = [
+        'Заявка с Delfinstay',
+        `Даты: ${dates}`,
+        `Категория: ${cleanCategory}`,
+        '',
+        `Цена: ${price}`,
+        `Пожелания: ${cleanWishes}`,
+        '',
+        `Контакт: ${phoneDisplay} - ${cleanGuestName}`,
+        `Связаться в ${contactMethodLine}: ${contactLink || 'ссылка недоступна'}`,
+      ].join('\n');
+
+      const response = await fetch(BOOKING_WEBHOOK_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          guestName: guestName.trim(),
-          phone,
-          contactMethod: selectedMethod ? selectedMethod.label : 'Не выбран',
-          checkInDate,
-          checkOutDate,
-          category: selectedRoom ? selectedRoom.name : 'Не выбрана',
-          totalCost,
-          wishes: wishes.trim() || 'Нет',
+          title: 'Заявка с Delfinstay',
+          dates,
+          category: cleanCategory,
+          price,
+          wishes: cleanWishes,
+          phone: cleanPhone,
+          phoneDisplay,
+          phoneLink,
+          guestName: cleanGuestName,
+          contactMethod: cleanContactMethod,
+          contactLink,
+          text,
+          message: text,
+          formattedMessage: text,
+          createdAt: new Date().toISOString(),
         }),
       });
 
