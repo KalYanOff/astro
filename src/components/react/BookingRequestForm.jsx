@@ -17,7 +17,6 @@ import {
   Mail, User, CheckCircle, AlertCircle,
   Calendar, Users, Pencil, X, ChevronLeft, ChevronRight,
 } from 'lucide-react';
-import { CONTACT_LINKS } from '../../config/site.js';
 import { calculateStayPrice, getRoomPeriods } from '../../lib/pricing';
 import {
   BOOKING_MONTH_START,
@@ -389,7 +388,7 @@ function RoomSelect({ value, onChange }) {
     <div>
       <label className="block text-sm font-semibold text-slate-700 mb-2">
         <Users className="w-4 h-4 inline mr-1" />
-        Категория номера
+        Категория комнаты
       </label>
       <select
         value={value}
@@ -427,6 +426,8 @@ export default function BookingRequestForm() {
   const [wishes, setWishes] = useState('');
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const [highlight, setHighlight] = useState(false);
 
   useEffect(() => {
@@ -510,41 +511,46 @@ export default function BookingRequestForm() {
     ? calculateStayPrice(selectedRoomData, checkInDate, checkOutDate)
     : roomPricePerNight * Math.max(localNights, 0);
 
-  const buildMessage = () => {
-    const lines = [
-      'Заявка на бронирование',
-      '',
-      `Имя: ${guestName.trim()}`,
-      `Телефон: ${phone}`,
-      `Категория номера: ${selectedRoom ? selectedRoom.name : 'Не выбран'}`,
-      `Заезд: ${formatDateRu(checkInDate)}`,
-      `Выезд: ${formatDateRu(checkOutDate)}`,
-      `Ночей: ${localNights}`,
-    ];
-    if (totalCost > 0) lines.push(`Сумма: ${totalCost.toLocaleString('ru-RU')} ₽`);
-    if (wishes.trim()) lines.push(`Пожелания: ${wishes.trim()}`);
-    return lines.join('\n');
-  };
+  const selectedMethod = CONTACT_METHODS.find((m) => m.id === contactMethod);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
-    const msg = buildMessage();
-    const enc = encodeURIComponent(msg);
+    setSubmitError('');
+    setIsSubmitting(true);
 
-    if (contactMethod === 'whatsapp') window.open(`${CONTACT_LINKS.whatsapp}?text=${enc}`, '_blank');
-    else if (contactMethod === 'telegram') window.open(CONTACT_LINKS.telegram, '_blank');
-    else if (contactMethod === 'max') window.open(CONTACT_LINKS.max, '_blank');
-    else if (contactMethod === 'phone') window.open(CONTACT_LINKS.phone, '_self');
+    try {
+      const response = await fetch('/api/booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          guestName: guestName.trim(),
+          phone,
+          contactMethod: selectedMethod ? selectedMethod.label : 'Не выбран',
+          checkInDate,
+          checkOutDate,
+          category: selectedRoom ? selectedRoom.name : 'Не выбрана',
+          totalCost,
+          wishes: wishes.trim() || 'Нет',
+        }),
+      });
 
-    if (wishes.trim()) updateBooking({ wishes: wishes.trim() });
+      if (!response.ok) {
+        throw new Error('submit_failed');
+      }
 
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 5000);
+      if (wishes.trim()) updateBooking({ wishes: wishes.trim() });
+      setSubmitted(true);
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch {
+      setSubmitError('Не удалось отправить заявку. Попробуйте еще раз или свяжитесь с нами по телефону.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-
-  const selectedMethod = CONTACT_METHODS.find((m) => m.id === contactMethod);
 
   if (submitted) {
     return (
@@ -745,20 +751,26 @@ export default function BookingRequestForm() {
           {/* ---- submit ---- */}
           <button
             type="submit"
+            disabled={isSubmitting}
             className={[
-              'w-full font-bold text-lg py-4 rounded-xl shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl text-white flex items-center justify-center gap-3',
+              'w-full font-bold text-lg py-4 rounded-xl shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl text-white flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100',
               selectedMethod ? selectedMethod.color : 'bg-accent-500 hover:bg-accent-600',
             ].join(' ')}
           >
             {selectedMethod ? (
               <>
                 {(() => { const Icon = selectedMethod.Icon; return <Icon className="w-5 h-5" />; })()}
-                Забронировать через {selectedMethod.label}
+                {isSubmitting ? 'Отправляем...' : 'Отправить заявку'}
               </>
             ) : (
-              'Забронировать'
+              isSubmitting ? 'Отправляем...' : 'Отправить заявку'
             )}
           </button>
+          {submitError && (
+            <p className="text-red-500 text-sm mt-2 flex items-center justify-center gap-1">
+              <AlertCircle className="w-4 h-4" /> {submitError}
+            </p>
+          )}
           <p className="text-xs text-slate-500 mt-2 text-center">
             Нажимая кнопку, вы соглашаетесь с нашей{' '}
             <a href="/docs/privacy" className="text-primary-600 hover:underline">
