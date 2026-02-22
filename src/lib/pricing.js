@@ -18,7 +18,17 @@ export function getNightPrice(room, isoDate, overrides = {}) {
     if (!period.start || !period.end) return false;
     return isoDate >= period.start && isoDate <= period.end;
   });
-  return matched ? matched.price : room.base_price;
+  if (matched) return matched.price;
+
+  const mayPeriod = periods.find((period) => period.id === 'may' && Number.isFinite(period.price));
+  if (mayPeriod) return mayPeriod.price;
+
+  const minPeriodPrice = periods.reduce((min, period) => {
+    if (!Number.isFinite(period.price)) return min;
+    return Math.min(min, period.price);
+  }, Number.POSITIVE_INFINITY);
+
+  return Number.isFinite(minPeriodPrice) ? minPeriodPrice : room.base_price;
 }
 
 export function calculateStayPrice(room, checkIn, checkOut, overrides = {}) {

@@ -6,7 +6,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import {
-  Share2, Users, Wifi, Wind, Snowflake, Tv, Droplet,
+  Share2, Users,
   ChevronLeft, ChevronRight, Flame, AlertCircle, Calendar,
 } from 'lucide-react';
 import { updateBooking } from '../../stores/bookingStore';
@@ -18,15 +18,6 @@ import {
   getInitialCalendarPage,
   isDateInBookingSeason,
 } from '../../lib/bookingDates';
-
-const AMENITY_ICONS = {
-  'Wi-Fi': Wifi,
-  'Вентиляторы': Wind,
-  'Кондиционер': Snowflake,
-  'Телевизор': Tv,
-  'Индивидуальный санузел': Droplet,
-  'Душ и туалет общего пользования': Droplet,
-};
 
 const CTA_BADGES = {
   '1': null,
@@ -213,11 +204,12 @@ function CardCalendar({ checkIn, checkOut, onChange, onClose, anchorRef }) {
 
 export default function RoomCard({ room }) {
   const defaultDates = getDefaultBookingDates();
-  const today = defaultDates.checkIn;
+  const today = new Date().toISOString().split('T')[0];
+  const defaultCheckIn = defaultDates.checkIn;
   const tomorrow = defaultDates.checkOut;
 
   const [activeSlide, setActiveSlide] = useState(0);
-  const [checkIn, setCheckIn] = useState(today);
+  const [checkIn, setCheckIn] = useState(defaultCheckIn);
   const [checkOut, setCheckOut] = useState(tomorrow);
   const [showCal, setShowCal] = useState(false);
   const calAnchorRef = useRef(null);
@@ -230,7 +222,8 @@ export default function RoomCard({ room }) {
 
   const badge = CTA_BADGES[room.id] ?? null;
   const nights = calcNights(checkIn, checkOut);
-  const currentNightPrice = getNightPrice(room, checkIn || today);
+  const checkInNightPrice = getNightPrice(room, checkIn || defaultCheckIn);
+  const todayNightPrice = getNightPrice(room, today);
   const totalPrice = calculateStayPrice(room, checkIn, checkOut);
 
   const prevSlide = useCallback(
@@ -262,7 +255,7 @@ export default function RoomCard({ room }) {
   };
 
   const handleCalChange = (ci, co) => {
-    setCheckIn(ci || today);
+    setCheckIn(ci || defaultCheckIn);
     setCheckOut(co || '');
   };
 
@@ -274,7 +267,7 @@ export default function RoomCard({ room }) {
     updateBooking({
       selectedRoomId: room.id,
       selectedRoomName: room.name,
-      selectedRoomPrice: currentNightPrice,
+      selectedRoomPrice: checkInNightPrice,
       checkInDate: checkIn,
       checkOutDate: checkOut || tomorrow,
       guestsCount: room.capacity,
@@ -338,7 +331,7 @@ export default function RoomCard({ room }) {
         <div className="absolute bottom-3 right-3 z-10 bg-black/60 backdrop-blur-sm rounded-xl px-3 py-2 text-right leading-none">
           <span className="block text-[10px] text-white/70 mb-1">от</span>
           <span className="block text-lg font-bold text-white">
-            {currentNightPrice.toLocaleString('ru-RU')} ₽
+            {todayNightPrice.toLocaleString('ru-RU')} ₽
           </span>
           <span className="block text-[10px] text-white/70 mt-1">/ ночь</span>
         </div>
@@ -403,22 +396,7 @@ export default function RoomCard({ room }) {
         </div>
 
         {/* description */}
-        <p className="text-sm text-slate-600 mb-4 line-clamp-2">{room.description}</p>
-
-        {/* amenities */}
-        {room.amenities && room.amenities.length > 0 && (
-          <ul className="flex flex-col gap-2 mb-4">
-            {room.amenities.map((amenity, i) => {
-              const Icon = AMENITY_ICONS[amenity] || Wifi;
-              return (
-                <li key={i} className="flex items-center gap-2 text-sm text-slate-600">
-                  <Icon className="w-4 h-4 flex-shrink-0 text-primary-500" />
-                  <span>{amenity}</span>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+        <p className="text-sm text-slate-600 mb-4 whitespace-pre-line">{room.description}</p>
 
         {/* ---- date picker ---- */}
         <div className="mt-auto pt-4 border-t border-slate-100">
@@ -462,7 +440,7 @@ export default function RoomCard({ room }) {
           {nights > 0 && checkOut ? (
             <div className="bg-primary-50 rounded-xl px-4 py-3 mb-3">
               <div className="flex items-center justify-between text-sm text-slate-600 mb-1">
-                <span>{nights} {nightsLabel} × от {currentNightPrice.toLocaleString('ru-RU')} ₽</span>
+                <span>{nights} {nightsLabel} × от {checkInNightPrice.toLocaleString('ru-RU')} ₽</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm font-semibold text-slate-700">Итого</span>

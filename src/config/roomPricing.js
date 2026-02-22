@@ -1,5 +1,5 @@
 export const ROOM_PRICING = {
-  '1': {
+  '113': {
     base_price: 1000,
     price_periods: [
       { id: 'may', label: 'Май', start: '2026-04-01', end: '2026-05-31', price: 1000 },
@@ -8,7 +8,7 @@ export const ROOM_PRICING = {
       { id: 'low', label: '15 Сентября - Октябрь', start: '2026-09-15', end: '2026-11-30', price: 1200 },
     ],
   },
-  '2': {
+  '114': {
     base_price: 1200,
     price_periods: [
       { id: 'may', label: 'Май', start: '2026-04-01', end: '2026-05-31', price: 1200 },
@@ -17,7 +17,7 @@ export const ROOM_PRICING = {
       { id: 'low', label: '15 Сентября - Октябрь', start: '2026-09-15', end: '2026-11-30', price: 1450 },
     ],
   },
-  '3': {
+  '115': {
     base_price: 1500,
     price_periods: [
       { id: 'may', label: 'Май', start: '2026-04-01', end: '2026-05-31', price: 1500 },
