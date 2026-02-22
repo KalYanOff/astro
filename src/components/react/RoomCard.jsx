@@ -9,9 +9,15 @@ import {
   Share2, Users, Wifi, Wind, Snowflake, Tv, Droplet,
   ChevronLeft, ChevronRight, Flame, AlertCircle, Calendar,
 } from 'lucide-react';
-import { useStore } from '@nanostores/react';
-import { bookingStore, updateBooking } from '../../stores/bookingStore';
+import { updateBooking } from '../../stores/bookingStore';
 import { calculateStayPrice, getNightPrice } from '../../lib/pricing';
+import {
+  BOOKING_MONTH_START,
+  BOOKING_MONTH_END,
+  getDefaultBookingDates,
+  getInitialCalendarPage,
+  isDateInBookingSeason,
+} from '../../lib/bookingDates';
 
 const AMENITY_ICONS = {
   'Wi-Fi': Wifi,
@@ -62,8 +68,10 @@ function toShort(iso) {
 /* ---- Mini inline calendar popup ---- */
 function CardCalendar({ checkIn, checkOut, onChange, onClose, anchorRef }) {
   const today = new Date().toISOString().split('T')[0];
-  const [calYear, setCalYear] = useState(new Date().getFullYear());
-  const [calMonth, setCalMonth] = useState(new Date().getMonth());
+  const minAllowedDate = getDefaultBookingDates().checkIn;
+  const initialPage = getInitialCalendarPage(today);
+  const [calYear, setCalYear] = useState(initialPage.year);
+  const [calMonth, setCalMonth] = useState(initialPage.month);
   const [selecting, setSelecting] = useState(checkIn && !checkOut ? 'out' : 'in');
   const [pos, setPos] = useState({ top: 0, left: 0 });
   const [mounted, setMounted] = useState(false);
@@ -110,14 +118,28 @@ function CardCalendar({ checkIn, checkOut, onChange, onClose, anchorRef }) {
     }
   };
 
-  const prevMonth = () => {
-    if (calMonth === 0) { setCalMonth(11); setCalYear((y) => y - 1); }
-    else setCalMonth((m) => m - 1);
+  const moveMonth = (direction) => {
+    let nextYear = calYear;
+    let nextMonth = calMonth;
+
+    do {
+      nextMonth += direction;
+      if (nextMonth < 0) {
+        nextMonth = 11;
+        nextYear -= 1;
+      }
+      if (nextMonth > 11) {
+        nextMonth = 0;
+        nextYear += 1;
+      }
+    } while (nextMonth < BOOKING_MONTH_START || nextMonth > BOOKING_MONTH_END);
+
+    setCalYear(nextYear);
+    setCalMonth(nextMonth);
   };
-  const nextMonth = () => {
-    if (calMonth === 11) { setCalMonth(0); setCalYear((y) => y + 1); }
-    else setCalMonth((m) => m + 1);
-  };
+
+  const prevMonth = () => moveMonth(-1);
+  const nextMonth = () => moveMonth(1);
 
   const daysInMonth = getDaysInMonth(calYear, calMonth);
   const firstDow = getFirstDayOfWeek(calYear, calMonth);
@@ -158,6 +180,9 @@ function CardCalendar({ checkIn, checkOut, onChange, onClose, anchorRef }) {
           const day = i + 1;
           const iso = `${calYear}-${String(calMonth + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
           const isPast = iso < today;
+          const isOutsideSeason = !isDateInBookingSeason(iso);
+          const isBeforeSeasonStart = iso < minAllowedDate;
+          const isDisabled = isPast || isOutsideSeason || isBeforeSeasonStart;
           const isCI = iso === checkIn;
           const isCO = iso === checkOut;
           const cellDate = isoToDate(iso);
@@ -167,11 +192,11 @@ function CardCalendar({ checkIn, checkOut, onChange, onClose, anchorRef }) {
             <button
               type="button"
               key={iso}
-              disabled={isPast}
-              onClick={() => !isPast && handleDayClick(iso)}
+              disabled={isDisabled}
+              onClick={() => !isDisabled && handleDayClick(iso)}
               className={[
                 'text-xs py-1.5 text-center transition-colors rounded-lg',
-                isPast ? 'text-slate-300 cursor-not-allowed' : 'hover:bg-primary-50 cursor-pointer text-slate-800',
+                isDisabled ? 'text-slate-300 cursor-not-allowed' : 'hover:bg-primary-50 cursor-pointer text-slate-800',
                 (isCI || isCO) ? '!bg-primary-600 !text-white font-bold hover:!bg-primary-700' : '',
                 inRange ? '!bg-primary-100 !text-primary-800 !rounded-none' : '',
               ].filter(Boolean).join(' ')}
@@ -187,10 +212,10 @@ function CardCalendar({ checkIn, checkOut, onChange, onClose, anchorRef }) {
 }
 
 export default function RoomCard({ room }) {
-  const today = new Date().toISOString().split('T')[0];
-  const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+  const defaultDates = getDefaultBookingDates();
+  const today = defaultDates.checkIn;
+  const tomorrow = defaultDates.checkOut;
 
-  const booking = useStore(bookingStore);
   const [activeSlide, setActiveSlide] = useState(0);
   const [checkIn, setCheckIn] = useState(today);
   const [checkOut, setCheckOut] = useState(tomorrow);
@@ -205,9 +230,8 @@ export default function RoomCard({ room }) {
 
   const badge = CTA_BADGES[room.id] ?? null;
   const nights = calcNights(checkIn, checkOut);
-  const periodOverrides = booking.periodPriceOverrides?.[room.id] || {};
-  const currentNightPrice = getNightPrice(room, checkIn || today, periodOverrides);
-  const totalPrice = calculateStayPrice(room, checkIn, checkOut, periodOverrides);
+  const currentNightPrice = getNightPrice(room, checkIn || today);
+  const totalPrice = calculateStayPrice(room, checkIn, checkOut);
 
   const prevSlide = useCallback(
     (e) => {

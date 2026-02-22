@@ -1,18 +1,17 @@
 import { atom, computed } from 'nanostores';
+import { getDefaultBookingDates } from '../lib/bookingDates';
 
-const todayISO = new Date().toISOString().split('T')[0];
-const tomorrowISO = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+const defaultDates = getDefaultBookingDates();
 
 export const bookingStore = atom({
-  checkInDate: todayISO,
-  checkOutDate: tomorrowISO,
+  checkInDate: defaultDates.checkIn,
+  checkOutDate: defaultDates.checkOut,
   guestsCount: 2,
   wishes: '',
   selectedRoomId: null,
   selectedRoomName: '',
   selectedRoomPrice: 0,
   searchActivated: false,
-  periodPriceOverrides: {},
 });
 
 export const numberOfNights = computed(bookingStore, (booking) => {
@@ -40,22 +39,5 @@ export function resetBooking() {
     selectedRoomName: '',
     selectedRoomPrice: 0,
     searchActivated: false,
-    periodPriceOverrides: {},
-  });
-}
-
-export function updatePeriodPrice(roomId, periodId, price) {
-  const current = bookingStore.get();
-  const roomOverrides = current.periodPriceOverrides?.[roomId] || {};
-
-  bookingStore.set({
-    ...current,
-    periodPriceOverrides: {
-      ...current.periodPriceOverrides,
-      [roomId]: {
-        ...roomOverrides,
-        [periodId]: price,
-      },
-    },
   });
 }

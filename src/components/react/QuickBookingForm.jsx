@@ -2,6 +2,14 @@ import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Calendar, Users, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { updateBooking } from '../../stores/bookingStore.js';
+import {
+  BOOKING_MONTH_START,
+  BOOKING_MONTH_END,
+  getDefaultBookingDates,
+  getInitialCalendarPage,
+  getMinAllowedDate,
+  isDateInBookingSeason,
+} from '../../lib/bookingDates';
 
 const MONTH_NAMES = [
   'Январь','Февраль','Март','Апрель','Май','Июнь',
@@ -45,16 +53,18 @@ function isoToDate(iso) {
 }
 
 export default function QuickBookingForm() {
-  const today = new Date().toISOString().split('T')[0];
-  const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+  const currentDateIso = new Date().toISOString().split('T')[0];
+  const defaultDates = getDefaultBookingDates();
+  const minAllowedDate = getMinAllowedDate(currentDateIso);
+  const initialPage = getInitialCalendarPage(currentDateIso);
 
-  const [checkInDate, setCheckInDate] = useState(today);
-  const [checkOutDate, setCheckOutDate] = useState(tomorrow);
+  const [checkInDate, setCheckInDate] = useState(defaultDates.checkIn);
+  const [checkOutDate, setCheckOutDate] = useState(defaultDates.checkOut);
   const [guestsCount, setGuestsCount] = useState(2);
   const [showCalendar, setShowCalendar] = useState(false);
   const [manualInput, setManualInput] = useState('');
-  const [calYear, setCalYear] = useState(new Date().getFullYear());
-  const [calMonth, setCalMonth] = useState(new Date().getMonth());
+  const [calYear, setCalYear] = useState(initialPage.year);
+  const [calMonth, setCalMonth] = useState(initialPage.month);
   const [selecting, setSelecting] = useState(null);
   const [calPosition, setCalPosition] = useState({ top: 0, left: 0 });
   const calRef = useRef(null);
@@ -63,7 +73,7 @@ export default function QuickBookingForm() {
 
   useEffect(() => {
     setMounted(true);
-    updateBooking({ checkInDate: today, checkOutDate: tomorrow, guestsCount: 2 });
+    updateBooking({ checkInDate: defaultDates.checkIn, checkOutDate: defaultDates.checkOut, guestsCount: 2 });
   }, []);
 
   const calcPosition = () => {
@@ -142,7 +152,14 @@ export default function QuickBookingForm() {
     const val = e.target.value;
     setManualInput(val);
     const { checkIn, checkOut } = parseRangeInput(val);
-    if (checkIn && checkOut && checkIn <= checkOut) {
+    if (
+      checkIn &&
+      checkOut &&
+      checkIn <= checkOut &&
+      isDateInBookingSeason(checkIn) &&
+      isDateInBookingSeason(checkOut) &&
+      checkIn >= minAllowedDate
+    ) {
       applyDates(checkIn, checkOut);
     }
   };
@@ -150,7 +167,14 @@ export default function QuickBookingForm() {
   const handleManualBlur = () => {
     if (!manualInput) return;
     const { checkIn, checkOut } = parseRangeInput(manualInput);
-    if (checkIn && checkOut && checkIn <= checkOut) {
+    if (
+      checkIn &&
+      checkOut &&
+      checkIn <= checkOut &&
+      isDateInBookingSeason(checkIn) &&
+      isDateInBookingSeason(checkOut) &&
+      checkIn >= minAllowedDate
+    ) {
       applyDates(checkIn, checkOut);
     }
     setManualInput('');
@@ -169,15 +193,28 @@ export default function QuickBookingForm() {
     }
   };
 
-  const prevMonth = () => {
-    if (calMonth === 0) { setCalMonth(11); setCalYear(y => y - 1); }
-    else setCalMonth(m => m - 1);
+  const moveMonth = (direction) => {
+    let nextYear = calYear;
+    let nextMonth = calMonth;
+
+    do {
+      nextMonth += direction;
+      if (nextMonth < 0) {
+        nextMonth = 11;
+        nextYear -= 1;
+      }
+      if (nextMonth > 11) {
+        nextMonth = 0;
+        nextYear += 1;
+      }
+    } while (nextMonth < BOOKING_MONTH_START || nextMonth > BOOKING_MONTH_END);
+
+    setCalYear(nextYear);
+    setCalMonth(nextMonth);
   };
 
-  const nextMonth = () => {
-    if (calMonth === 11) { setCalMonth(0); setCalYear(y => y + 1); }
-    else setCalMonth(m => m + 1);
-  };
+  const prevMonth = () => moveMonth(-1);
+  const nextMonth = () => moveMonth(1);
 
   const dateRangeLabel =
     checkInDate && checkOutDate
@@ -230,7 +267,10 @@ export default function QuickBookingForm() {
         {Array.from({ length: daysInMonth }).map((_, i) => {
           const day = i + 1;
           const iso = `${calYear}-${String(calMonth + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-          const isPast = iso < today;
+          const isPast = iso < currentDateIso;
+          const isOutsideSeason = !isDateInBookingSeason(iso);
+          const isBeforeSeasonStart = iso < minAllowedDate;
+          const isDisabled = isPast || isOutsideSeason || isBeforeSeasonStart;
           const isCheckIn = iso === checkInDate;
           const isCheckOut = iso === checkOutDate;
           const cellDate = isoToDate(iso);
@@ -240,11 +280,11 @@ export default function QuickBookingForm() {
             <button
               type="button"
               key={iso}
-              disabled={isPast}
-              onClick={() => !isPast && handleDayClick(iso)}
+              disabled={isDisabled}
+              onClick={() => !isDisabled && handleDayClick(iso)}
               className={[
                 'text-xs py-1.5 text-center transition-colors rounded-lg',
-                isPast ? 'text-gray-300 cursor-not-allowed' : 'hover:bg-primary-50 cursor-pointer text-gray-800',
+                isDisabled ? 'text-gray-300 cursor-not-allowed' : 'hover:bg-primary-50 cursor-pointer text-gray-800',
                 (isCheckIn || isCheckOut) ? '!bg-primary-600 !text-white font-bold hover:!bg-primary-700' : '',
                 inRange ? '!bg-primary-100 !text-primary-800 !rounded-none' : '',
               ].filter(Boolean).join(' ')}

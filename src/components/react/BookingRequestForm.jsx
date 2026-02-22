@@ -10,7 +10,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useStore } from '@nanostores/react';
 import { createPortal } from 'react-dom';
-import { bookingStore, numberOfNights, updateBooking, updatePeriodPrice } from '../../stores/bookingStore';
+import { bookingStore, numberOfNights, updateBooking } from '../../stores/bookingStore';
 import { ROOMS_DATA } from './RoomsList';
 import {
   Mail, User, CheckCircle, AlertCircle,
@@ -18,6 +18,14 @@ import {
 } from 'lucide-react';
 import { CONTACT_LINKS } from '../../config/site.js';
 import { calculateStayPrice, getRoomPeriods } from '../../lib/pricing';
+import {
+  BOOKING_MONTH_START,
+  BOOKING_MONTH_END,
+  getDefaultBookingDates,
+  getInitialCalendarPage,
+  getMinAllowedDate,
+  isDateInBookingSeason,
+} from '../../lib/bookingDates';
 
 /* ---- contact method icons ---- */
 const IconWhatsApp = ({ className }) => (
@@ -129,12 +137,14 @@ function formatDateRu(iso) {
    Combined date input with calendar popup
    ========================================= */
 function DateRangeField({ checkInDate, checkOutDate, onChange }) {
-  const today = new Date().toISOString().split('T')[0];
+  const currentDateIso = new Date().toISOString().split('T')[0];
+  const minAllowedDate = getMinAllowedDate(currentDateIso);
+  const initialPage = getInitialCalendarPage(currentDateIso);
 
   const [showCal, setShowCal] = useState(false);
   const [manualInput, setManualInput] = useState('');
-  const [calYear, setCalYear] = useState(new Date().getFullYear());
-  const [calMonth, setCalMonth] = useState(new Date().getMonth());
+  const [calYear, setCalYear] = useState(initialPage.year);
+  const [calMonth, setCalMonth] = useState(initialPage.month);
   const [selecting, setSelecting] = useState('in');
   const [calPos, setCalPos] = useState({ top: 0, left: 0 });
   const [mounted, setMounted] = useState(false);
@@ -204,24 +214,56 @@ function DateRangeField({ checkInDate, checkOutDate, onChange }) {
     const val = e.target.value;
     setManualInput(val);
     const { checkIn, checkOut } = parseRangeInput(val);
-    if (checkIn && checkOut && checkIn <= checkOut) applyDates(checkIn, checkOut);
+    if (
+      checkIn &&
+      checkOut &&
+      checkIn <= checkOut &&
+      isDateInBookingSeason(checkIn) &&
+      isDateInBookingSeason(checkOut) &&
+      checkIn >= minAllowedDate
+    ) {
+      applyDates(checkIn, checkOut);
+    }
   };
 
   const handleManualBlur = () => {
     if (!manualInput) return;
     const { checkIn, checkOut } = parseRangeInput(manualInput);
-    if (checkIn && checkOut && checkIn <= checkOut) applyDates(checkIn, checkOut);
+    if (
+      checkIn &&
+      checkOut &&
+      checkIn <= checkOut &&
+      isDateInBookingSeason(checkIn) &&
+      isDateInBookingSeason(checkOut) &&
+      checkIn >= minAllowedDate
+    ) {
+      applyDates(checkIn, checkOut);
+    }
     setManualInput('');
   };
 
-  const prevMonth = () => {
-    if (calMonth === 0) { setCalMonth(11); setCalYear((y) => y - 1); }
-    else setCalMonth((m) => m - 1);
+  const moveMonth = (direction) => {
+    let nextYear = calYear;
+    let nextMonth = calMonth;
+
+    do {
+      nextMonth += direction;
+      if (nextMonth < 0) {
+        nextMonth = 11;
+        nextYear -= 1;
+      }
+      if (nextMonth > 11) {
+        nextMonth = 0;
+        nextYear += 1;
+      }
+    } while (nextMonth < BOOKING_MONTH_START || nextMonth > BOOKING_MONTH_END);
+
+    setCalYear(nextYear);
+    setCalMonth(nextMonth);
   };
-  const nextMonth = () => {
-    if (calMonth === 11) { setCalMonth(0); setCalYear((y) => y + 1); }
-    else setCalMonth((m) => m + 1);
-  };
+
+  const prevMonth = () => moveMonth(-1);
+  const nextMonth = () => moveMonth(1);
 
   const displayValue =
     checkInDate && checkOutDate
@@ -266,7 +308,10 @@ function DateRangeField({ checkInDate, checkOutDate, onChange }) {
         {Array.from({ length: daysInMonth }).map((_, i) => {
           const day = i + 1;
           const iso = `${calYear}-${String(calMonth + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-          const isPast = iso < today;
+          const isPast = iso < currentDateIso;
+          const isOutsideSeason = !isDateInBookingSeason(iso);
+          const isBeforeSeasonStart = iso < minAllowedDate;
+          const isDisabled = isPast || isOutsideSeason || isBeforeSeasonStart;
           const isCI = iso === checkInDate;
           const isCO = iso === checkOutDate;
           const cellDate = isoToDate(iso);
@@ -276,11 +321,11 @@ function DateRangeField({ checkInDate, checkOutDate, onChange }) {
             <button
               type="button"
               key={iso}
-              disabled={isPast}
-              onClick={() => !isPast && handleDayClick(iso)}
+              disabled={isDisabled}
+              onClick={() => !isDisabled && handleDayClick(iso)}
               className={[
                 'text-xs py-1.5 text-center transition-colors rounded-lg',
-                isPast ? 'text-slate-300 cursor-not-allowed' : 'hover:bg-primary-50 cursor-pointer text-slate-800',
+                isDisabled ? 'text-slate-300 cursor-not-allowed' : 'hover:bg-primary-50 cursor-pointer text-slate-800',
                 (isCI || isCO) ? '!bg-primary-600 !text-white font-bold hover:!bg-primary-700' : '',
                 inRange ? '!bg-primary-100 !text-primary-800 !rounded-none' : '',
               ].filter(Boolean).join(' ')}
@@ -375,11 +420,10 @@ export default function BookingRequestForm() {
   const booking = useStore(bookingStore);
   const nights = useStore(numberOfNights);
 
-  const today = new Date().toISOString().split('T')[0];
-  const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+  const defaultDates = getDefaultBookingDates();
 
-  const [checkInDate, setCheckInDate] = useState(booking.checkInDate || today);
-  const [checkOutDate, setCheckOutDate] = useState(booking.checkOutDate || tomorrow);
+  const [checkInDate, setCheckInDate] = useState(booking.checkInDate || defaultDates.checkIn);
+  const [checkOutDate, setCheckOutDate] = useState(booking.checkOutDate || defaultDates.checkOut);
   const [selectedRoomId, setSelectedRoomId] = useState(booking.selectedRoomId || '');
   const [roomPricePerNight, setRoomPricePerNight] = useState(booking.selectedRoomPrice || 0);
   const [contactMethod, setContactMethod] = useState('');
@@ -420,27 +464,10 @@ export default function BookingRequestForm() {
     const allRooms = ROOM_OPTIONS.flatMap((g) => g.rooms);
     const found = allRooms.find((r) => r.id === roomId);
     const roomData = ROOMS_DATA.find((r) => r.id === roomId);
-    const roomOverrides = roomId ? (booking.periodPriceOverrides?.[roomId] || {}) : {};
-    const price = roomData ? calculateStayPrice(roomData, checkInDate, checkOutDate, roomOverrides) || roomData.base_price : 0;
+    const price = roomData ? calculateStayPrice(roomData, checkInDate, checkOutDate) || roomData.base_price : 0;
     setRoomPricePerNight(price);
     updateBooking({ selectedRoomId: roomId || null, selectedRoomName: found ? found.name : '', selectedRoomPrice: price });
     setErrors((e) => ({ ...e, room: undefined }));
-  };
-
-
-  const handlePeriodPriceChange = (periodId, value) => {
-    if (!selectedRoomData) return;
-    const parsed = Number(value);
-    if (!Number.isFinite(parsed) || parsed <= 0) return;
-
-    updatePeriodPrice(selectedRoomData.id, periodId, parsed);
-    const updatedOverrides = {
-      ...(booking.periodPriceOverrides?.[selectedRoomData.id] || {}),
-      [periodId]: parsed,
-    };
-    const updatedTotal = calculateStayPrice(selectedRoomData, checkInDate, checkOutDate, updatedOverrides);
-    setRoomPricePerNight(updatedTotal || parsed);
-    updateBooking({ selectedRoomPrice: updatedTotal || parsed });
   };
 
   const handlePhoneChange = (e) => {
@@ -470,11 +497,10 @@ export default function BookingRequestForm() {
   const allRooms = ROOM_OPTIONS.flatMap((g) => g.rooms);
   const selectedRoom = allRooms.find((r) => r.id === selectedRoomId);
   const selectedRoomData = ROOMS_DATA.find((r) => r.id === selectedRoomId) || null;
-  const periodOverrides = selectedRoomId ? (booking.periodPriceOverrides?.[selectedRoomId] || {}) : {};
-  const roomPeriods = selectedRoomData ? getRoomPeriods(selectedRoomData, periodOverrides) : [];
+  const roomPeriods = selectedRoomData ? getRoomPeriods(selectedRoomData) : [];
 
   const totalCost = selectedRoomData
-    ? calculateStayPrice(selectedRoomData, checkInDate, checkOutDate, periodOverrides)
+    ? calculateStayPrice(selectedRoomData, checkInDate, checkOutDate)
     : roomPricePerNight * Math.max(localNights, 0);
 
   const buildMessage = () => {
@@ -608,16 +634,9 @@ export default function BookingRequestForm() {
                         <p className="text-xs text-slate-500">{formatDateRu(period.start)} — {formatDateRu(period.end)}</p>
                       )}
                     </div>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        min="1"
-                        defaultValue={period.price}
-                        onBlur={(e) => handlePeriodPriceChange(period.id, e.target.value)}
-                        className="w-full px-3 py-2 pr-8 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
-                      />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500">₽</span>
-                    </div>
+                    <p className="text-right text-sm font-semibold text-slate-800">
+                      {period.price.toLocaleString('ru-RU')} ₽
+                    </p>
                   </div>
                 ))}
               </div>

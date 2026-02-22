@@ -5,38 +5,28 @@
    ========================================= */
 import { useState } from 'react';
 import RoomCard from './RoomCard';
+import { applyPricingToRoom } from '../../config/roomPricing';
 
-const ROOMS_DATA = [
+const RAW_ROOMS_DATA = [
   {
     id: '1',
-    name: 'Эконом 2-местный',
-    category: 'econom',
+    name: 'Стандарт для двоих',
+    category: 'standart',
     capacity: 2,
-    base_price: 1000,
-    price_periods: [
-      { id: 'low', label: 'Низкий сезон', start: '2026-01-01', end: '2026-05-31', price: 1000 },
-      { id: 'high', label: 'Высокий сезон', start: '2026-06-01', end: '2026-08-31', price: 1400 },
-      { id: 'mid', label: 'Бархатный сезон', start: '2026-09-01', end: '2026-12-31', price: 1200 },
-    ],
     amenities: ['Душ и туалет общего пользования', 'Вентиляторы', 'Wi-Fi', 'Постельное белье'],
     images: [
-      'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=800',
-      'https://images.pexels.com/photos/271743/pexels-photo-271743.jpeg?auto=compress&cs=tinysrgb&w=800',
-      'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'img/rooms/standart/2/13-1.webp',
+      'img/rooms/standart/2/13-2.webp',
+      'img/rooms/standart/001.webp',
+      'img/rooms/standart/002.webp',
     ],
-    description: 'Уютный эконом-номер для двоих с базовыми удобствами',
+    description: 'Уютный стандартный номер для двоих с базовыми удобствами',
   },
   {
     id: '2',
     name: 'Эконом 3-местный',
     category: 'econom',
     capacity: 3,
-    base_price: 1200,
-    price_periods: [
-      { id: 'low', label: 'Низкий сезон', start: '2026-01-01', end: '2026-05-31', price: 1200 },
-      { id: 'high', label: 'Высокий сезон', start: '2026-06-01', end: '2026-08-31', price: 1700 },
-      { id: 'mid', label: 'Бархатный сезон', start: '2026-09-01', end: '2026-12-31', price: 1450 },
-    ],
     amenities: ['Душ и туалет общего пользования', 'Вентиляторы', 'Wi-Fi', 'Постельное белье'],
     images: [
       'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -50,12 +40,6 @@ const ROOMS_DATA = [
     name: 'Эконом 4-местный',
     category: 'econom',
     capacity: 4,
-    base_price: 1500,
-    price_periods: [
-      { id: 'low', label: 'Низкий сезон', start: '2026-01-01', end: '2026-05-31', price: 1500 },
-      { id: 'high', label: 'Высокий сезон', start: '2026-06-01', end: '2026-08-31', price: 2100 },
-      { id: 'mid', label: 'Бархатный сезон', start: '2026-09-01', end: '2026-12-31', price: 1800 },
-    ],
     amenities: ['Душ и туалет общего пользования', 'Вентиляторы', 'Wi-Fi', 'Постельное белье'],
     images: [
       'https://images.pexels.com/photos/1743229/pexels-photo-1743229.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -69,12 +53,6 @@ const ROOMS_DATA = [
     name: 'Стандарт 2-местный',
     category: 'standard',
     capacity: 2,
-    base_price: 1500,
-    price_periods: [
-      { id: 'low', label: 'Низкий сезон', start: '2026-01-01', end: '2026-05-31', price: 1500 },
-      { id: 'high', label: 'Высокий сезон', start: '2026-06-01', end: '2026-08-31', price: 2200 },
-      { id: 'mid', label: 'Бархатный сезон', start: '2026-09-01', end: '2026-12-31', price: 1800 },
-    ],
     amenities: ['Индивидуальный санузел', 'Кондиционер', 'Холодильник', 'Телевизор', 'Wi-Fi', 'Постельное белье'],
     images: [
       'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -88,12 +66,6 @@ const ROOMS_DATA = [
     name: 'Стандарт 3-местный',
     category: 'standard',
     capacity: 3,
-    base_price: 1800,
-    price_periods: [
-      { id: 'low', label: 'Низкий сезон', start: '2026-01-01', end: '2026-05-31', price: 1800 },
-      { id: 'high', label: 'Высокий сезон', start: '2026-06-01', end: '2026-08-31', price: 2600 },
-      { id: 'mid', label: 'Бархатный сезон', start: '2026-09-01', end: '2026-12-31', price: 2200 },
-    ],
     amenities: ['Индивидуальный санузел', 'Кондиционер', 'Холодильник', 'Телевизор', 'Wi-Fi', 'Постельное белье'],
     images: [
       'https://images.pexels.com/photos/262048/pexels-photo-262048.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -103,6 +75,8 @@ const ROOMS_DATA = [
     description: 'Просторный стандартный номер для троих гостей',
   },
 ];
+
+const ROOMS_DATA = RAW_ROOMS_DATA.map(applyPricingToRoom);
 
 export { ROOMS_DATA };
 
@@ -164,8 +138,8 @@ export default function RoomsList() {
           <div className="grid grid-cols-2 gap-3 md:flex md:flex-row md:justify-center w-full md:w-auto">
             {[
               { value: 'all', label: 'Все комнаты' },
-              { value: 'econom', label: 'Эконом' },
               { value: 'standard', label: 'Стандарт' },
+              { value: 'econom', label: 'Эконом' },
             ].map(({ value, label }) => (
               <button
                 key={value}

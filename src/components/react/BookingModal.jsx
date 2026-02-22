@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { X } from 'lucide-react';
 import { updateBooking } from '../../stores/bookingStore';
+import { getDefaultBookingDates, getMinAllowedDate, getMaxAllowedDate } from '../../lib/bookingDates';
 
 export default function BookingModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,8 +22,10 @@ export default function BookingModal() {
     },
   });
 
-  const today = new Date().toISOString().split('T')[0];
-  const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+  const currentDateIso = new Date().toISOString().split('T')[0];
+  const defaultDates = getDefaultBookingDates();
+  const minAllowedDate = getMinAllowedDate(currentDateIso);
+  const maxAllowedDate = getMaxAllowedDate(currentDateIso);
 
   useEffect(() => {
     const handleOpen = () => setIsOpen(true);
@@ -79,7 +82,9 @@ export default function BookingModal() {
             </label>
             <input
               type="date"
-              min={today}
+              min={minAllowedDate}
+              max={maxAllowedDate}
+              defaultValue={defaultDates.checkIn}
               {...register('checkInDate', { required: 'Укажите дату заезда' })}
               className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
             />
@@ -94,7 +99,9 @@ export default function BookingModal() {
             </label>
             <input
               type="date"
-              min={tomorrow}
+              min={minAllowedDate}
+              max={maxAllowedDate}
+              defaultValue={defaultDates.checkOut}
               {...register('checkOutDate', { required: 'Укажите дату выезда' })}
               className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
             />
