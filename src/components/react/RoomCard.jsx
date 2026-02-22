@@ -416,12 +416,10 @@ export default function RoomCard({ room }) {
             }`}
           >
             <Calendar className="w-4 h-4 text-slate-400 flex-shrink-0" />
-            <span className="flex-1 text-slate-800 font-medium">
-              {checkIn ? toShort(checkIn) : 'дд.мм.гг'}
-            </span>
-            <span className="text-slate-400 mx-0.5">→</span>
-            <span className={checkOut ? 'text-slate-800 font-medium' : 'text-slate-400'}>
-              {checkOut ? toShort(checkOut) : 'дд.мм.гг'}
+            <span className="text-slate-800 font-medium">
+            {checkIn && checkOut
+              ? `${toShort(checkIn)} — ${toShort(checkOut)}`
+              : 'дд.мм.гг — дд.мм.гг'}
             </span>
           </button>
 
