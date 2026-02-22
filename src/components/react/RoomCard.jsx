@@ -212,6 +212,7 @@ export default function RoomCard({ room, isActive = false }) {
   const [showCal, setShowCal] = useState(false);
   const calAnchorRef = useRef(null);
   const dateRangeBtnRef = useRef(null);
+  const touchStartRef = useRef(null);
 
   const images =
     room.images && room.images.length > 0
@@ -226,21 +227,51 @@ export default function RoomCard({ room, isActive = false }) {
   const todayNightPrice = getNightPrice(room, today);
   const totalPrice = calculateStayPrice(room, checkIn, checkOut);
 
-  const prevSlide = useCallback(
-    (e) => {
-      e.stopPropagation();
-      setActiveSlide((p) => (p - 1 + images.length) % images.length);
-    },
-    [images.length]
-  );
+  const goToPrevSlide = useCallback(() => {
+    setActiveSlide((p) => (p - 1 + images.length) % images.length);
+  }, [images.length]);
 
-  const nextSlide = useCallback(
-    (e) => {
-      e.stopPropagation();
-      setActiveSlide((p) => (p + 1) % images.length);
-    },
-    [images.length]
-  );
+  const goToNextSlide = useCallback(() => {
+    setActiveSlide((p) => (p + 1) % images.length);
+  }, [images.length]);
+
+  const prevSlide = useCallback((e) => {
+    e.stopPropagation();
+    goToPrevSlide();
+  }, [goToPrevSlide]);
+
+  const nextSlide = useCallback((e) => {
+    e.stopPropagation();
+    goToNextSlide();
+  }, [goToNextSlide]);
+
+  const handleTouchStart = useCallback((e) => {
+    if (e.touches.length !== 1) return;
+    const touch = e.touches[0];
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+  }, []);
+
+  const handleTouchEnd = useCallback((e) => {
+    if (images.length <= 1 || !touchStartRef.current || e.changedTouches.length !== 1) {
+      touchStartRef.current = null;
+      return;
+    }
+
+    const touch = e.changedTouches[0];
+    const deltaX = touch.clientX - touchStartRef.current.x;
+    const deltaY = touch.clientY - touchStartRef.current.y;
+    touchStartRef.current = null;
+
+    const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY);
+    const isSwipeEnough = Math.abs(deltaX) > 35;
+    if (!isHorizontalSwipe || !isSwipeEnough) return;
+
+    if (deltaX > 0) {
+      goToPrevSlide();
+    } else {
+      goToNextSlide();
+    }
+  }, [images.length, goToPrevSlide, goToNextSlide]);
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -298,7 +329,11 @@ export default function RoomCard({ room, isActive = false }) {
     >
 
       {/* ---- photo slider ---- */}
-      <div className="relative h-64 flex-shrink-0 overflow-hidden">
+      <div
+        className="relative h-64 flex-shrink-0 overflow-hidden"
+        onTouchStart={images.length > 1 ? handleTouchStart : undefined}
+        onTouchEnd={images.length > 1 ? handleTouchEnd : undefined}
+      >
         <div
           className="flex h-full transition-transform duration-300 ease-in-out"
           style={{

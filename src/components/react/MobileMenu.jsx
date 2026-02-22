@@ -11,6 +11,7 @@ export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
+    { label: 'Забронировать', href: '#booking-request' },
     { label: 'Комнаты', href: '#rooms' },
     { label: 'О нас', href: '#features' },
     { label: 'Отзывы', href: '#reviews' },
@@ -28,7 +29,7 @@ export default function MobileMenu() {
   };
 
   return (
-    <div>
+    <div className="w-fit">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="p-2 text-gray-700 hover:text-primary-600 transition-colors"

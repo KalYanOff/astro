@@ -26,7 +26,7 @@ export default function CookieConsent() {
   if (!showBanner) return null;
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-50 p-4">
+    <div className="js-hide-on-booking fixed bottom-0 inset-x-0 z-50 p-4">
       <div className="max-w-screen-xl mx-auto bg-white border border-gray-200 rounded-2xl shadow-xl p-6 md:flex md:items-center md:justify-between dark:bg-gray-900 dark:border-gray-800">
         <div className="flex-1 mr-8">
           <p className="text-sm text-gray-700 dark:text-gray-300">

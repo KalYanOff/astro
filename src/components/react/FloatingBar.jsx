@@ -9,6 +9,8 @@ import { useState, useEffect } from 'react';
 import { Calendar, ArrowUp, X } from 'lucide-react';
 import { CONTACT_LINKS } from '../../config/site.js';
 
+const BOOKING_SECTION_ACTIVE_CLASS = 'booking-section-active';
+
 /* ICON STUBS: inline SVG components — replace JSX content with custom SVGs */
 const IconPhone = ({ className }) => (
   <svg className={className} width="24" height="24" fill="currentColor"  viewBox="0 0 16 16" aria-hidden="true">
@@ -44,13 +46,23 @@ export default function FloatingBar() {
       const bookingEl = document.querySelector('#booking-request');
       if (bookingEl) {
         const rect = bookingEl.getBoundingClientRect();
-        setBookingVisible(rect.top < window.innerHeight && rect.bottom > 0);
+        const isBookingVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        setBookingVisible(isBookingVisible);
+        document.body.classList.toggle(BOOKING_SECTION_ACTIVE_CLASS, isBookingVisible);
+      } else {
+        setBookingVisible(false);
+        document.body.classList.remove(BOOKING_SECTION_ACTIVE_CLASS);
       }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll);
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+      document.body.classList.remove(BOOKING_SECTION_ACTIVE_CLASS);
+    };
   }, []);
 
   const scrollToTop = () => {
@@ -65,7 +77,7 @@ export default function FloatingBar() {
   return (
     <>
       <div
-        className={`fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white shadow-2xl border-t border-slate-200 transition-transform duration-300 ${
+        className={`js-hide-on-booking fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white shadow-2xl border-t border-slate-200 transition-transform duration-300 ${
           bookingVisible ? 'translate-y-full' : 'translate-y-0'
         }`}
       >
@@ -83,14 +95,14 @@ export default function FloatingBar() {
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-24 md:bottom-6 left-6 z-40 p-4 bg-slate-900 hover:bg-slate-800 text-white rounded-full shadow-2xl transition-all transform hover:scale-110 animate-fade-in"
+          className="js-hide-on-booking fixed bottom-24 md:bottom-6 left-6 z-40 p-4 bg-slate-900 hover:bg-slate-800 text-white rounded-full shadow-2xl transition-all transform hover:scale-110 animate-fade-in"
           aria-label="Наверх"
         >
           <ArrowUp className="w-6 h-6" />
         </button>
       )}
 
-      <div className="fixed bottom-24 md:bottom-6 right-6 z-40">
+      <div className="js-hide-on-booking fixed bottom-24 md:bottom-6 right-6 z-40">
         {showMessengers && (
           <div className="mb-4 space-y-3 animate-slide-up">
             <a

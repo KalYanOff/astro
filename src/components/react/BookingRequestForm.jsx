@@ -485,6 +485,7 @@ export default function BookingRequestForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [highlight, setHighlight] = useState(false);
+  const bookingSectionRef = useRef(null);
 
   useEffect(() => {
     if (booking.checkInDate) setCheckInDate(booking.checkInDate);
@@ -503,6 +504,13 @@ export default function BookingRequestForm() {
       return () => clearTimeout(t);
     }
   }, [booking.selectedRoomName, booking.selectedRoomId]);
+
+  useEffect(() => {
+    if (!submitted) return;
+    requestAnimationFrame(() => {
+      bookingSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, [submitted]);
 
   const handleDatesChange = (ci, co) => {
     setCheckInDate(ci);
@@ -649,7 +657,7 @@ export default function BookingRequestForm() {
 
   if (submitted) {
     return (
-      <section id="booking-request" className="py-20 bg-white">
+      <section id="booking-request" ref={bookingSectionRef} className="py-20 bg-white">
         <div className="container mx-auto px-4 max-w-2xl text-center">
           <div className="bg-green-50 border border-green-200 rounded-2xl p-12">
             <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-6" />
@@ -664,7 +672,7 @@ export default function BookingRequestForm() {
   }
 
   return (
-    <section id="booking-request" className="py-20 bg-white">
+    <section id="booking-request" ref={bookingSectionRef} className="py-20 bg-white">
       <div className="container mx-auto px-4 max-w-2xl">
         <div className="text-center mb-10">
           <h2 className="text-4xl font-bold text-slate-900 mb-4">Оставить заявку</h2>

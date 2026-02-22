@@ -8,12 +8,12 @@ import {CONTACT_LINKS} from '../config/site.js';
 ---
 
 <!-- header: sticky top navbar -->
-<header class="fixed top-0 left-0 right-0 z-50 duration-300 bg-white/95 backdrop-blur-md shadow-sm transition-shadow" role="banner">
+<header class="js-hide-on-booking fixed top-0 left-0 right-0 z-50 pb-4 duration-300 bg-white/95 backdrop-blur-md shadow-sm transition-shadow" role="banner">
   <div class="max-w-7xl mx-auto px-4">
-    <div class="flex justify-between items-center h-16">
+    <div class="grid grid-cols-[1fr_auto_1fr] items-center h-16">
 
       <!-- header-logo: hotel logo + name + address -->
-      <a href="/" class="flex items-stretch gap-3 h-auto py-2 group">
+      <a href="/" class="justify-self-start flex items-stretch gap-3 h-auto py-2 group">
         <div class="h-full aspect-square rounded-lg overflow-hidden flex items-center justify-center bg-slate-0 group-hover:scale-105 transition-transform">
           <img
             src="/img/logo.webp"
@@ -28,7 +28,15 @@ import {CONTACT_LINKS} from '../config/site.js';
           <span class="text-[10px] md:text-xs text-gray-500">Джубга, Набережная 7</span>
         </div>
       </a>
-      <div class="hidden lg:flex items-center gap-1">
+      <div class="justify-self-center flex items-center gap-2">
+        <a
+          href="#booking-request"
+          onclick="event.preventDefault(); document.querySelector('#booking-request')?.scrollIntoView({ behavior: 'smooth', block: 'start' });"
+          class="hidden md:inline-flex items-center justify-center h-11 px-5 rounded-xl bg-accent-500 hover:bg-accent-600 text-white font-semibold transition-colors"
+        >
+          Забронировать
+        </a>
+        <div class="hidden lg:flex items-center gap-1">
         <a
           href={CONTACT_LINKS.phone}
           target="_blank"
@@ -73,8 +81,11 @@ import {CONTACT_LINKS} from '../config/site.js';
         >
           <img src="/img/icons/max.svg" class="w-full h-full object-contain rounded-full">
         </a>
+        </div>
       </div>
-      <MobileMenu client:load /> 
+      <div class="justify-self-end flex justify-end">
+        <MobileMenu client:load />
+      </div>
     </div>
   </div>
 </header>
