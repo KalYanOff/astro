@@ -9,7 +9,9 @@ import {
   Share2, Users, Wifi, Wind, Snowflake, Tv, Droplet,
   ChevronLeft, ChevronRight, Flame, AlertCircle, Calendar,
 } from 'lucide-react';
-import { updateBooking } from '../../stores/bookingStore';
+import { useStore } from '@nanostores/react';
+import { bookingStore, updateBooking } from '../../stores/bookingStore';
+import { calculateStayPrice, getNightPrice } from '../../lib/pricing';
 
 const AMENITY_ICONS = {
   'Wi-Fi': Wifi,
@@ -188,6 +190,7 @@ export default function RoomCard({ room }) {
   const today = new Date().toISOString().split('T')[0];
   const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
 
+  const booking = useStore(bookingStore);
   const [activeSlide, setActiveSlide] = useState(0);
   const [checkIn, setCheckIn] = useState(today);
   const [checkOut, setCheckOut] = useState(tomorrow);
@@ -202,7 +205,9 @@ export default function RoomCard({ room }) {
 
   const badge = CTA_BADGES[room.id] ?? null;
   const nights = calcNights(checkIn, checkOut);
-  const totalPrice = room.base_price * Math.max(nights, 1);
+  const periodOverrides = booking.periodPriceOverrides?.[room.id] || {};
+  const currentNightPrice = getNightPrice(room, checkIn || today, periodOverrides);
+  const totalPrice = calculateStayPrice(room, checkIn, checkOut, periodOverrides);
 
   const prevSlide = useCallback(
     (e) => {
@@ -237,12 +242,15 @@ export default function RoomCard({ room }) {
     setCheckOut(co || '');
   };
 
+  useEffect(() => {
+    setActiveSlide(0);
+  }, [room.id]);
+
   const handleBooking = () => {
-    const n = calcNights(checkIn, checkOut);
     updateBooking({
       selectedRoomId: room.id,
       selectedRoomName: room.name,
-      selectedRoomPrice: room.base_price,
+      selectedRoomPrice: currentNightPrice,
       checkInDate: checkIn,
       checkOutDate: checkOut || tomorrow,
       guestsCount: room.capacity,
@@ -306,7 +314,7 @@ export default function RoomCard({ room }) {
         <div className="absolute bottom-3 right-3 z-10 bg-black/60 backdrop-blur-sm rounded-xl px-3 py-2 text-right leading-none">
           <span className="block text-[10px] text-white/70 mb-1">от</span>
           <span className="block text-lg font-bold text-white">
-            {room.base_price.toLocaleString('ru-RU')} ₽
+            {currentNightPrice.toLocaleString('ru-RU')} ₽
           </span>
           <span className="block text-[10px] text-white/70 mt-1">/ ночь</span>
         </div>
@@ -432,7 +440,7 @@ export default function RoomCard({ room }) {
           {nights > 0 && checkOut ? (
             <div className="bg-primary-50 rounded-xl px-4 py-3 mb-3">
               <div className="flex items-center justify-between text-sm text-slate-600 mb-1">
-                <span>{nights} {nightsLabel} × {room.base_price.toLocaleString('ru-RU')} ₽</span>
+                <span>{nights} {nightsLabel} × от {currentNightPrice.toLocaleString('ru-RU')} ₽</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm font-semibold text-slate-700">Итого</span>
