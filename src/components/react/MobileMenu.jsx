@@ -31,14 +31,18 @@ export default function MobileMenu() {
   return (
     <div className="w-fit">
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 text-gray-700 hover:text-primary-600 transition-colors"
+        className="min-w-11 min-h-11 p-2 text-gray-700 hover:text-primary-600 transition-colors"
         aria-label="Меню"
+        aria-expanded={isOpen}
+        aria-controls="mobile-menu-dropdown"
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
       <div
+        id="mobile-menu-dropdown"
         className={`absolute top-full left-0 w-full bg-white border-t border-gray-100 shadow-xl transition-all duration-300 ease-in-out ${
           isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
         }`}

@@ -31,7 +31,15 @@ const IconTelegram = ({ className }) => (
 );
 
 const IconMax = ({ className }) => (
-  <img src="/img/icons/max.svg" class="w-full h-full object-contain rounded-full"></img>
+  <img
+    src="/img/icons/max.svg"
+    className={className}
+    alt="MAX"
+    width="24"
+    height="24"
+    loading="lazy"
+    decoding="async"
+  />
 );
 
 export default function FloatingBar() {
@@ -94,6 +102,7 @@ export default function FloatingBar() {
 
       {showScrollTop && (
         <button
+          type="button"
           onClick={scrollToTop}
           className="js-hide-on-booking fixed bottom-24 md:bottom-6 left-6 z-40 p-4 bg-slate-900 hover:bg-slate-800 text-white rounded-full shadow-2xl transition-all transform hover:scale-110 animate-fade-in"
           aria-label="Наверх"
@@ -140,12 +149,13 @@ export default function FloatingBar() {
               aria-label="MAX"
               style={{ animationDelay: '150ms' }}
             >
-              <IconMax className="w-6 h-6" />
+              <IconMax className="w-10 h-10" />
             </a>
           </div>
         )}
 
         <button
+          type="button"
           onClick={() => setShowMessengers(!showMessengers)}
           className={`flex items-center justify-center gap-2 px-4 h-16 rounded-full shadow-2xl transition-all transform hover:scale-110 ${
             showMessengers
@@ -153,6 +163,7 @@ export default function FloatingBar() {
               : 'bg-accent-500 hover:bg-accent-600 animate-bounce-soft'
           } text-white`}
           aria-label={showMessengers ? 'Закрыть' : 'Связаться'}
+          aria-expanded={showMessengers}
         >
           {showMessengers ? (
             <X className="w-7 h-7" />

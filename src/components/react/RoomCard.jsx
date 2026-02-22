@@ -274,14 +274,19 @@ export default function RoomCard({ room, isActive = false }) {
   }, [images.length, goToPrevSlide, goToNextSlide]);
 
   const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: room.name,
-          text: room.description,
-          url: `${window.location.origin}/#${roomAnchor}`,
-        });
-      } catch (_) {}
+    const url = `${window.location.origin}/#${roomAnchor}`;
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch (_) {
+      const textarea = document.createElement('textarea');
+      textarea.value = url;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'absolute';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
     }
   };
 
@@ -349,6 +354,9 @@ export default function RoomCard({ room, isActive = false }) {
               className="h-full object-cover flex-shrink-0"
               style={{ width: `${100 / images.length}%` }}
               loading="lazy"
+              decoding="async"
+              width="1200"
+              height="800"
             />
           ))}
         </div>
@@ -365,7 +373,7 @@ export default function RoomCard({ room, isActive = false }) {
 
         <button
           onClick={handleShare}
-          className="absolute top-3 right-3 z-10 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow hover:scale-110 transition-transform"
+          className="absolute top-3 right-3 z-10 w-11 h-11 flex items-center justify-center bg-white/90 backdrop-blur-sm rounded-full shadow hover:scale-110 transition-transform"
           aria-label="Поделиться"
         >
           <Share2 className="w-4 h-4 text-slate-700" />
@@ -383,14 +391,14 @@ export default function RoomCard({ room, isActive = false }) {
           <>
             <button
               onClick={prevSlide}
-              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center bg-black/40 hover:bg-black/60 text-white rounded-full transition-all hover:scale-110"
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-11 h-11 flex items-center justify-center bg-black/40 hover:bg-black/60 text-white rounded-full transition-all hover:scale-110"
               aria-label="Предыдущее фото"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={nextSlide}
-              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center bg-black/40 hover:bg-black/60 text-white rounded-full transition-all hover:scale-110"
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-11 h-11 flex items-center justify-center bg-black/40 hover:bg-black/60 text-white rounded-full transition-all hover:scale-110"
               aria-label="Следующее фото"
             >
               <ChevronRight className="w-5 h-5" />
@@ -404,11 +412,17 @@ export default function RoomCard({ room, isActive = false }) {
                     e.stopPropagation();
                     setActiveSlide(i);
                   }}
-                  className={`rounded-full transition-all duration-200 ${
-                    i === activeSlide ? 'w-4 h-2 bg-white' : 'w-2 h-2 bg-white/50 hover:bg-white/80'
+                  className={`min-w-11 min-h-11 flex items-center justify-center rounded-full transition-all duration-200 ${
+                    i === activeSlide ? 'bg-black/20' : 'bg-transparent'
                   }`}
                   aria-label={`Фото ${i + 1}`}
-                />
+                >
+                  <span
+                    className={`rounded-full transition-all duration-200 ${
+                      i === activeSlide ? 'w-4 h-2 bg-white' : 'w-2 h-2 bg-white/60'
+                    }`}
+                  />
+                </button>
               ))}
             </div>
           </>

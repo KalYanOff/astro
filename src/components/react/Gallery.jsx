@@ -11,52 +11,52 @@ import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
 
 const TERRITORY_PATHS = [
   '/img/photo/terrytory/2.png',
-  '/img/photo/terrytory/7.jpg',
-  '/img/photo/terrytory/9.jpg',
-  '/img/photo/terrytory/DSC_0002.jpg',
-  '/img/photo/terrytory/DSC_0006.jpg',
-  '/img/photo/terrytory/DSC_0008.jpg',
-  '/img/photo/terrytory/DSC_0009.jpg',
-  '/img/photo/terrytory/DSC_0032.jpg',
-  '/img/photo/terrytory/DSC_0033.jpg',
-  '/img/photo/terrytory/DSC_0034.jpg',
-  '/img/photo/terrytory/DSC_0053.jpg',
-  '/img/photo/terrytory/DSC_0060.jpg',
-  '/img/photo/terrytory/DSC_0068.jpg',
-  '/img/photo/terrytory/DSC_0070.jpg',
-  '/img/photo/terrytory/DSC_0074.jpg',
-  '/img/photo/terrytory/DSC_0081.jpg',
-  '/img/photo/terrytory/IMG_0658.jpeg',
-  '/img/photo/terrytory/IMG_0668.jpeg',
-  '/img/photo/terrytory/IMG_0670.jpeg',
-  '/img/photo/terrytory/IMG_0692.jpeg',
-  '/img/photo/terrytory/IMG_0714.JPG',
+  '/img/photo/terrytory/7.webp',
+  '/img/photo/terrytory/9.webp',
+  '/img/photo/terrytory/DSC_0002.webp',
+  '/img/photo/terrytory/DSC_0006.webp',
+  '/img/photo/terrytory/DSC_0008.webp',
+  '/img/photo/terrytory/DSC_0009.webp',
+  '/img/photo/terrytory/DSC_0032.webp',
+  '/img/photo/terrytory/DSC_0033.webp',
+  '/img/photo/terrytory/DSC_0034.webp',
+  '/img/photo/terrytory/DSC_0053.webp',
+  '/img/photo/terrytory/DSC_0060.webp',
+  '/img/photo/terrytory/DSC_0068.webp',
+  '/img/photo/terrytory/DSC_0070.webp',
+  '/img/photo/terrytory/DSC_0074.webp',
+  '/img/photo/terrytory/DSC_0081.webp',
+  '/img/photo/terrytory/IMG_0658.webp',
+  '/img/photo/terrytory/IMG_0668.webp',
+  '/img/photo/terrytory/IMG_0670.webp',
+  '/img/photo/terrytory/IMG_0692.webp',
+  '/img/photo/terrytory/IMG_0714.webp',
 ];
 
 const BEACH_PATHS = ['/img/photo/beach/beach.webp'];
 
 const ROOM_PATHS = [
-  '/img/rooms/econom/2/DSC_0033.jpg',
-  '/img/rooms/econom/2/Беж-1.jpg',
-  '/img/rooms/econom/2/Беж-2.jpg',
-  '/img/rooms/econom/2/Беж-3.jpg',
-  '/img/rooms/econom/2/Серая-1.jpg',
-  '/img/rooms/econom/2/Серая-2.jpg',
-  '/img/rooms/econom/2/Серая-3.jpg',
-  '/img/rooms/econom/2/Сирень-1.jpg',
-  '/img/rooms/econom/2/Сирень-2.jpg',
-  '/img/rooms/econom/2/Сирень-3.jpg',
-  '/img/rooms/econom/3/_DSC0017-Улучшено-Ум. шума.jpg',
-  '/img/rooms/econom/3/_DSC0019-Улучшено-Ум. шума.jpg',
-  '/img/rooms/econom/3/_DSC0026.jpg',
-  '/img/rooms/econom/3/БК-2.jpg',
-  '/img/rooms/econom/3/К4-1.jpg',
-  '/img/rooms/econom/3/К4-2.jpg',
-  '/img/rooms/econom/3/К4-3.jpg',
-  '/img/rooms/econom/3/Сер-1.jpg',
-  '/img/rooms/econom/3/Сер-2.jpg',
-  '/img/rooms/econom/4/4м-1.jpeg',
-  '/img/rooms/econom/4/4м-2.jpeg',
+  '/img/rooms/econom/2/DSC_0033.webp',
+  '/img/rooms/econom/2/bezh-1.webp',
+  '/img/rooms/econom/2/bezh-2.webp',
+  '/img/rooms/econom/2/bezh-3.webp',
+  '/img/rooms/econom/2/seraya-1.webp',
+  '/img/rooms/econom/2/seraya-2.webp',
+  '/img/rooms/econom/2/seraya-3.webp',
+  '/img/rooms/econom/2/siren-1.webp',
+  '/img/rooms/econom/2/siren-2.webp',
+  '/img/rooms/econom/2/siren-3.webp',
+  '/img/rooms/econom/3/dsc0017.webp',
+  '/img/rooms/econom/3/dsc0019.webp',
+  '/img/rooms/econom/3/_DSC0026.webp',
+  '/img/rooms/econom/3/bk-2.webp',
+  '/img/rooms/econom/3/k4-1.webp',
+  '/img/rooms/econom/3/k4-2.webp',
+  '/img/rooms/econom/3/k4-3.webp',
+  '/img/rooms/econom/3/ser-1.webp',
+  '/img/rooms/econom/3/ser-2.webp',
+  '/img/rooms/econom/4/4m-1.webp',
+  '/img/rooms/econom/4/4m-2.webp',
   '/img/rooms/standart/001.webp',
   '/img/rooms/standart/002.webp',
   '/img/rooms/standart/2/12-1.webp',
@@ -155,21 +155,26 @@ export default function Gallery() {
               ? filteredImages
               : filteredImages.slice(0, MOBILE_INITIAL)
             ).map((image, index) => (
-              <div
+              <button
+                type="button"
                 key={image.src}
                 className="relative aspect-square overflow-hidden rounded-xl cursor-pointer group"
                 onClick={() => openLightbox(index)}
+                aria-label={`Открыть фото: ${image.alt}`}
               >
                 <img
                   src={image.src}
                   alt={image.alt}
+                  width="900"
+                  height="900"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
                   <Search className="w-7 h-7 text-white opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300" />
                 </div>
-              </div>
+              </button>
             ))}
           </div>
 
@@ -191,21 +196,26 @@ export default function Gallery() {
               ? filteredImages
               : filteredImages.slice(0, DESKTOP_INITIAL)
             ).map((image, index) => (
-              <div
+              <button
+                type="button"
                 key={image.src}
                 className="relative aspect-square overflow-hidden rounded-lg cursor-pointer group"
                 onClick={() => openLightbox(index)}
+                aria-label={`Открыть фото: ${image.alt}`}
               >
                 <img
                   src={image.src}
                   alt={image.alt}
+                  width="900"
+                  height="900"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
                   <Search className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300" />
                 </div>
-              </div>
+              </button>
             ))}
           </div>
 
@@ -222,13 +232,16 @@ export default function Gallery() {
         </div>
       </div>
 
-      <Lightbox
-        open={lightboxOpen}
-        close={() => setLightboxOpen(false)}
-        slides={filteredImages}
-        index={lightboxIndex}
-        plugins={[Zoom, Fullscreen]}
-      />
+      {lightboxOpen && (
+        <Lightbox
+          open={lightboxOpen}
+          close={() => setLightboxOpen(false)}
+          slides={filteredImages}
+          index={lightboxIndex}
+          plugins={[Zoom, Fullscreen]}
+        />
+      )}
     </section>
   );
 }
+

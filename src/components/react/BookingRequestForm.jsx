@@ -426,6 +426,7 @@ function DateRangeField({ checkInDate, checkOutDate, onChange }) {
             showCal ? 'border-primary-500 ring-2 ring-primary-100' : '',
           ].join(' ')}
           aria-label="Открыть календарь"
+          aria-expanded={showCal}
         >
           <Calendar className="w-4 h-4 text-slate-500" />
         </button>
@@ -779,6 +780,8 @@ export default function BookingRequestForm() {
                         ? `${method.borderColor} bg-white shadow-md scale-105`
                         : `border-slate-200 bg-white ${method.hoverColor} hover:border-slate-300`,
                     ].join(' ')}
+                    aria-label={`Связаться через ${method.label}`}
+                    aria-pressed={isSelected}
                   >
                     <div className={`w-10 h-10 rounded-full ${isSelected ? method.color : 'bg-slate-100'} flex items-center justify-center transition-colors`}>
                       <Icon className={`w-5 h-5 ${isSelected ? 'text-white' : 'text-slate-500'}`} />
@@ -809,6 +812,7 @@ export default function BookingRequestForm() {
                 value={guestName}
                 onChange={(e) => { setGuestName(e.target.value); setErrors((err) => ({ ...err, guestName: undefined })); }}
                 placeholder="Иван Иванов"
+                autoComplete="name"
                 className={`w-full px-4 py-3 border rounded-xl bg-white text-slate-900 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all ${errors.guestName ? 'border-red-400' : 'border-slate-300'}`}
               />
               {errors.guestName && (
@@ -827,6 +831,7 @@ export default function BookingRequestForm() {
                 value={phone}
                 onChange={handlePhoneChange}
                 placeholder="+7 (___) ___-__-__"
+                autoComplete="tel"
                 className={`w-full px-4 py-3 border rounded-xl bg-white text-slate-900 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all ${errors.phone ? 'border-red-400' : 'border-slate-300'}`}
               />
               {errors.phone && (

@@ -163,9 +163,9 @@ const RAW_ROOMS_DATA = [
     category: 'econom',
     capacity: 2,
     images: [
-      '/img/rooms/econom/2/Беж-1.jpg',
-      '/img/rooms/econom/2/Беж-2.jpg',
-      '/img/rooms/econom/2/Беж-3.jpg',
+      '/img/rooms/econom/2/bezh-1.webp',
+      '/img/rooms/econom/2/bezh-2.webp',
+      '/img/rooms/econom/2/bezh-3.webp',
     ],
     description: `🛌 Двухместный эконом (Double) 8 м²
 
@@ -183,9 +183,9 @@ const RAW_ROOMS_DATA = [
     category: 'econom',
     capacity: 2,
     images: [
-      '/img/rooms/econom/2/Серая-1.jpg',
-      '/img/rooms/econom/2/Серая-2.jpg',
-      '/img/rooms/econom/2/Серая-3.jpg',
+      '/img/rooms/econom/2/seraya-1.webp',
+      '/img/rooms/econom/2/seraya-2.webp',
+      '/img/rooms/econom/2/seraya-3.webp',
     ],
     description: `🛌 Двухместный эконом (Twin) 8 м²
 
@@ -203,9 +203,9 @@ const RAW_ROOMS_DATA = [
     category: 'econom',
     capacity: 2,
     images: [
-      '/img/rooms/econom/2/Сирень-1.jpg',
-      '/img/rooms/econom/2/Сирень-2.jpg',
-      '/img/rooms/econom/2/Сирень-3.jpg',
+      '/img/rooms/econom/2/siren-1.webp',
+      '/img/rooms/econom/2/siren-2.webp',
+      '/img/rooms/econom/2/siren-3.webp',
     ],
     description: `🛌 Двухместный эконом (Twin) 8 м²
 
@@ -223,7 +223,7 @@ const RAW_ROOMS_DATA = [
     category: 'econom',
     capacity: 2,
     images: [
-      '/img/rooms/econom/2/DSC_0033.jpg',
+      '/img/rooms/econom/2/DSC_0033.webp',
     ],
     description: `🛌 Двухместный эконом (Double) 8 м²
 
@@ -243,8 +243,8 @@ const RAW_ROOMS_DATA = [
     category: 'econom',
     capacity: 3,
     images: [
-      '/img/rooms/econom/3/Сер-1.jpg',
-      '/img/rooms/econom/3/Сер-2.jpg',
+      '/img/rooms/econom/3/ser-1.webp',
+      '/img/rooms/econom/3/ser-2.webp',
     ],
     description: `🛌 Трехместный эконом 12 м²
 
@@ -262,7 +262,7 @@ const RAW_ROOMS_DATA = [
     category: 'econom',
     capacity: 3,
     images: [
-      '/img/rooms/econom/3/БК-2.jpg',
+      '/img/rooms/econom/3/bk-2.webp',
     ],
     description: `🛌 Трехместный эконом 12 м²
 
@@ -280,8 +280,8 @@ const RAW_ROOMS_DATA = [
     category: 'econom',
     capacity: 3,
     images: [
-      '/img/rooms/econom/3/_DSC0017-Улучшено-Ум. шума.jpg',
-      '/img/rooms/econom/3/_DSC0019-Улучшено-Ум. шума.jpg',
+      '/img/rooms/econom/3/dsc0017.webp',
+      '/img/rooms/econom/3/dsc0019.webp',
     ],
     description: `🛌 Трехместный эконом 12 м²
 
@@ -299,9 +299,9 @@ const RAW_ROOMS_DATA = [
     category: 'econom',
     capacity: 3,
     images: [
-      '/img/rooms/econom/3/К4-1.jpg',
-      '/img/rooms/econom/3/К4-2.jpg',
-      '/img/rooms/econom/3/К4-3.jpg',
+      '/img/rooms/econom/3/k4-1.webp',
+      '/img/rooms/econom/3/k4-2.webp',
+      '/img/rooms/econom/3/k4-3.webp',
     ],
     description: `🛌 Трехместный эконом 12 м²
 
@@ -321,8 +321,8 @@ const RAW_ROOMS_DATA = [
     category: 'econom',
     capacity: 4,
     images: [
-        '/img/rooms/econom/4/4м-1.jpeg',
-        '/img/rooms/econom/4/4м-2.jpeg',
+        '/img/rooms/econom/4/4m-1.webp',
+        '/img/rooms/econom/4/4m-2.webp',
     ],
     description: `🛌 Четырехместный эконом 16 м²
 
@@ -400,11 +400,11 @@ export default function RoomsList() {
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/>
             </svg>
-            Комнаты и цены
+            Варианты размещения
           </div>
-          <h2 className="text-4xl font-bold text-slate-900 mb-4">Наши комнаты</h2>
+          <h2 className="text-4xl font-bold text-slate-900 mb-4">Выберите подходящий формат отдыха</h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Выберите комфортный вариант для вашего отдыха
+            Спокойная атмосфера, разные форматы размещения и удобства для всей семьи
           </p>
 
         </div>
@@ -415,7 +415,7 @@ export default function RoomsList() {
           {/* row 1: category filters */}
           <div className="grid grid-cols-2 gap-3 md:flex md:flex-row md:justify-center w-full md:w-auto">
             {[
-              { value: 'all', label: 'Все комнаты' },
+              { value: 'all', label: 'Все варианты' },
               { value: 'standard', label: 'Стандарт' },
               { value: 'econom', label: 'Эконом' },
             ].map(({ value, label }) => (
@@ -457,7 +457,7 @@ export default function RoomsList() {
         {filteredRooms.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-xl text-slate-500">
-              Нет комнат с выбранными параметрами
+              Нет вариантов с выбранными параметрами
             </p>
             <button
               onClick={() => setFilter(INITIAL_FILTER)}
@@ -481,9 +481,10 @@ export default function RoomsList() {
         )}
 
         <p className="text-center text-sm text-slate-400 mt-12">
-          * Все наши комнаты оформлены в индивидуальном дизайне для вашего комфорта. При бронировании выбранный интерьер не гарантируется, но мы всегда стараемся учитывать ваши пожелания!
+          * Интерьеры могут отличаться, но мы всегда стараемся учесть ваши пожелания по размещению.
         </p>
       </div>
     </section>
   );
 }
+

@@ -1,85 +1,312 @@
+---
+import {
+  SITE_ADDRESS,
+  SITE_COORDS,
+  SITE_EMAIL,
+  SITE_PHONE_DISPLAY,
+} from '../config/site.js';
+import {
+  DEFAULT_DESCRIPTION,
+  DEFAULT_OG_IMAGE,
+  DEFAULT_TITLE,
+  type BreadcrumbItem,
+  ORG_NAME,
+  SITE_URL,
+  toCanonical,
+} from '../config/seo';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  noindex?: boolean;
+  breadcrumbs?: BreadcrumbItem[];
+  ogImage?: string;
+  schemaPageName?: string;
+}
+
+const {
+  title = DEFAULT_TITLE,
+  description = DEFAULT_DESCRIPTION,
+  canonicalPath = '/',
+  noindex = false,
+  breadcrumbs = [],
+  ogImage = DEFAULT_OG_IMAGE,
+  schemaPageName,
+} = Astro.props;
+
+const canonicalUrl = toCanonical(canonicalPath);
+const robotsContent = noindex ? 'noindex,follow' : 'index,follow';
+const pageName = schemaPageName || title;
+const ogImageUrl = ogImage.startsWith('http') ? ogImage : toCanonical(ogImage);
+
+const [latitude, longitude] = SITE_COORDS.split(',').map((value) => Number(value.trim()));
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: ORG_NAME,
+  url: SITE_URL,
+  logo: toCanonical('/img/logo.webp'),
+  email: SITE_EMAIL,
+  telephone: SITE_PHONE_DISPLAY,
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: ORG_NAME,
+  url: SITE_URL,
+  inLanguage: 'ru-RU',
+};
+
+const webpageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: pageName,
+  url: canonicalUrl,
+  inLanguage: 'ru-RU',
+  isPartOf: {
+    '@type': 'WebSite',
+    name: ORG_NAME,
+    url: SITE_URL,
+  },
+};
+
+const localBusinessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: ORG_NAME,
+  url: SITE_URL,
+  image: ogImageUrl,
+  telephone: SITE_PHONE_DISPLAY,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Набережная 7',
+    addressLocality: 'Джубга',
+    addressRegion: 'Краснодарский край',
+    postalCode: '352844',
+    addressCountry: 'RU',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude,
+    longitude,
+  },
+  areaServed: 'RU',
+  description,
+  priceRange: '₽₽',
+  openingHours: 'Mo-Su 00:00-23:59',
+};
+
+const breadcrumbSchema = breadcrumbs.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: breadcrumbs.map((item, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: item.name,
+        item: toCanonical(item.path),
+      })),
+    }
+  : null;
+---
+
 <!doctype html>
 <html lang="ru">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
 
-		<title>Отель Дельфин - Джубга | Отдых в 50 метрах от моря</title>
-		<meta name="description" content="Уютный семейный отель в Джубге в 50 метрах от моря. Номера эконом и стандарт от 1000₽. Бесплатная парковка, детская площадка, круглосуточная регистрация." />
-		<meta name="keywords" content="отель Джубга, гостиница Джубга, отдых у моря, Дельфин Джубга, номера в Джубге, жилье у моря" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={robotsContent} />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <link rel="canonical" href={canonicalUrl} />
 
-		<meta property="og:type" content="website" />
-		<meta property="og:title" content="Отель Дельфин - Джубга | Отдых в 50 метрах от моря" />
-		<meta property="og:description" content="Уютный семейный отель в 50 метрах от моря. Номера от 1000₽. Бесплатная парковка, круглосуточная регистрация." />
-		<meta property="og:url" content="https://delfinstay.ru" />
-		<meta property="og:site_name" content="Отель Дельфин" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:site_name" content={ORG_NAME} />
+    <meta property="og:image" content={ogImageUrl} />
 
-		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:title" content="Отель Дельфин - Джубга" />
-		<meta name="twitter:description" content="Уютный отдых в 50 метрах от моря" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
 
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <meta name="application-name" content={ORG_NAME} />
+    <meta name="apple-mobile-web-app-title" content={ORG_NAME} />
 
-		<script type="application/ld+json">
-		{
-			"@context": "https://schema.org",
-			"@type": "Hotel",
-			"name": "Отель Дельфин",
-			"description": "Уютный семейный отель в Джубге в 50 метрах от моря",
-			"address": {
-				"@type": "PostalAddress",
-				"streetAddress": "Набережная 7",
-				"addressLocality": "Джубга",
-				"addressRegion": "Краснодарский край",
-				"postalCode": "352844",
-				"addressCountry": "RU"
-			},
-			"telephone": "+7(918)192-99-31",
-			"priceRange": "₽₽",
-			"starRating": {
-				"@type": "Rating",
-				"ratingValue": "4.9"
-			}
-		}
-		</script>
-	</head>
-	<body>
-		<slot />
-	</body>
+    <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(webpageSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
+    {breadcrumbSchema && (
+      <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    )}
+
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+      (function (m, e, t, r, i, k, a) {
+        m[i] =
+          m[i] ||
+          function () {
+            (m[i].a = m[i].a || []).push(arguments);
+          };
+        m[i].l = 1 * new Date();
+        for (var j = 0; j < document.scripts.length; j++) {
+          if (document.scripts[j].src === r) {
+            return;
+          }
+        }
+        k = e.createElement(t);
+        a = e.getElementsByTagName(t)[0];
+        k.async = 1;
+        k.src = r;
+        a.parentNode.insertBefore(k, a);
+      })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym');
+
+      ym(101427691, 'init', {
+        webvisor: true,
+        clickmap: true,
+        referrer: document.referrer,
+        url: location.href,
+        accurateTrackBounce: true,
+        trackLinks: true,
+      });
+    </script>
+    <noscript
+      ><div>
+        <img src="https://mc.yandex.ru/watch/101427691" style="position:absolute; left:-9999px;" alt="" />
+      </div></noscript
+    >
+    <!-- /Yandex.Metrika counter -->
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Перейти к содержанию</a>
+
+    {breadcrumbs.length > 1 && (
+      <nav class="breadcrumbs" aria-label="Хлебные крошки">
+        <ol>
+          {breadcrumbs.map((item, index) => (
+            <li>
+              {index < breadcrumbs.length - 1 ? (
+                <a href={item.path}>{item.name}</a>
+              ) : (
+                <span aria-current="page">{item.name}</span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )}
+
+    <slot />
+  </body>
 </html>
 
 <style is:global>
-	html,
-	body {
-		margin: 0;
-		padding: 0;
-		width: 100%;
-		height: 100%;
-		font-family: 'Inter', system-ui, sans-serif;
-		scroll-behavior: smooth;
-	}
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    font-family:
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      'Helvetica Neue',
+      sans-serif;
+    scroll-behavior: smooth;
+  }
 
-	* {
-		box-sizing: border-box;
-	}
+  * {
+    box-sizing: border-box;
+  }
 
-	@media (prefers-reduced-motion: reduce) {
-		*,
-		*::before,
-		*::after {
-			animation-duration: 0.01ms !important;
-			animation-iteration-count: 1 !important;
-			transition-duration: 0.01ms !important;
-		}
-	}
+  img {
+    max-width: 100%;
+    height: auto;
+  }
 
-	body.booking-section-active .js-hide-on-booking {
-		opacity: 0 !important;
-		visibility: hidden !important;
-		pointer-events: none !important;
-	}
+  :focus-visible {
+    outline: 3px solid #f59e0b;
+    outline-offset: 2px;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: 0.5rem;
+    top: 0.5rem;
+    z-index: 200;
+    transform: translateY(-160%);
+    background: #0f172a;
+    color: #fff;
+    padding: 0.65rem 0.85rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
+  .breadcrumbs {
+    width: min(1100px, calc(100% - 2rem));
+    margin: 1rem auto 0;
+    color: #475569;
+    font-size: 0.9rem;
+  }
+
+  .breadcrumbs ol {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+  }
+
+  .breadcrumbs li + li::before {
+    content: '/';
+    margin-right: 0.5rem;
+    color: #94a3b8;
+  }
+
+  .breadcrumbs a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  .yarl__portal {
+    pointer-events: none;
+  }
+
+  .yarl__portal_open {
+    pointer-events: auto;
+  }
+
+  body.booking-section-active .js-hide-on-booking {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
 </style>

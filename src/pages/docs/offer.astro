@@ -2,7 +2,18 @@
 import Layout from '../../layouts/Layout.astro';
 ---
 
-<Layout>
+<Layout
+  title="Правила предоставления услуг | Дельфин, Джубга"
+  description="Правила проживания, бронирования, оплаты и внутреннего порядка в гостевом пространстве «Дельфин» в Джубге."
+  canonicalPath="/docs/offer"
+  noindex={true}
+  schemaPageName="Правила предоставления услуг"
+  breadcrumbs={[
+    { name: 'Главная', path: '/' },
+    { name: 'Правила предоставления услуг', path: '/docs/offer' },
+  ]}
+>
+  <main id="main-content">
   <div class="min-h-screen bg-slate-50 py-12">
     <div class="container mx-auto px-4 max-w-4xl">
       <div class="bg-white rounded-lg shadow-lg p-8 md:p-12">
@@ -109,7 +120,6 @@ import Layout from '../../layouts/Layout.astro';
 
             <!-- Приложение A -->
             <div class="mt-16 pt-12 border-t-4 border-slate-300 bg-gradient-to-r from-slate-50 to-slate-100 rounded-2xl p-8 md:p-12">
-                <h3 class="text-2xl md:text-3xl font-bold text-slate-900 mb-6">&nbsp;</h3>
                 <h3 class="text-2xl md:text-3xl font-bold text-slate-900 mb-8">Приложение A. Ориентировочные расходы на восстановление</h3>
                 <div class="bg-amber-50 border border-amber-200 rounded-xl p-6 md:p-8 mb-8">
                     <p class="font-semibold text-amber-900 mb-4">Компенсация предназначена для покрытия расходов на восстановление качества услуги (уборка, озонация, химчистка, административные работы, простой помещения) и не является штрафом. Фактический ущерб и простой комнаты подлежат дополнительной компенсации при наличии оснований.</p>
@@ -142,4 +152,5 @@ import Layout from '../../layouts/Layout.astro';
       </div>
     </div>
   </div>
+  </main>
 </Layout>

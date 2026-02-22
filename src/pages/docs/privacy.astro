@@ -2,7 +2,18 @@
 import Layout from '../../layouts/Layout.astro';
 ---
 
-<Layout>
+<Layout
+  title="Политика обработки персональных данных | Дельфин, Джубга"
+  description="Политика обработки персональных данных и порядок защиты информации для сайта delfinstay.ru."
+  canonicalPath="/docs/privacy"
+  noindex={true}
+  schemaPageName="Политика обработки персональных данных"
+  breadcrumbs={[
+    { name: 'Главная', path: '/' },
+    { name: 'Политика обработки персональных данных', path: '/docs/privacy' },
+  ]}
+>
+  <main id="main-content">
   <div class="min-h-screen bg-slate-50 py-12">
     <div class="container mx-auto px-4 max-w-4xl">
       <div class="bg-white rounded-lg shadow-lg p-8 md:p-12">
@@ -172,4 +183,5 @@ import Layout from '../../layouts/Layout.astro';
 
   </div>
 
+  </main>
 </Layout>
