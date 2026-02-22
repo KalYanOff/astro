@@ -3,54 +3,88 @@
    Фильтрация фото по кнопкам + lightbox
    ========================================= */
 import { useState, useMemo } from 'react';
-import { Search, Images } from 'lucide-react';
+import { Search } from 'lucide-react';
 import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
 
-// Добавили category каждому фото
+const TERRITORY_PATHS = [
+  '/img/photo/terrytory/2.png',
+  '/img/photo/terrytory/7.jpg',
+  '/img/photo/terrytory/9.jpg',
+  '/img/photo/terrytory/DSC_0002.jpg',
+  '/img/photo/terrytory/DSC_0006.jpg',
+  '/img/photo/terrytory/DSC_0008.jpg',
+  '/img/photo/terrytory/DSC_0009.jpg',
+  '/img/photo/terrytory/DSC_0032.jpg',
+  '/img/photo/terrytory/DSC_0033.jpg',
+  '/img/photo/terrytory/DSC_0034.jpg',
+  '/img/photo/terrytory/DSC_0053.jpg',
+  '/img/photo/terrytory/DSC_0060.jpg',
+  '/img/photo/terrytory/DSC_0068.jpg',
+  '/img/photo/terrytory/DSC_0070.jpg',
+  '/img/photo/terrytory/DSC_0074.jpg',
+  '/img/photo/terrytory/DSC_0081.jpg',
+  '/img/photo/terrytory/IMG_0658.jpeg',
+  '/img/photo/terrytory/IMG_0668.jpeg',
+  '/img/photo/terrytory/IMG_0670.jpeg',
+  '/img/photo/terrytory/IMG_0692.jpeg',
+  '/img/photo/terrytory/IMG_0714.JPG',
+];
+
+const BEACH_PATHS = ['/img/photo/beach/beach.webp'];
+
+const ROOM_PATHS = [
+  '/img/rooms/econom/2/DSC_0033.jpg',
+  '/img/rooms/econom/2/Беж-1.jpg',
+  '/img/rooms/econom/2/Беж-2.jpg',
+  '/img/rooms/econom/2/Беж-3.jpg',
+  '/img/rooms/econom/2/Серая-1.jpg',
+  '/img/rooms/econom/2/Серая-2.jpg',
+  '/img/rooms/econom/2/Серая-3.jpg',
+  '/img/rooms/econom/2/Сирень-1.jpg',
+  '/img/rooms/econom/2/Сирень-2.jpg',
+  '/img/rooms/econom/2/Сирень-3.jpg',
+  '/img/rooms/econom/3/_DSC0017-Улучшено-Ум. шума.jpg',
+  '/img/rooms/econom/3/_DSC0019-Улучшено-Ум. шума.jpg',
+  '/img/rooms/econom/3/_DSC0026.jpg',
+  '/img/rooms/econom/3/БК-2.jpg',
+  '/img/rooms/econom/3/К4-1.jpg',
+  '/img/rooms/econom/3/К4-2.jpg',
+  '/img/rooms/econom/3/К4-3.jpg',
+  '/img/rooms/econom/3/Сер-1.jpg',
+  '/img/rooms/econom/3/Сер-2.jpg',
+  '/img/rooms/econom/4/4м-1.jpeg',
+  '/img/rooms/econom/4/4м-2.jpeg',
+  '/img/rooms/standart/001.webp',
+  '/img/rooms/standart/002.webp',
+  '/img/rooms/standart/2/12-1.webp',
+  '/img/rooms/standart/2/13-1.webp',
+  '/img/rooms/standart/2/13-2.webp',
+  '/img/rooms/standart/2/14-1.webp',
+  '/img/rooms/standart/2/14-2.webp',
+  '/img/rooms/standart/2/15-1.webp',
+  '/img/rooms/standart/2/15-2.webp',
+  '/img/rooms/standart/3/1-1.webp',
+  '/img/rooms/standart/3/1-2.webp',
+  '/img/rooms/standart/3/2-1.webp',
+  '/img/rooms/standart/3/2-2.webp',
+  '/img/rooms/standart/3/3-1.webp',
+];
+
+function createImageEntries(paths, category, label) {
+  return paths.map((src, index) => ({
+    src,
+    alt: `${label} ${index + 1}`,
+    category,
+  }));
+}
+
 const galleryImages = [
-  {
-    src: 'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800',
-    alt: 'Стандартный номер',
-    category: 'room',
-  },
-  {
-    src: 'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800',
-    alt: 'Вид на море',
-    category: 'territory',
-  },
-  {
-    src: 'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=800',
-    alt: 'Эконом номер',
-    category: 'room',
-  },
-  {
-    src: 'https://images.pexels.com/photos/1743229/pexels-photo-1743229.jpeg?auto=compress&cs=tinysrgb&w=800',
-    alt: 'Санузел',
-    category: 'room',
-  },
-  {
-    src: 'https://images.pexels.com/photos/1450353/pexels-photo-1450353.jpeg?auto=compress&cs=tinysrgb&w=800',
-    alt: 'Пляж рядом',
-    category: 'territory',
-  },
-  {
-    src: 'https://images.pexels.com/photos/277572/pexels-photo-277572.jpeg?auto=compress&cs=tinysrgb&w=800',
-    alt: 'Территория отеля',
-    category: 'territory',
-  },
-  {
-    src: 'https://images.pexels.com/photos/262048/pexels-photo-262048.jpeg?auto=compress&cs=tinysrgb&w=800',
-    alt: 'Номер с кондиционером',
-    category: 'room',
-  },
-  {
-    src: 'https://images.pexels.com/photos/1743231/pexels-photo-1743231.jpeg?auto=compress&cs=tinysrgb&w=800',
-    alt: 'Парковка',
-    category: 'territory',
-  },
+  ...createImageEntries(TERRITORY_PATHS, 'territory', 'Фото территории'),
+  ...createImageEntries(BEACH_PATHS, 'beach', 'Фото пляжа'),
+  ...createImageEntries(ROOM_PATHS, 'room', 'Фото комнат'),
 ];
 
 const MOBILE_INITIAL = 2;
@@ -66,7 +100,7 @@ export default function Gallery() {
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [showAllMobile, setShowAllMobile] = useState(false);
   const [showAllDesktop, setShowAllDesktop] = useState(false);
-  const [category, setCategory] = useState('all'); // all | room | territory
+  const [category, setCategory] = useState('all');
 
   const filteredImages = useMemo(() => {
     return filterImages(galleryImages, category);
@@ -86,17 +120,16 @@ export default function Gallery() {
           </div>
           <h2 className="text-4xl font-bold text-slate-900 mb-4">Посмотрите сами</h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Реальные фотографии комнат и территории.
+            Реальные фотографии комнат, территории и пляжа.
           </p>
         </div>
 
-        {/* Кнопки фильтра */}
         <div className="flex justify-center gap-3 mb-10 flex-wrap">
           {[
             { value: 'all', label: 'Все' },
-            { value: 'room', label: 'Комнаты' },
             { value: 'territory', label: 'Территория' },
             { value: 'beach', label: 'Пляж' },
+            { value: 'room', label: 'Комнаты' },
           ].map(({ value, label }) => (
             <button
               key={value}
@@ -116,7 +149,6 @@ export default function Gallery() {
           ))}
         </div>
 
-        {/* Mobile */}
         <div className="block sm:hidden">
           <div className="grid grid-cols-2 gap-3">
             {(showAllMobile
@@ -124,7 +156,7 @@ export default function Gallery() {
               : filteredImages.slice(0, MOBILE_INITIAL)
             ).map((image, index) => (
               <div
-                key={index}
+                key={image.src}
                 className="relative aspect-square overflow-hidden rounded-xl cursor-pointer group"
                 onClick={() => openLightbox(index)}
               >
@@ -153,7 +185,6 @@ export default function Gallery() {
           )}
         </div>
 
-        {/* Desktop */}
         <div className="hidden sm:block">
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
             {(showAllDesktop
@@ -161,7 +192,7 @@ export default function Gallery() {
               : filteredImages.slice(0, DESKTOP_INITIAL)
             ).map((image, index) => (
               <div
-                key={index}
+                key={image.src}
                 className="relative aspect-square overflow-hidden rounded-lg cursor-pointer group"
                 onClick={() => openLightbox(index)}
               >

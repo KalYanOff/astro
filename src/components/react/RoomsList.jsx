@@ -14,10 +14,10 @@ const RAW_ROOMS_DATA = [
     category: 'standart',
     capacity: 2,
     images: [
-      'img/rooms/standart/2/13-1.webp',
-      'img/rooms/standart/2/13-2.webp',
-      'img/rooms/standart/001.webp',
-      'img/rooms/standart/002.webp',
+      '/img/rooms/standart/2/13-1.webp',
+      '/img/rooms/standart/2/13-2.webp',
+      '/img/rooms/standart/001.webp',
+      '/img/rooms/standart/002.webp',
     ],
     description: `🛌 Двухместный стандарт 12 м²
 
@@ -35,10 +35,10 @@ const RAW_ROOMS_DATA = [
     category: 'standart',
     capacity: 2,
     images: [
-      'img/rooms/standart/2/14-1.webp',
-      'img/rooms/standart/2/14-2.webp',
-      'img/rooms/standart/001.webp',
-      'img/rooms/standart/002.webp',
+      '/img/rooms/standart/2/14-1.webp',
+      '/img/rooms/standart/2/14-2.webp',
+      '/img/rooms/standart/001.webp',
+      '/img/rooms/standart/002.webp',
     ],
     description: `🛌 Двухместный стандарт 12 м²
 
@@ -56,10 +56,10 @@ const RAW_ROOMS_DATA = [
     category: 'standart',
     capacity: 2,
     images: [
-      'img/rooms/standart/2/15-1.webp',
-      'img/rooms/standart/2/15-2.webp',
-      'img/rooms/standart/001.webp',
-      'img/rooms/standart/002.webp',
+      '/img/rooms/standart/2/15-1.webp',
+      '/img/rooms/standart/2/15-2.webp',
+      '/img/rooms/standart/001.webp',
+      '/img/rooms/standart/002.webp',
     ],
     description: `🛌 Двухместный стандарт 12 м²
 
@@ -77,9 +77,9 @@ const RAW_ROOMS_DATA = [
     category: 'standart',
     capacity: 2,
     images: [
-      'img/rooms/standart/2/12-1.webp',
-      'img/rooms/standart/001.webp',
-      'img/rooms/standart/002.webp',
+      '/img/rooms/standart/2/12-1.webp',
+      '/img/rooms/standart/001.webp',
+      '/img/rooms/standart/002.webp',
     ],
     description: `🛌 Двухместный стандарт 12 м²
 
@@ -99,10 +99,10 @@ const RAW_ROOMS_DATA = [
     category: 'standard',
     capacity: 3,
     images: [
-      'img/rooms/standart/3/1-1.webp',
-      'img/rooms/standart/3/1-2.webp',
-      'img/rooms/standart/001.webp',
-      'img/rooms/standart/002.webp',
+      '/img/rooms/standart/3/1-1.webp',
+      '/img/rooms/standart/3/1-2.webp',
+      '/img/rooms/standart/001.webp',
+      '/img/rooms/standart/002.webp',
     ],
     description: `🛌 Трехместный стандарт 15 м²
 
@@ -120,10 +120,10 @@ const RAW_ROOMS_DATA = [
     category: 'standard',
     capacity: 3,
     images: [
-      'img/rooms/standart/3/2-1.webp',
-      'img/rooms/standart/3/2-2.webp',
-      'img/rooms/standart/001.webp',
-      'img/rooms/standart/002.webp',
+      '/img/rooms/standart/3/2-1.webp',
+      '/img/rooms/standart/3/2-2.webp',
+      '/img/rooms/standart/001.webp',
+      '/img/rooms/standart/002.webp',
     ],
     description: `🛌 Трехместный стандарт 15 м²
 
@@ -141,9 +141,9 @@ const RAW_ROOMS_DATA = [
     category: 'standard',
     capacity: 3,
     images: [
-      'img/rooms/standart/3/3-1.webp',
-      'img/rooms/standart/001.webp',
-      'img/rooms/standart/002.webp',
+      '/img/rooms/standart/3/3-1.webp',
+      '/img/rooms/standart/001.webp',
+      '/img/rooms/standart/002.webp',
     ],
     description: `🛌 Трехместный стандарт 15 м²
 
@@ -321,8 +321,8 @@ const RAW_ROOMS_DATA = [
     category: 'econom',
     capacity: 4,
     images: [
-        '/img/rooms/econom/4/4м-1.jpg',
-        '/img/rooms/econom/4/4м-2.jpg',
+        '/img/rooms/econom/4/4м-1.jpeg',
+        '/img/rooms/econom/4/4м-2.jpeg',
     ],
     description: `🛌 Четырехместный эконом 16 м²
 
@@ -377,8 +377,8 @@ export default function RoomsList() {
 
         {/* section header */}
         <div className="text-center mb-12">
-          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-4">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-4">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/>
             </svg>
             Комнаты и цены
@@ -390,7 +390,7 @@ export default function RoomsList() {
 
         </div>
 
-        {/* filter bar */
+        {/* filter bar */}
         <div className="flex flex-col items-stretch md:items-center gap-8 mb-10">
 
           {/* row 1: category filters */}
@@ -434,7 +434,7 @@ export default function RoomsList() {
           </div>
         </div>
 
-        /* room grid or empty state */}
+        {/* room grid or empty state */}
         {filteredRooms.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-xl text-slate-500">

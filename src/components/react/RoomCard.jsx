@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { updateBooking } from '../../stores/bookingStore';
 import { calculateStayPrice, getNightPrice } from '../../lib/pricing';
+import { getRoomCategoryMeta } from '../../config/roomCategories';
 import {
   BOOKING_MONTH_START,
   BOOKING_MONTH_END,
@@ -20,11 +21,8 @@ import {
 } from '../../lib/bookingDates';
 
 const CTA_BADGES = {
-  '1': null,
-  '2': { label: 'Осталось 2 номера', icon: 'alert', color: 'bg-red-500' },
-  '3': { label: 'Популярный', icon: 'flame', color: 'bg-accent-500' },
-  '4': { label: 'Популярный', icon: 'flame', color: 'bg-accent-500' },
-  '5': { label: 'Осталось 2 номера', icon: 'alert', color: 'bg-red-500' },
+  'standard-3': { label: 'Популярный', icon: 'flame', color: 'bg-accent-500' },
+  'standard-2': { label: 'Осталось 2 комнаты', icon: 'alert', color: 'bg-red-500' },
 };
 
 const MONTH_NAMES = [
@@ -218,9 +216,10 @@ export default function RoomCard({ room }) {
   const images =
     room.images && room.images.length > 0
       ? room.images
-      : ['https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800'];
+      : ['/img/rooms/standart/001.webp'];
 
-  const badge = CTA_BADGES[room.id] ?? null;
+  const roomCategory = getRoomCategoryMeta(room.roomCategoryId);
+  const badge = CTA_BADGES[room.roomCategoryId] ?? null;
   const nights = calcNights(checkIn, checkOut);
   const checkInNightPrice = getNightPrice(room, checkIn || defaultCheckIn);
   const todayNightPrice = getNightPrice(room, today);
@@ -264,9 +263,12 @@ export default function RoomCard({ room }) {
   }, [room.id]);
 
   const handleBooking = () => {
+    const selectedRoomId = room.roomCategoryId || room.id;
+    const selectedRoomName = roomCategory?.label || room.name;
+
     updateBooking({
-      selectedRoomId: room.id,
-      selectedRoomName: room.name,
+      selectedRoomId,
+      selectedRoomName,
       selectedRoomPrice: checkInNightPrice,
       checkInDate: checkIn,
       checkOutDate: checkOut || tomorrow,

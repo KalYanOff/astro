@@ -10,8 +10,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useStore } from '@nanostores/react';
 import { createPortal } from 'react-dom';
-import { bookingStore, numberOfNights, updateBooking } from '../../stores/bookingStore';
-import { ROOMS_DATA } from './RoomsList';
+import { bookingStore, updateBooking } from '../../stores/bookingStore';
+import { ROOM_CATEGORIES } from '../../config/roomCategories';
+import { getPricingByCategoryId } from '../../config/roomPricing';
 import {
   Mail, User, CheckCircle, AlertCircle,
   Calendar, Users, Pencil, X, ChevronLeft, ChevronRight,
@@ -39,7 +40,7 @@ const IconTelegram = ({ className }) => (
   </svg>
 );
 const IconMax = ({ className }) => (
-  <img src="/img/icons/max.svg" class="w-10 h-10 object-contain rounded-full"></img>
+  <img src="/img/icons/max.svg" className="w-10 h-10 object-contain rounded-full" alt="MAX" />
 );
 const IconPhone = ({ className }) => (
   <svg className={className} width="24" height="24" fill="currentColor"  viewBox="0 0 16 16" aria-hidden="true">
@@ -55,23 +56,18 @@ const CONTACT_METHODS = [
 ];
 
 /* ---- room options grouped by category ---- */
-const ROOM_OPTIONS = [
-  {
-    group: 'Стандарт',
-    rooms: [
-      { id: '4', name: 'Стандарт 2-местный' },
-      { id: '5', name: 'Стандарт 3-местный' },
-    ],
-  },
-  {
-    group: 'Эконом',
-    rooms: [
-      { id: '1', name: 'Эконом 2-местный' },
-      { id: '2', name: 'Эконом 3-местный' },
-      { id: '3', name: 'Эконом 4-местный' },
-    ],
-  },
-];
+const ROOM_OPTIONS = ROOM_CATEGORIES.reduce((acc, item) => {
+  const group = acc.find((entry) => entry.group === item.group);
+  const option = { id: item.id, name: item.label };
+
+  if (group) {
+    group.rooms.push(option);
+  } else {
+    acc.push({ group: item.group, rooms: [option] });
+  }
+
+  return acc;
+}, []);
 
 /* ---- calendar helpers ---- */
 const MONTH_NAMES = [
@@ -393,14 +389,14 @@ function RoomSelect({ value, onChange }) {
     <div>
       <label className="block text-sm font-semibold text-slate-700 mb-2">
         <Users className="w-4 h-4 inline mr-1" />
-        Комната
+        Категория номера
       </label>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className="w-full px-4 py-3 border border-slate-300 rounded-xl bg-white text-slate-900 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all appearance-none cursor-pointer"
       >
-        <option value="">— Выберите комнату —</option>
+        <option value="">— Выберите категорию —</option>
         {ROOM_OPTIONS.map(({ group, rooms }) => (
           <optgroup key={group} label={`── ${group} ──`}>
             {rooms.map((r) => (
@@ -418,7 +414,6 @@ function RoomSelect({ value, onChange }) {
    ========================================= */
 export default function BookingRequestForm() {
   const booking = useStore(bookingStore);
-  const nights = useStore(numberOfNights);
 
   const defaultDates = getDefaultBookingDates();
 
@@ -463,10 +458,19 @@ export default function BookingRequestForm() {
     setSelectedRoomId(roomId);
     const allRooms = ROOM_OPTIONS.flatMap((g) => g.rooms);
     const found = allRooms.find((r) => r.id === roomId);
-    const roomData = ROOMS_DATA.find((r) => r.id === roomId);
-    const price = roomData ? calculateStayPrice(roomData, checkInDate, checkOutDate) || roomData.base_price : 0;
+    const pricing = roomId ? getPricingByCategoryId(roomId) : null;
+    const pricingRoom = pricing
+      ? { base_price: pricing.base_price, price_periods: pricing.price_periods }
+      : null;
+    const price = pricingRoom
+      ? calculateStayPrice(pricingRoom, checkInDate, checkOutDate) || pricingRoom.base_price
+      : 0;
     setRoomPricePerNight(price);
-    updateBooking({ selectedRoomId: roomId || null, selectedRoomName: found ? found.name : '', selectedRoomPrice: price });
+    updateBooking({
+      selectedRoomId: roomId || null,
+      selectedRoomName: found ? found.name : '',
+      selectedRoomPrice: price,
+    });
     setErrors((e) => ({ ...e, room: undefined }));
   };
 
@@ -486,7 +490,7 @@ export default function BookingRequestForm() {
   const validate = () => {
     const errs = {};
     if (!checkInDate || !checkOutDate) errs.dates = 'Укажите даты заезда и выезда';
-    if (!selectedRoomId) errs.room = 'Выберите комнату';
+    if (!selectedRoomId) errs.room = 'Выберите категорию';
     if (!contactMethod) errs.contactMethod = 'Выберите способ связи';
     if (!guestName.trim()) errs.guestName = 'Укажите ваше имя';
     if (phone.replace(/\D/g, '').length < 11) errs.phone = 'Введите полный номер телефона';
@@ -496,7 +500,10 @@ export default function BookingRequestForm() {
 
   const allRooms = ROOM_OPTIONS.flatMap((g) => g.rooms);
   const selectedRoom = allRooms.find((r) => r.id === selectedRoomId);
-  const selectedRoomData = ROOMS_DATA.find((r) => r.id === selectedRoomId) || null;
+  const selectedRoomPricing = selectedRoomId ? getPricingByCategoryId(selectedRoomId) : null;
+  const selectedRoomData = selectedRoomPricing
+    ? { base_price: selectedRoomPricing.base_price, price_periods: selectedRoomPricing.price_periods }
+    : null;
   const roomPeriods = selectedRoomData ? getRoomPeriods(selectedRoomData) : [];
 
   const totalCost = selectedRoomData
@@ -509,7 +516,7 @@ export default function BookingRequestForm() {
       '',
       `Имя: ${guestName.trim()}`,
       `Телефон: ${phone}`,
-      `Комната: ${selectedRoom ? selectedRoom.name : 'Не выбран'}`,
+      `Категория номера: ${selectedRoom ? selectedRoom.name : 'Не выбран'}`,
       `Заезд: ${formatDateRu(checkInDate)}`,
       `Выезд: ${formatDateRu(checkOutDate)}`,
       `Ночей: ${localNights}`,
