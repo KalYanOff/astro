@@ -13,8 +13,17 @@ const ROOMS_DATA = [
     category: 'econom',
     capacity: 2,
     base_price: 1000,
+    price_periods: [
+      { id: 'low', label: 'Низкий сезон', start: '2026-01-01', end: '2026-05-31', price: 1000 },
+      { id: 'high', label: 'Высокий сезон', start: '2026-06-01', end: '2026-08-31', price: 1400 },
+      { id: 'mid', label: 'Бархатный сезон', start: '2026-09-01', end: '2026-12-31', price: 1200 },
+    ],
     amenities: ['Душ и туалет общего пользования', 'Вентиляторы', 'Wi-Fi', 'Постельное белье'],
-    images: ['https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=800'],
+    images: [
+      'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/271743/pexels-photo-271743.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ],
     description: 'Уютный эконом-номер для двоих с базовыми удобствами',
   },
   {
@@ -23,8 +32,17 @@ const ROOMS_DATA = [
     category: 'econom',
     capacity: 3,
     base_price: 1200,
+    price_periods: [
+      { id: 'low', label: 'Низкий сезон', start: '2026-01-01', end: '2026-05-31', price: 1200 },
+      { id: 'high', label: 'Высокий сезон', start: '2026-06-01', end: '2026-08-31', price: 1700 },
+      { id: 'mid', label: 'Бархатный сезон', start: '2026-09-01', end: '2026-12-31', price: 1450 },
+    ],
     amenities: ['Душ и туалет общего пользования', 'Вентиляторы', 'Wi-Fi', 'Постельное белье'],
-    images: ['https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800'],
+    images: [
+      'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/262048/pexels-photo-262048.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/1743229/pexels-photo-1743229.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ],
     description: 'Комфортный эконом-номер для небольшой компании',
   },
   {
@@ -33,8 +51,17 @@ const ROOMS_DATA = [
     category: 'econom',
     capacity: 4,
     base_price: 1500,
+    price_periods: [
+      { id: 'low', label: 'Низкий сезон', start: '2026-01-01', end: '2026-05-31', price: 1500 },
+      { id: 'high', label: 'Высокий сезон', start: '2026-06-01', end: '2026-08-31', price: 2100 },
+      { id: 'mid', label: 'Бархатный сезон', start: '2026-09-01', end: '2026-12-31', price: 1800 },
+    ],
     amenities: ['Душ и туалет общего пользования', 'Вентиляторы', 'Wi-Fi', 'Постельное белье'],
-    images: ['https://images.pexels.com/photos/1743229/pexels-photo-1743229.jpeg?auto=compress&cs=tinysrgb&w=800'],
+    images: [
+      'https://images.pexels.com/photos/1743229/pexels-photo-1743229.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ],
     description: 'Просторный эконом-номер для семьи или компании друзей',
   },
   {
@@ -43,8 +70,17 @@ const ROOMS_DATA = [
     category: 'standard',
     capacity: 2,
     base_price: 1500,
+    price_periods: [
+      { id: 'low', label: 'Низкий сезон', start: '2026-01-01', end: '2026-05-31', price: 1500 },
+      { id: 'high', label: 'Высокий сезон', start: '2026-06-01', end: '2026-08-31', price: 2200 },
+      { id: 'mid', label: 'Бархатный сезон', start: '2026-09-01', end: '2026-12-31', price: 1800 },
+    ],
     amenities: ['Индивидуальный санузел', 'Кондиционер', 'Холодильник', 'Телевизор', 'Wi-Fi', 'Постельное белье'],
-    images: ['https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800'],
+    images: [
+      'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/271743/pexels-photo-271743.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/262048/pexels-photo-262048.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ],
     description: 'Комфортабельный стандартный номер с удобствами',
   },
   {
@@ -53,8 +89,17 @@ const ROOMS_DATA = [
     category: 'standard',
     capacity: 3,
     base_price: 1800,
+    price_periods: [
+      { id: 'low', label: 'Низкий сезон', start: '2026-01-01', end: '2026-05-31', price: 1800 },
+      { id: 'high', label: 'Высокий сезон', start: '2026-06-01', end: '2026-08-31', price: 2600 },
+      { id: 'mid', label: 'Бархатный сезон', start: '2026-09-01', end: '2026-12-31', price: 2200 },
+    ],
     amenities: ['Индивидуальный санузел', 'Кондиционер', 'Холодильник', 'Телевизор', 'Wi-Fi', 'Постельное белье'],
-    images: ['https://images.pexels.com/photos/262048/pexels-photo-262048.jpeg?auto=compress&cs=tinysrgb&w=800'],
+    images: [
+      'https://images.pexels.com/photos/262048/pexels-photo-262048.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/1743229/pexels-photo-1743229.jpeg?auto=compress&cs=tinysrgb&w=800',
+    ],
     description: 'Просторный стандартный номер для троих гостей',
   },
 ];

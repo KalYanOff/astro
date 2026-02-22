@@ -12,6 +12,7 @@ export const bookingStore = atom({
   selectedRoomName: '',
   selectedRoomPrice: 0,
   searchActivated: false,
+  periodPriceOverrides: {},
 });
 
 export const numberOfNights = computed(bookingStore, (booking) => {
@@ -39,5 +40,22 @@ export function resetBooking() {
     selectedRoomName: '',
     selectedRoomPrice: 0,
     searchActivated: false,
+    periodPriceOverrides: {},
+  });
+}
+
+export function updatePeriodPrice(roomId, periodId, price) {
+  const current = bookingStore.get();
+  const roomOverrides = current.periodPriceOverrides?.[roomId] || {};
+
+  bookingStore.set({
+    ...current,
+    periodPriceOverrides: {
+      ...current.periodPriceOverrides,
+      [roomId]: {
+        ...roomOverrides,
+        [periodId]: price,
+      },
+    },
   });
 }

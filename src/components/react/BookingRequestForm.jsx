@@ -10,13 +10,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { useStore } from '@nanostores/react';
 import { createPortal } from 'react-dom';
-import { bookingStore, numberOfNights, updateBooking } from '../../stores/bookingStore';
+import { bookingStore, numberOfNights, updateBooking, updatePeriodPrice } from '../../stores/bookingStore';
 import { ROOMS_DATA } from './RoomsList';
 import {
   Mail, User, CheckCircle, AlertCircle,
   Calendar, Users, Pencil, X, ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import { CONTACT_LINKS } from '../../config/site.js';
+import { calculateStayPrice, getRoomPeriods } from '../../lib/pricing';
 
 /* ---- contact method icons ---- */
 const IconWhatsApp = ({ className }) => (
@@ -50,16 +51,16 @@ const ROOM_OPTIONS = [
   {
     group: 'Стандарт',
     rooms: [
-      { id: '12-1', name: 'Стандарт 2-местный' },
-      { id: '13-1', name: 'Стандарт 3-местный' },
+      { id: '4', name: 'Стандарт 2-местный' },
+      { id: '5', name: 'Стандарт 3-местный' },
     ],
   },
   {
     group: 'Эконом',
     rooms: [
-      { id: '2-1', name: 'Эконом 2-местный' },
-      { id: '3-1', name: 'Эконом 3-местный' },
-      { id: '4-1', name: 'Эконом 4-местный' },
+      { id: '1', name: 'Эконом 2-местный' },
+      { id: '2', name: 'Эконом 3-местный' },
+      { id: '3', name: 'Эконом 4-местный' },
     ],
   },
 ];
@@ -310,7 +311,7 @@ function DateRangeField({ checkInDate, checkOutDate, onChange }) {
         <Calendar className="w-4 h-4 inline mr-1" />
         Дата заезда — выезда
       </label>
-      <div className="flex items-stretch gap-0">
+      <div className="flex items-stretch gap-0.5">
         <input
           type="text"
           value={manualInput || displayValue}
@@ -318,14 +319,14 @@ function DateRangeField({ checkInDate, checkOutDate, onChange }) {
           onBlur={handleManualBlur}
           onFocus={() => { if (!showCal) { calcPos(); setShowCal(true); } }}
           placeholder="21.02.26 - 23.02.26"
-          className="flex-1 px-4 py-3 border border-r-0 border-slate-300 rounded-l-xl bg-white text-slate-900 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+          className="flex-1 px-4 py-3 border border-slate-300 rounded-l-xl bg-white text-slate-900 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
         />
         <button
           ref={triggerRef}
           type="button"
           onClick={openCal}
           className={[
-            'px-3 border border-l-0 border-slate-300 rounded-r-xl bg-white hover:bg-slate-50 transition-colors',
+            'px-3 border border-slate-300 rounded-r-xl bg-white hover:bg-slate-50 transition-colors',
             showCal ? 'border-primary-500 ring-2 ring-primary-100' : '',
           ].join(' ')}
           aria-label="Открыть календарь"
@@ -419,10 +420,27 @@ export default function BookingRequestForm() {
     const allRooms = ROOM_OPTIONS.flatMap((g) => g.rooms);
     const found = allRooms.find((r) => r.id === roomId);
     const roomData = ROOMS_DATA.find((r) => r.id === roomId);
-    const price = roomData ? roomData.base_price : 0;
+    const roomOverrides = roomId ? (booking.periodPriceOverrides?.[roomId] || {}) : {};
+    const price = roomData ? calculateStayPrice(roomData, checkInDate, checkOutDate, roomOverrides) || roomData.base_price : 0;
     setRoomPricePerNight(price);
     updateBooking({ selectedRoomId: roomId || null, selectedRoomName: found ? found.name : '', selectedRoomPrice: price });
     setErrors((e) => ({ ...e, room: undefined }));
+  };
+
+
+  const handlePeriodPriceChange = (periodId, value) => {
+    if (!selectedRoomData) return;
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed) || parsed <= 0) return;
+
+    updatePeriodPrice(selectedRoomData.id, periodId, parsed);
+    const updatedOverrides = {
+      ...(booking.periodPriceOverrides?.[selectedRoomData.id] || {}),
+      [periodId]: parsed,
+    };
+    const updatedTotal = calculateStayPrice(selectedRoomData, checkInDate, checkOutDate, updatedOverrides);
+    setRoomPricePerNight(updatedTotal || parsed);
+    updateBooking({ selectedRoomPrice: updatedTotal || parsed });
   };
 
   const handlePhoneChange = (e) => {
@@ -451,8 +469,13 @@ export default function BookingRequestForm() {
 
   const allRooms = ROOM_OPTIONS.flatMap((g) => g.rooms);
   const selectedRoom = allRooms.find((r) => r.id === selectedRoomId);
+  const selectedRoomData = ROOMS_DATA.find((r) => r.id === selectedRoomId) || null;
+  const periodOverrides = selectedRoomId ? (booking.periodPriceOverrides?.[selectedRoomId] || {}) : {};
+  const roomPeriods = selectedRoomData ? getRoomPeriods(selectedRoomData, periodOverrides) : [];
 
-  const totalCost = roomPricePerNight * Math.max(localNights, 0);
+  const totalCost = selectedRoomData
+    ? calculateStayPrice(selectedRoomData, checkInDate, checkOutDate, periodOverrides)
+    : roomPricePerNight * Math.max(localNights, 0);
 
   const buildMessage = () => {
     const lines = [
@@ -528,9 +551,7 @@ export default function BookingRequestForm() {
               <div className="flex items-center gap-2 text-primary-100 text-sm">
                 <span>{localNights}</span>
                 <span>{localNights === 1 ? 'ночь' : localNights < 5 ? 'ночи' : 'ночей'}</span>
-                <span>×</span>
-                <span>{roomPricePerNight.toLocaleString('ru-RU')} ₽</span>
-                <span className="text-primary-300">/ ночь</span>
+                <span className="text-primary-300">с учетом ценовых периодов</span>
               </div>
               {booking.selectedRoomName && (
                 <p className="text-primary-200 text-xs mt-2">{booking.selectedRoomName}</p>
@@ -574,6 +595,32 @@ export default function BookingRequestForm() {
               <p className="text-red-500 text-sm flex items-center gap-1 -mt-3">
                 <AlertCircle className="w-4 h-4" /> {errors.room}
               </p>
+            )}
+
+            {selectedRoomData && roomPeriods.length > 0 && (
+              <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3">
+                <p className="text-sm font-semibold text-slate-700">Ценовые периоды</p>
+                {roomPeriods.map((period) => (
+                  <div key={period.id} className="grid grid-cols-1 sm:grid-cols-[1fr_140px] gap-2 items-center">
+                    <div>
+                      <p className="text-sm text-slate-700 font-medium">{period.label}</p>
+                      {period.start && period.end && (
+                        <p className="text-xs text-slate-500">{formatDateRu(period.start)} — {formatDateRu(period.end)}</p>
+                      )}
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        min="1"
+                        defaultValue={period.price}
+                        onBlur={(e) => handlePeriodPriceChange(period.id, e.target.value)}
+                        className="w-full px-3 py-2 pr-8 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500">₽</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
 
