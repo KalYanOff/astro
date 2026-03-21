@@ -4,6 +4,7 @@ import {
   SITE_EMAIL,
   SITE_PHONE_DISPLAY,
 } from '../config/site.js';
+import { TL_CONTEXT, TL_LANG } from '../config/travelline.js';
 import {
   DEFAULT_DESCRIPTION,
   DEFAULT_OG_IMAGE,
@@ -222,6 +223,33 @@ const jsonLdSchemas = [
   ...(breadcrumbSchema ? [breadcrumbSchema] : []),
   ...extraJsonLd,
 ];
+
+const travelLineHeadScript = `
+  (function(w) {
+    var q = [
+      ["setContext", "${TL_CONTEXT}", "${TL_LANG}"],
+      ["embed", "search-form", { container: "tl-search-form" }]
+    ];
+    var h = ["ru-ibe.tlintegration.ru", "ibe.tlintegration.ru", "ibe.tlintegration.com"];
+    var t = w.travelline = (w.travelline || {}),
+      ti = t.integration = (t.integration || {});
+    ti.__cq = ti.__cq ? ti.__cq.concat(q) : q;
+    if (!ti.__loader) {
+      ti.__loader = true;
+      var d = w.document, c = d.getElementsByTagName("head")[0] || d.getElementsByTagName("body")[0];
+      function e(s, f) { return function() { w.TL || (c.removeChild(s), f()) } }
+      (function l(h) {
+        if (0 === h.length) return;
+        var s = d.createElement("script");
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = "https://" + h[0] + "/integration/loader.js";
+        s.onerror = s.onload = e(s, function() { l(h.slice(1, h.length)) });
+        c.appendChild(s);
+      })(h);
+    }
+  })(window);
+`;
 ---
 
 <!doctype html>
@@ -258,6 +286,10 @@ const jsonLdSchemas = [
     {jsonLdSchemas.map((schema) => (
       <script type="application/ld+json" set:html={JSON.stringify(schema)} />
     ))}
+
+    <!-- start TL head script -->
+    <script type="text/javascript" set:html={travelLineHeadScript} />
+    <!-- end TL head script -->
 
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
@@ -410,11 +442,5 @@ const jsonLdSchemas = [
 
   .yarl__portal_open {
     pointer-events: auto;
-  }
-
-  body.booking-section-active .js-hide-on-booking {
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
   }
 </style>

@@ -1,6 +1,7 @@
 ---
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import TravelLineSearch from '../components/TravelLineSearch.astro';
 import Layout from '../layouts/Layout.astro';
 ---
 
@@ -17,6 +18,10 @@ import Layout from '../layouts/Layout.astro';
   <main id="main-content" class="bg-slate-50">
     <section class="pt-32 pb-12">
       <div class="container mx-auto px-4 max-w-4xl">
+        <div class="mb-8">
+          <TravelLineSearch />
+        </div>
+
         <div class="bg-white rounded-3xl shadow-lg p-8 md:p-12">
           <h1 class="text-3xl md:text-5xl font-bold text-slate-900 leading-tight mb-6">
             Комфортный формат отдыха в Джубге рядом с пляжем
@@ -31,7 +36,8 @@ import Layout from '../layouts/Layout.astro';
           </p>
           <div class="flex flex-col sm:flex-row gap-4">
             <a
-              href="/#booking-request"
+              href="#"
+              data-tl-booking-open="true"
               class="inline-flex items-center justify-center min-h-11 px-6 py-3 rounded-xl bg-accent-500 hover:bg-accent-600 text-white font-semibold transition-colors"
             >
               Отправить запрос

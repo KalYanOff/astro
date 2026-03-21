@@ -1,8 +1,12 @@
 ---
 import { Baby, Car, Clock } from 'lucide-react';
+import TravelLineSearch from './TravelLineSearch.astro';
 ---
 
-<section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden py-16 mt-12 md:py-0">
+<section
+  id="hero"
+  class="relative min-h-screen flex items-center justify-center overflow-hidden pt-28 pb-10 md:pt-36 md:pb-12"
+>
   <picture class="absolute inset-0 z-0">
     <source srcset="/img/photo/beach/beach.avif" type="image/avif" />
     <source srcset="/img/photo/beach/beach.webp" type="image/webp" />
@@ -57,19 +61,9 @@ import { Baby, Car, Clock } from 'lucide-react';
     </div>
 
     <div class="flex flex-col items-center gap-5">
-      <a
-        href="#booking-request"
-        onclick="event.preventDefault(); document.querySelector('#booking-request')?.scrollIntoView({ behavior: 'smooth', block: 'start' });"
-        class="inline-flex items-center gap-3 bg-accent-500 hover:bg-accent-600 active:scale-95 text-white font-bold text-lg px-10 py-4 rounded-2xl shadow-2xl transition-all hover:shadow-accent-500/40 hover:scale-105 cursor-pointer"
-      >
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-          <line x1="16" y1="2" x2="16" y2="6"></line>
-          <line x1="8" y1="2" x2="8" y2="6"></line>
-          <line x1="3" y1="10" x2="21" y2="10"></line>
-        </svg>
-        Оставить заявку
-      </a>
+      <div class="w-full max-w-6xl">
+        <TravelLineSearch />
+      </div>
 
       <a
         href="#rooms"
@@ -92,5 +86,6 @@ import { Baby, Car, Clock } from 'lucide-react';
         </svg>
       </a>
     </div>
+
   </div>
 </section>

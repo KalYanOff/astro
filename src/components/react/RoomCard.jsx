@@ -9,9 +9,8 @@ import {
   Share2, Users,
   ChevronLeft, ChevronRight, Flame, AlertCircle, Calendar,
 } from 'lucide-react';
-import { updateBooking } from '../../stores/bookingStore';
 import { calculateStayPrice, getNightPrice } from '../../lib/pricing';
-import { getRoomCategoryMeta } from '../../config/roomCategories';
+import { buildTravelLineRoomBookingUrl, getTravelLineRoomId } from '../../config/travelline.js';
 import {
   BOOKING_MONTH_START,
   BOOKING_MONTH_END,
@@ -219,10 +218,21 @@ export default function RoomCard({ room, isActive = false }) {
       ? room.images
       : ['/img/rooms/standart/001.webp'];
 
-  const roomCategory = getRoomCategoryMeta(room.roomCategoryId);
   const badge = CTA_BADGES[room.roomCategoryId] ?? null;
+  const tlRoomId = getTravelLineRoomId(room.roomCategoryId);
   const roomAnchor = `room${room.id}`;
   const nights = calcNights(checkIn, checkOut);
+  const bookingCheckInDate = checkIn || defaultCheckIn;
+  const bookingNights = Math.max(1, nights || 1);
+  const bookingAdults = Math.max(1, Math.min(Number(room.capacity) || 2, 10));
+  const tlBookingUrl = tlRoomId
+    ? buildTravelLineRoomBookingUrl({
+      roomId: tlRoomId,
+      checkInDate: bookingCheckInDate,
+      nights: bookingNights,
+      adults: bookingAdults,
+    })
+    : '#';
   const checkInNightPrice = getNightPrice(room, checkIn || defaultCheckIn);
   const todayNightPrice = getNightPrice(room, today);
   const totalPrice = calculateStayPrice(room, checkIn, checkOut);
@@ -298,22 +308,6 @@ export default function RoomCard({ room, isActive = false }) {
   useEffect(() => {
     setActiveSlide(0);
   }, [room.id]);
-
-  const handleBooking = () => {
-    const selectedRoomId = room.roomCategoryId || room.id;
-    const selectedRoomName = roomCategory?.label || room.name;
-
-    updateBooking({
-      selectedRoomId,
-      selectedRoomName,
-      selectedRoomPrice: checkInNightPrice,
-      checkInDate: checkIn,
-      checkOutDate: checkOut || tomorrow,
-      guestsCount: room.capacity,
-    });
-    const el = document.querySelector('#booking-request');
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
 
   const guestsLabel =
     room.capacity === 1
@@ -511,13 +505,13 @@ export default function RoomCard({ room, isActive = false }) {
               Выберите даты для расчёта стоимости
             </div>
           )}
-
-          <button
-            onClick={handleBooking}
-            className="w-full bg-accent-500 hover:bg-accent-600 text-white font-semibold py-3 rounded-xl transition-all hover:shadow-lg active:scale-95"
+          <a
+            href={tlBookingUrl}
+            {...(tlRoomId ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            className="w-full inline-flex items-center justify-center bg-accent-500 hover:bg-accent-600 text-white font-semibold py-3 rounded-xl transition-all hover:shadow-lg active:scale-95"
           >
-            Забронировать
-          </button>
+            Оставить заявку
+          </a>
         </div>
       </div>
     </div>

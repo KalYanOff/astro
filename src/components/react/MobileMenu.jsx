@@ -11,7 +11,7 @@ export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
-    { label: 'Забронировать', href: '#booking-request' },
+    { label: 'Оставить заявку', href: '#', isBooking: true },
     { label: 'Комнаты', href: '#rooms' },
     { label: 'О нас', href: '#features' },
     { label: 'Отзывы', href: '#reviews' },
@@ -19,10 +19,15 @@ export default function MobileMenu() {
     { label: 'FAQ', href: '#faq' },
   ];
 
-  const handleClick = (e, href) => {
+  const handleClick = (e, item) => {
+    if (item.isBooking) {
+      setIsOpen(false);
+      return;
+    }
+
     e.preventDefault();
     setIsOpen(false);
-    const target = document.querySelector(href);
+    const target = document.querySelector(item.href);
     if (target) {
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -50,10 +55,11 @@ export default function MobileMenu() {
         <nav className="py-4">
           <ul>
             {menuItems.map((item) => (
-              <li key={item.href}>
+              <li key={item.label}>
                 <a
                   href={item.href}
-                  onClick={(e) => handleClick(e, item.href)}
+                  onClick={(e) => handleClick(e, item)}
+                  {...(item.isBooking ? { 'data-tl-booking-open': 'true' } : {})}
                   className="block w-full text-center py-3 text-lg font-medium text-gray-700 hover:bg-gray-50 hover:text-primary-600 transition-colors"
                 >
                   {item.label}
