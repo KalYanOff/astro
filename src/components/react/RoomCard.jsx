@@ -1,216 +1,32 @@
 /* =========================================
    COMPONENT: RoomCard
-   Wide card: photo slider, amenities, inline
-   date picker with real-time price calc, book CTA
+   Wide card: photo slider, amenities, CTA
    ========================================= */
-import { useState, useCallback, useRef, useEffect } from 'react';
-import { createPortal } from 'react-dom';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  Share2, Users,
-  ChevronLeft, ChevronRight, Flame, AlertCircle, Calendar,
+  AlertCircle,
+  ChevronLeft,
+  ChevronRight,
+  Flame,
+  Share2,
+  Users,
 } from 'lucide-react';
-import { calculateStayPrice, getNightPrice } from '../../lib/pricing';
-import { buildTravelLineRoomBookingUrl, getTravelLineRoomId } from '../../config/travelline.js';
-import {
-  BOOKING_MONTH_START,
-  BOOKING_MONTH_END,
-  getDefaultBookingDates,
-  getInitialCalendarPage,
-  isDateInBookingSeason,
-} from '../../lib/bookingDates';
+import { getNightPrice } from '../../lib/pricing';
+import { getTravelLineRoomId } from '../../config/travelline.js';
 
 const CTA_BADGES = {
   'standard-3': { label: 'Популярный', icon: 'flame', color: 'bg-accent-500' },
   'standard-2': { label: 'Осталось 2 комнаты', icon: 'alert', color: 'bg-red-500' },
 };
 
-const MONTH_NAMES = [
-  'Январь','Февраль','Март','Апрель','Май','Июнь',
-  'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь',
-];
-const DAY_NAMES = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
-
-function getDaysInMonth(year, month) {
-  return new Date(year, month + 1, 0).getDate();
-}
-function getFirstDayOfWeek(year, month) {
-  const d = new Date(year, month, 1).getDay();
-  return d === 0 ? 6 : d - 1;
-}
-function isoToDate(iso) {
-  if (!iso) return null;
-  const [y, m, d] = iso.split('-').map(Number);
-  return new Date(y, m - 1, d);
-}
-function calcNights(ci, co) {
-  if (!ci || !co) return 0;
-  const diff = new Date(co) - new Date(ci);
-  return Math.max(0, Math.ceil(diff / 86400000));
-}
-function toShort(iso) {
-  if (!iso) return '';
-  const [y, m, d] = iso.split('-');
-  return `${d}.${m}.${y.slice(2)}`;
-}
-
-/* ---- Mini inline calendar popup ---- */
-function CardCalendar({ checkIn, checkOut, onChange, onClose, anchorRef }) {
-  const today = new Date().toISOString().split('T')[0];
-  const minAllowedDate = getDefaultBookingDates().checkIn;
-  const initialPage = getInitialCalendarPage(today);
-  const [calYear, setCalYear] = useState(initialPage.year);
-  const [calMonth, setCalMonth] = useState(initialPage.month);
-  const [selecting, setSelecting] = useState(checkIn && !checkOut ? 'out' : 'in');
-  const [pos, setPos] = useState({ top: 0, left: 0 });
-  const [mounted, setMounted] = useState(false);
-  const calRef = useRef(null);
-
-  useEffect(() => { setMounted(true); }, []);
-
-  useEffect(() => {
-    if (!anchorRef.current) return;
-    const rect = anchorRef.current.getBoundingClientRect();
-    const calW = 300;
-    const calH = 370;
-    let top = rect.bottom + window.scrollY + 6;
-    let left = rect.left + window.scrollX;
-    if (left + calW > window.innerWidth - 8) left = window.innerWidth - calW - 8;
-    if (left < 8) left = 8;
-    const viewTop = rect.bottom + 6;
-    if (viewTop + calH > window.innerHeight - 8) {
-      top = rect.top + window.scrollY - calH - 6;
-    }
-    setPos({ top, left });
-  }, [anchorRef]);
-
-  useEffect(() => {
-    const handleOutside = (e) => {
-      if (
-        calRef.current && !calRef.current.contains(e.target) &&
-        anchorRef.current && !anchorRef.current.contains(e.target)
-      ) {
-        onClose();
-      }
-    };
-    document.addEventListener('mousedown', handleOutside);
-    return () => document.removeEventListener('mousedown', handleOutside);
-  }, [onClose, anchorRef]);
-
-  const handleDayClick = (iso) => {
-    if (selecting === 'out' && checkIn && iso > checkIn) {
-      onChange(checkIn, iso);
-      onClose();
-    } else {
-      onChange(iso, '');
-      setSelecting('out');
-    }
-  };
-
-  const moveMonth = (direction) => {
-    let nextYear = calYear;
-    let nextMonth = calMonth;
-
-    do {
-      nextMonth += direction;
-      if (nextMonth < 0) {
-        nextMonth = 11;
-        nextYear -= 1;
-      }
-      if (nextMonth > 11) {
-        nextMonth = 0;
-        nextYear += 1;
-      }
-    } while (nextMonth < BOOKING_MONTH_START || nextMonth > BOOKING_MONTH_END);
-
-    setCalYear(nextYear);
-    setCalMonth(nextMonth);
-  };
-
-  const prevMonth = () => moveMonth(-1);
-  const nextMonth = () => moveMonth(1);
-
-  const daysInMonth = getDaysInMonth(calYear, calMonth);
-  const firstDow = getFirstDayOfWeek(calYear, calMonth);
-  const inDate = isoToDate(checkIn);
-  const outDate = isoToDate(checkOut);
-
-  if (!mounted) return null;
-
-  return createPortal(
-    <div
-      ref={calRef}
-      style={{ position: 'absolute', top: pos.top, left: pos.left, zIndex: 99999, width: 300 }}
-      className="bg-white rounded-2xl shadow-2xl border border-slate-200 p-4"
-    >
-      <div className="flex items-center justify-between mb-2">
-        <button type="button" onClick={prevMonth} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
-          <ChevronLeft className="w-4 h-4 text-slate-600" />
-        </button>
-        <span className="text-sm font-bold text-slate-800">{MONTH_NAMES[calMonth]} {calYear}</span>
-        <button type="button" onClick={nextMonth} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
-          <ChevronRight className="w-4 h-4 text-slate-600" />
-        </button>
-      </div>
-
-      <p className="text-center text-xs text-primary-600 font-semibold mb-2">
-        {selecting === 'out' ? '▸ Выберите дату выезда' : '▸ Выберите дату заезда'}
-      </p>
-
-      <div className="grid grid-cols-7 mb-1">
-        {DAY_NAMES.map((d) => (
-          <div key={d} className="text-center text-[10px] font-semibold text-slate-400 py-1">{d}</div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-7 gap-px">
-        {Array.from({ length: firstDow }).map((_, i) => <div key={`e${i}`} />)}
-        {Array.from({ length: daysInMonth }).map((_, i) => {
-          const day = i + 1;
-          const iso = `${calYear}-${String(calMonth + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-          const isPast = iso < today;
-          const isOutsideSeason = !isDateInBookingSeason(iso);
-          const isBeforeSeasonStart = iso < minAllowedDate;
-          const isDisabled = isPast || isOutsideSeason || isBeforeSeasonStart;
-          const isCI = iso === checkIn;
-          const isCO = iso === checkOut;
-          const cellDate = isoToDate(iso);
-          const inRange = inDate && outDate && cellDate > inDate && cellDate < outDate;
-
-          return (
-            <button
-              type="button"
-              key={iso}
-              disabled={isDisabled}
-              onClick={() => !isDisabled && handleDayClick(iso)}
-              className={[
-                'text-xs py-1.5 text-center transition-colors rounded-lg',
-                isDisabled ? 'text-slate-300 cursor-not-allowed' : 'hover:bg-primary-50 cursor-pointer text-slate-800',
-                (isCI || isCO) ? '!bg-primary-600 !text-white font-bold hover:!bg-primary-700' : '',
-                inRange ? '!bg-primary-100 !text-primary-800 !rounded-none' : '',
-              ].filter(Boolean).join(' ')}
-            >
-              {day}
-            </button>
-          );
-        })}
-      </div>
-    </div>,
-    document.body
-  );
+function getGuestsLabel(capacity) {
+  if (capacity === 1) return '1 гость';
+  if (capacity < 5) return `${capacity} гостя`;
+  return `${capacity} гостей`;
 }
 
 export default function RoomCard({ room, isActive = false }) {
-  const defaultDates = getDefaultBookingDates();
-  const today = new Date().toISOString().split('T')[0];
-  const defaultCheckIn = defaultDates.checkIn;
-  const tomorrow = defaultDates.checkOut;
-
   const [activeSlide, setActiveSlide] = useState(0);
-  const [checkIn, setCheckIn] = useState(defaultCheckIn);
-  const [checkOut, setCheckOut] = useState(tomorrow);
-  const [showCal, setShowCal] = useState(false);
-  const calAnchorRef = useRef(null);
-  const dateRangeBtnRef = useRef(null);
   const touchStartRef = useRef(null);
 
   const images =
@@ -221,67 +37,63 @@ export default function RoomCard({ room, isActive = false }) {
   const badge = CTA_BADGES[room.roomCategoryId] ?? null;
   const tlRoomId = getTravelLineRoomId(room.roomCategoryId);
   const roomAnchor = `room${room.id}`;
-  const nights = calcNights(checkIn, checkOut);
-  const bookingCheckInDate = checkIn || defaultCheckIn;
-  const bookingNights = Math.max(1, nights || 1);
-  const bookingAdults = Math.max(1, Math.min(Number(room.capacity) || 2, 10));
-  const tlBookingUrl = tlRoomId
-    ? buildTravelLineRoomBookingUrl({
-      roomId: tlRoomId,
-      checkInDate: bookingCheckInDate,
-      nights: bookingNights,
-      adults: bookingAdults,
-    })
-    : '#';
-  const checkInNightPrice = getNightPrice(room, checkIn || defaultCheckIn);
+  const today = new Date().toISOString().split('T')[0];
   const todayNightPrice = getNightPrice(room, today);
-  const totalPrice = calculateStayPrice(room, checkIn, checkOut);
 
   const goToPrevSlide = useCallback(() => {
-    setActiveSlide((p) => (p - 1 + images.length) % images.length);
+    setActiveSlide((prev) => (prev - 1 + images.length) % images.length);
   }, [images.length]);
 
   const goToNextSlide = useCallback(() => {
-    setActiveSlide((p) => (p + 1) % images.length);
+    setActiveSlide((prev) => (prev + 1) % images.length);
   }, [images.length]);
 
-  const prevSlide = useCallback((e) => {
-    e.stopPropagation();
-    goToPrevSlide();
-  }, [goToPrevSlide]);
+  const prevSlide = useCallback(
+    (event) => {
+      event.stopPropagation();
+      goToPrevSlide();
+    },
+    [goToPrevSlide],
+  );
 
-  const nextSlide = useCallback((e) => {
-    e.stopPropagation();
-    goToNextSlide();
-  }, [goToNextSlide]);
+  const nextSlide = useCallback(
+    (event) => {
+      event.stopPropagation();
+      goToNextSlide();
+    },
+    [goToNextSlide],
+  );
 
-  const handleTouchStart = useCallback((e) => {
-    if (e.touches.length !== 1) return;
-    const touch = e.touches[0];
+  const handleTouchStart = useCallback((event) => {
+    if (event.touches.length !== 1) return;
+    const touch = event.touches[0];
     touchStartRef.current = { x: touch.clientX, y: touch.clientY };
   }, []);
 
-  const handleTouchEnd = useCallback((e) => {
-    if (images.length <= 1 || !touchStartRef.current || e.changedTouches.length !== 1) {
+  const handleTouchEnd = useCallback(
+    (event) => {
+      if (images.length <= 1 || !touchStartRef.current || event.changedTouches.length !== 1) {
+        touchStartRef.current = null;
+        return;
+      }
+
+      const touch = event.changedTouches[0];
+      const deltaX = touch.clientX - touchStartRef.current.x;
+      const deltaY = touch.clientY - touchStartRef.current.y;
       touchStartRef.current = null;
-      return;
-    }
 
-    const touch = e.changedTouches[0];
-    const deltaX = touch.clientX - touchStartRef.current.x;
-    const deltaY = touch.clientY - touchStartRef.current.y;
-    touchStartRef.current = null;
+      const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY);
+      const isSwipeEnough = Math.abs(deltaX) > 35;
+      if (!isHorizontalSwipe || !isSwipeEnough) return;
 
-    const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY);
-    const isSwipeEnough = Math.abs(deltaX) > 35;
-    if (!isHorizontalSwipe || !isSwipeEnough) return;
-
-    if (deltaX > 0) {
-      goToPrevSlide();
-    } else {
-      goToNextSlide();
-    }
-  }, [images.length, goToPrevSlide, goToNextSlide]);
+      if (deltaX > 0) {
+        goToPrevSlide();
+      } else {
+        goToNextSlide();
+      }
+    },
+    [images.length, goToPrevSlide, goToNextSlide],
+  );
 
   const handleShare = async () => {
     const url = `${window.location.origin}/#${roomAnchor}`;
@@ -300,24 +112,9 @@ export default function RoomCard({ room, isActive = false }) {
     }
   };
 
-  const handleCalChange = (ci, co) => {
-    setCheckIn(ci || defaultCheckIn);
-    setCheckOut(co || '');
-  };
-
   useEffect(() => {
     setActiveSlide(0);
   }, [room.id]);
-
-  const guestsLabel =
-    room.capacity === 1
-      ? '1 гость'
-      : room.capacity < 5
-      ? `${room.capacity} гостя`
-      : `${room.capacity} гостей`;
-
-  const nightsLabel =
-    nights === 1 ? 'ночь' : nights < 5 ? 'ночи' : 'ночей';
 
   return (
     <div
@@ -326,8 +123,6 @@ export default function RoomCard({ room, isActive = false }) {
         isActive ? 'ring-4 ring-primary-500 bg-primary-100 shadow-2xl border-2 border-primary-400 -translate-y-1' : ''
       }`}
     >
-
-      {/* ---- photo slider ---- */}
       <div
         className="relative h-64 flex-shrink-0 overflow-hidden"
         onTouchStart={images.length > 1 ? handleTouchStart : undefined}
@@ -340,11 +135,11 @@ export default function RoomCard({ room, isActive = false }) {
             transform: `translateX(-${(activeSlide * 100) / images.length}%)`,
           }}
         >
-          {images.map((src, i) => (
+          {images.map((src, index) => (
             <img
-              key={i}
+              key={index}
               src={src}
-              alt={`${room.name} — фото ${i + 1}`}
+              alt={`${room.name} - фото ${index + 1}`}
               className="h-full object-cover flex-shrink-0"
               style={{ width: `${100 / images.length}%` }}
               loading="lazy"
@@ -399,21 +194,21 @@ export default function RoomCard({ room, isActive = false }) {
             </button>
 
             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5">
-              {images.map((_, i) => (
+              {images.map((_, index) => (
                 <button
-                  key={i}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setActiveSlide(i);
+                  key={index}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    setActiveSlide(index);
                   }}
                   className={`min-w-11 min-h-11 flex items-center justify-center rounded-full transition-all duration-200 ${
-                    i === activeSlide ? 'bg-black/20' : 'bg-transparent'
+                    index === activeSlide ? 'bg-black/20' : 'bg-transparent'
                   }`}
-                  aria-label={`Фото ${i + 1}`}
+                  aria-label={`Фото ${index + 1}`}
                 >
                   <span
                     className={`rounded-full transition-all duration-200 ${
-                      i === activeSlide ? 'w-4 h-2 bg-white' : 'w-2 h-2 bg-white/60'
+                      index === activeSlide ? 'w-4 h-2 bg-white' : 'w-2 h-2 bg-white/60'
                     }`}
                   />
                 </button>
@@ -423,10 +218,7 @@ export default function RoomCard({ room, isActive = false }) {
         )}
       </div>
 
-      {/* ---- card body ---- */}
       <div className="p-5 flex flex-col flex-1">
-
-        {/* title + category badge */}
         <div className="flex items-start justify-between gap-2 mb-2">
           <h3 className="text-lg font-bold text-slate-900 leading-tight">{room.name}</h3>
           <span
@@ -440,74 +232,18 @@ export default function RoomCard({ room, isActive = false }) {
           </span>
         </div>
 
-        {/* capacity */}
         <div className="flex items-center gap-1.5 text-slate-500 text-sm mb-3">
           <Users className="w-4 h-4" />
-          <span>{guestsLabel}</span>
+          <span>{getGuestsLabel(room.capacity)}</span>
         </div>
 
-        {/* description */}
         <p className="text-sm text-slate-600 mb-4 whitespace-pre-line">{room.description}</p>
 
-        {/* ---- date picker ---- */}
         <div className="mt-auto pt-4 border-t border-slate-100">
-          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
-            Даты заезда / выезда
-          </label>
-
-          <button
-            ref={dateRangeBtnRef}
-            type="button"
-            onClick={() => {
-              calAnchorRef.current = dateRangeBtnRef.current;
-              setShowCal((v) => !v);
-            }}
-            className={`w-full flex items-center gap-2 px-3 py-2.5 border rounded-xl text-sm transition-all text-left mb-3 ${
-              showCal
-                ? 'border-primary-500 ring-2 ring-primary-100 bg-white'
-                : 'border-slate-300 bg-slate-50 hover:bg-white hover:border-slate-400'
-            }`}
-          >
-            <Calendar className="w-4 h-4 text-slate-400 flex-shrink-0" />
-            <span className="text-slate-800 font-medium">
-            {checkIn && checkOut
-              ? `${toShort(checkIn)} — ${toShort(checkOut)}`
-              : 'дд.мм.гг — дд.мм.гг'}
-            </span>
-          </button>
-
-          {/* calendar portal */}
-          {showCal && (
-            <CardCalendar
-              checkIn={checkIn}
-              checkOut={checkOut}
-              onChange={handleCalChange}
-              onClose={() => setShowCal(false)}
-              anchorRef={calAnchorRef}
-            />
-          )}
-
-          {/* price breakdown */}
-          {nights > 0 && checkOut ? (
-            <div className="bg-primary-50 rounded-xl px-4 py-3 mb-3">
-              <div className="flex items-center justify-between text-sm text-slate-600 mb-1">
-                <span>{nights} {nightsLabel} × от {checkInNightPrice.toLocaleString('ru-RU')} ₽</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-slate-700">Итого</span>
-                <span className="text-xl font-bold text-primary-700">
-                  {totalPrice.toLocaleString('ru-RU')} ₽
-                </span>
-              </div>
-            </div>
-          ) : (
-            <div className="text-xs text-slate-400 text-center mb-3">
-              Выберите даты для расчёта стоимости
-            </div>
-          )}
           <a
-            href={tlBookingUrl}
-            {...(tlRoomId ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            href="#"
+            data-tl-booking-open="true"
+            {...(tlRoomId ? { 'data-tl-room': String(tlRoomId) } : {})}
             className="w-full inline-flex items-center justify-center bg-accent-500 hover:bg-accent-600 text-white font-semibold py-3 rounded-xl transition-all hover:shadow-lg active:scale-95"
           >
             Оставить заявку
