@@ -11,9 +11,9 @@ export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
-    { label: 'Оставить заявку', href: '#', isBooking: true },
-    { label: 'Комнаты', href: '#rooms' },
-    { label: 'О нас', href: '#features' },
+    { label: 'Забронировать номер', href: '#', isBooking: true },
+    { label: 'Номера', href: '#rooms' },
+    { label: 'Преимущества', href: '#features' },
     { label: 'Отзывы', href: '#reviews' },
     { label: 'Галерея', href: '#gallery' },
     { label: 'FAQ', href: '#faq' },

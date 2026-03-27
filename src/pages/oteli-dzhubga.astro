@@ -3,15 +3,36 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import TravelLineSearch from '../components/TravelLineSearch.astro';
 import Layout from '../layouts/Layout.astro';
+
+const highlights = [
+  {
+    title: '50 метров до пляжа',
+    description: 'Гостевой дом расположен на первой линии в Джубге, поэтому море, набережная и вечерние прогулки находятся совсем рядом.',
+  },
+  {
+    title: 'Номера Эконом и Стандарт',
+    description: 'Можно подобрать размещение для пары, семьи с детьми или небольшой компании без переплаты за лишние услуги.',
+  },
+  {
+    title: 'Прямое бронирование',
+    description: 'Официальный сайт гостевого дома «Дельфин» позволяет быстро уточнить даты проживания и забронировать номер без посредников.',
+  },
+];
+
+const comparisonLinks = [
+  { href: '/gostinicy-dzhubga', label: 'Гостиницы Джубги' },
+  { href: '/otel-dzhubga-u-morya', label: 'Отель в Джубге у моря' },
+  { href: '/#rooms', label: 'Номера и цены' },
+];
 ---
 
 <Layout
   seoProfileId="oteli_dzhubga"
   canonicalPath="/oteli-dzhubga"
-  schemaPageName="Варианты размещения в Джубге"
+  schemaPageName="Отели Джубги у моря"
   breadcrumbs={[
     { name: 'Главная', path: '/' },
-    { name: 'Варианты размещения в Джубге', path: '/oteli-dzhubga' },
+    { name: 'Отели Джубги у моря', path: '/oteli-dzhubga' },
   ]}
 >
   <Header />
@@ -24,15 +45,15 @@ import Layout from '../layouts/Layout.astro';
 
         <div class="bg-white rounded-3xl shadow-lg p-8 md:p-12">
           <h1 class="text-3xl md:text-5xl font-bold text-slate-900 leading-tight mb-6">
-            Отдых у моря в Джубге в удобной локации
+            Отели Джубги у моря: официальный сайт гостевого дома «Дельфин»
           </h1>
           <p class="text-lg text-slate-700 leading-relaxed mb-4">
-            Пространство для спокойного семейного отдыха рядом с набережной и пляжем. Подходит для поездок вдвоем,
-            с детьми и в небольших компаниях.
+            Если вы ищете отель в Джубге у моря, обратите внимание на гостевой дом «Дельфин». Мы находимся в 50
+            метрах от пляжа, предлагаем номера разных категорий и принимаем бронирования напрямую на официальном сайте.
           </p>
           <p class="text-lg text-slate-700 leading-relaxed mb-8">
-            Мы сделали акцент на тишине, чистоте, зеленой территории и быстрой связи по заявкам, чтобы вы могли
-            сосредоточиться на самом важном — отдыхе у моря.
+            Среди отелей Джубги наш формат выбирают за первую линию, зелёный двор, парковку для гостей, семейную
+            атмосферу и понятные условия проживания без скрытых шагов между запросом и заселением.
           </p>
           <div class="flex flex-col sm:flex-row gap-4">
             <a
@@ -40,14 +61,66 @@ import Layout from '../layouts/Layout.astro';
               data-tl-booking-open="true"
               class="inline-flex items-center justify-center min-h-11 px-6 py-3 rounded-xl bg-accent-500 hover:bg-accent-600 text-white font-semibold transition-colors"
             >
-              Оставить заявку
+              Забронировать номер
             </a>
             <a
               href="/#rooms"
               class="inline-flex items-center justify-center min-h-11 px-6 py-3 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold transition-colors"
             >
-              Посмотреть варианты размещения
+              Посмотреть номера и цены
             </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pb-12">
+      <div class="container mx-auto max-w-6xl px-4">
+        <div class="grid gap-6 md:grid-cols-3">
+          {highlights.map((item) => (
+            <div class="rounded-3xl bg-white p-6 shadow-md">
+              <h2 class="text-2xl font-bold text-slate-900">{item.title}</h2>
+              <p class="mt-3 text-slate-600">{item.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="pb-20">
+      <div class="container mx-auto max-w-6xl px-4">
+        <div class="grid gap-8 lg:grid-cols-[1.3fr_0.9fr]">
+          <div class="rounded-3xl bg-white p-8 shadow-lg md:p-10">
+            <h2 class="text-3xl font-bold text-slate-900">Почему нас выбирают среди отелей Джубги</h2>
+            <p class="mt-5 text-lg leading-relaxed text-slate-700">
+              Гостевой дом «Дельфин» подходит тем, кто ищет не просто отель в Джубге, а спокойное размещение у моря с
+              комфортной логистикой. До пляжа можно дойти за минуту, а во дворе при этом тихо и зелено даже в разгар сезона.
+            </p>
+            <p class="mt-4 text-lg leading-relaxed text-slate-700">
+              Для гостей доступны номера Эконом и Стандарт, Wi-Fi, кухня общего пользования, мангальная зона и парковка.
+              Такой формат особенно удобен для семейного отдыха, поездок вдвоём и коротких заездов на выходные.
+            </p>
+            <p class="mt-4 text-lg leading-relaxed text-slate-700">
+              Если вы сравниваете отели Джубги по расположению, цене и удобству бронирования, официальный сайт
+              гостевого дома «Дельфин» помогает сразу перейти к свободным датам, условиям проживания и выбору номера.
+            </p>
+          </div>
+
+          <div class="rounded-3xl bg-slate-900 p-8 text-white shadow-lg md:p-10">
+            <h2 class="text-2xl font-bold">Полезные страницы</h2>
+            <p class="mt-4 text-slate-300">
+              Перейдите на соседние посадочные страницы, если хотите сравнить формулировки под разные гостиничные запросы.
+            </p>
+            <div class="mt-6 space-y-3">
+              {comparisonLinks.map((link) => (
+                <a
+                  href={link.href}
+                  class="block rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-lg font-semibold text-white transition-colors hover:border-amber-300/50 hover:text-amber-200"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </div>

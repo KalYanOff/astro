@@ -7,8 +7,6 @@ export const GET: APIRoute = () => {
     '/oteli-dzhubga',
     '/gostinicy-dzhubga',
     '/otel-dzhubga-u-morya',
-    '/docs/offer',
-    '/docs/privacy',
   ];
   const lastmod = new Date().toISOString();
 

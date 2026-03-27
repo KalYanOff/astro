@@ -1,8 +1,22 @@
 ---
 import {
+  SITE_AVAILABLE_LANGUAGE_CODES,
+  SITE_CHECKIN_TIME,
+  SITE_CHECKOUT_TIME,
+  SITE_CLASSIFICATION_REGISTRY_ID,
   SITE_COORDS,
+  SITE_CURRENCIES_ACCEPTED,
   SITE_EMAIL,
+  SITE_INN,
+  SITE_LEGAL_NAME,
+  SITE_MAP_URL,
+  SITE_NUMBER_OF_ROOMS,
+  SITE_OBJECT_STATUS,
+  SITE_OGRNIP,
+  SITE_PAYMENT_ACCEPTED,
+  SITE_PETS_ALLOWED,
   SITE_PHONE_DISPLAY,
+  SITE_REFERENCE_LINKS,
 } from '../config/site.js';
 import { TL_CONTEXT, TL_LANG } from '../config/travelline.js';
 import {
@@ -56,15 +70,53 @@ const pageName = schemaPageName || resolvedTitle;
 const ogImageUrl = ogImage.startsWith('http') ? ogImage : toCanonical(ogImage);
 
 const [latitude, longitude] = SITE_COORDS.split(',').map((value) => Number(value.trim()));
+const isIndexedSeoPage = Boolean(seoProfile && !noindex);
+const includeHotelSchema = Boolean(isIndexedSeoPage && seoProfile?.includeHotelSchema);
+
+const postalAddress = {
+  '@type': 'PostalAddress',
+  streetAddress: 'Набережная 7',
+  addressLocality: 'Джубга',
+  addressRegion: 'Краснодарский край',
+  postalCode: '352844',
+  addressCountry: 'RU',
+};
+
+const geoCoordinates = {
+  '@type': 'GeoCoordinates',
+  latitude,
+  longitude,
+};
+
+const businessIdentifiers = [
+  {
+    '@type': 'PropertyValue',
+    name: 'Номер в реестре классифицированных средств размещения',
+    value: SITE_CLASSIFICATION_REGISTRY_ID,
+  },
+  {
+    '@type': 'PropertyValue',
+    name: 'ИНН',
+    value: SITE_INN,
+  },
+  {
+    '@type': 'PropertyValue',
+    name: 'ОГРНИП',
+    value: SITE_OGRNIP,
+  },
+];
 
 const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: ORG_NAME,
+  legalName: SITE_LEGAL_NAME,
   url: SITE_URL,
   logo: toCanonical('/img/logo.webp'),
   email: SITE_EMAIL,
   telephone: SITE_PHONE_DISPLAY,
+  sameAs: SITE_REFERENCE_LINKS,
+  identifier: businessIdentifiers,
 };
 
 const websiteSchema = {
@@ -87,6 +139,13 @@ const webpageSchema = {
     name: ORG_NAME,
     url: SITE_URL,
   },
+  mainEntity: isIndexedSeoPage
+    ? {
+        '@type': 'LodgingBusiness',
+        name: ORG_NAME,
+        url: SITE_URL,
+      }
+    : undefined,
 };
 
 const localBusinessSchema = {
@@ -96,23 +155,16 @@ const localBusinessSchema = {
   url: SITE_URL,
   image: ogImageUrl,
   telephone: SITE_PHONE_DISPLAY,
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: 'Набережная 7',
-    addressLocality: 'Джубга',
-    addressRegion: 'Краснодарский край',
-    postalCode: '352844',
-    addressCountry: 'RU',
-  },
-  geo: {
-    '@type': 'GeoCoordinates',
-    latitude,
-    longitude,
-  },
+  email: SITE_EMAIL,
+  address: postalAddress,
+  geo: geoCoordinates,
   areaServed: 'RU',
   description: resolvedDescription,
   priceRange: '₽₽',
   openingHours: 'Mo-Su 00:00-23:59',
+  hasMap: SITE_MAP_URL,
+  sameAs: SITE_REFERENCE_LINKS,
+  identifier: businessIdentifiers,
 };
 
 const hotelAmenityFeatures = [
@@ -133,44 +185,28 @@ const hotelAmenityFeatures = [
   },
   {
     '@type': 'LocationFeatureSpecification',
-    name: 'Семейный формат',
+    name: 'Семейный отдых',
+    value: true,
+  },
+  {
+    '@type': 'LocationFeatureSpecification',
+    name: 'Кухня для гостей',
+    value: true,
+  },
+  {
+    '@type': 'LocationFeatureSpecification',
+    name: 'Зона барбекю',
+    value: true,
+  },
+  {
+    '@type': 'LocationFeatureSpecification',
+    name: 'Детская площадка',
     value: true,
   },
 ];
 
-const hotelSchema =
-  seoProfile && !noindex
-    ? {
-        '@context': 'https://schema.org',
-        '@type': 'Hotel',
-        name: ORG_NAME,
-        url: canonicalUrl,
-        description: resolvedDescription,
-        image: ogImageUrl,
-        telephone: SITE_PHONE_DISPLAY,
-        priceRange: '₽₽',
-        checkinTime: '14:00',
-        checkoutTime: '12:00',
-        address: {
-          '@type': 'PostalAddress',
-          streetAddress: 'Набережная 7',
-          addressLocality: 'Джубга',
-          addressRegion: 'Краснодарский край',
-          postalCode: '352844',
-          addressCountry: 'RU',
-        },
-        geo: {
-          '@type': 'GeoCoordinates',
-          latitude,
-          longitude,
-        },
-        amenityFeature: hotelAmenityFeatures,
-        keywords: seoProfile.focusKeywords.join(', '),
-      }
-    : null;
-
 const lodgingBusinessSchema =
-  seoProfile && !noindex
+  isIndexedSeoPage
     ? {
         '@context': 'https://schema.org',
         '@type': 'LodgingBusiness',
@@ -179,24 +215,52 @@ const lodgingBusinessSchema =
         description: resolvedDescription,
         image: ogImageUrl,
         telephone: SITE_PHONE_DISPLAY,
+        email: SITE_EMAIL,
         priceRange: '₽₽',
-        checkinTime: '14:00',
-        checkoutTime: '12:00',
-        address: {
-          '@type': 'PostalAddress',
-          streetAddress: 'Набережная 7',
-          addressLocality: 'Джубга',
-          addressRegion: 'Краснодарский край',
-          postalCode: '352844',
-          addressCountry: 'RU',
-        },
-        geo: {
-          '@type': 'GeoCoordinates',
-          latitude,
-          longitude,
-        },
+        checkinTime: SITE_CHECKIN_TIME,
+        checkoutTime: SITE_CHECKOUT_TIME,
+        address: postalAddress,
+        geo: geoCoordinates,
         amenityFeature: hotelAmenityFeatures,
+        availableLanguage: SITE_AVAILABLE_LANGUAGE_CODES,
+        paymentAccepted: SITE_PAYMENT_ACCEPTED,
+        currenciesAccepted: SITE_CURRENCIES_ACCEPTED,
+        petsAllowed: SITE_PETS_ALLOWED,
+        numberOfRooms: SITE_NUMBER_OF_ROOMS,
         keywords: seoProfile.focusKeywords.join(', '),
+        hasMap: SITE_MAP_URL,
+        sameAs: SITE_REFERENCE_LINKS,
+        identifier: businessIdentifiers,
+        slogan: SITE_OBJECT_STATUS,
+      }
+    : null;
+
+const hotelSchema =
+  includeHotelSchema
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'Hotel',
+        name: ORG_NAME,
+        url: canonicalUrl,
+        description: resolvedDescription,
+        image: ogImageUrl,
+        telephone: SITE_PHONE_DISPLAY,
+        email: SITE_EMAIL,
+        priceRange: '₽₽',
+        checkinTime: SITE_CHECKIN_TIME,
+        checkoutTime: SITE_CHECKOUT_TIME,
+        address: postalAddress,
+        geo: geoCoordinates,
+        amenityFeature: hotelAmenityFeatures,
+        availableLanguage: SITE_AVAILABLE_LANGUAGE_CODES,
+        paymentAccepted: SITE_PAYMENT_ACCEPTED,
+        currenciesAccepted: SITE_CURRENCIES_ACCEPTED,
+        petsAllowed: SITE_PETS_ALLOWED,
+        numberOfRooms: SITE_NUMBER_OF_ROOMS,
+        keywords: seoProfile.focusKeywords.join(', '),
+        hasMap: SITE_MAP_URL,
+        sameAs: SITE_REFERENCE_LINKS,
+        identifier: businessIdentifiers,
       }
     : null;
 

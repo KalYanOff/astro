@@ -84,7 +84,7 @@ function createImageEntries(paths, category, label) {
 const galleryImages = [
   ...createImageEntries(TERRITORY_PATHS, 'territory', 'Фото территории'),
   ...createImageEntries(BEACH_PATHS, 'beach', 'Фото пляжа'),
-  ...createImageEntries(ROOM_PATHS, 'room', 'Фото комнат'),
+  ...createImageEntries(ROOM_PATHS, 'room', 'Фото номеров'),
 ];
 
 const MOBILE_INITIAL = 2;
@@ -116,11 +116,11 @@ export default function Gallery() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-4">
-            Фотогалерея
+            Галерея
           </div>
           <h2 className="text-4xl font-bold text-slate-900 mb-4">Посмотрите сами</h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Реальные фотографии комнат, территории и пляжа.
+            Реальные фотографии номеров, территории и пляжа
           </p>
         </div>
 
@@ -129,7 +129,7 @@ export default function Gallery() {
             { value: 'all', label: 'Все' },
             { value: 'territory', label: 'Территория' },
             { value: 'beach', label: 'Пляж' },
-            { value: 'room', label: 'Комнаты' },
+            { value: 'room', label: 'Номера' },
           ].map(({ value, label }) => (
             <button
               key={value}

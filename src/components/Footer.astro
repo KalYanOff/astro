@@ -1,6 +1,14 @@
 ---
 import { MapPin, Navigation } from 'lucide-react';
-import { CONTACT_LINKS, SITE_ADDRESS, SITE_PHONE_DISPLAY } from '../config/site.js';
+import {
+  CONTACT_LINKS,
+  SITE_ADDRESS,
+  SITE_CHECKIN_TIME,
+  SITE_CHECKOUT_TIME,
+  SITE_EMAIL,
+  SITE_NAME,
+  SITE_PHONE_DISPLAY,
+} from '../config/site.js';
 ---
 
 <footer class="bg-slate-900 text-white pt-16 pb-8">
@@ -19,6 +27,13 @@ import { CONTACT_LINKS, SITE_ADDRESS, SITE_PHONE_DISPLAY } from '../config/site.
             <MapPin class="w-5 h-5 flex-shrink-0 mt-1" />
             <span>{SITE_ADDRESS}</span>
           </div>
+          <a href={CONTACT_LINKS.email} class="flex items-center gap-3 text-slate-300 hover:text-white transition-colors">
+            <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 6h16v12H4z"></path>
+              <path d="m4 8 8 6 8-6"></path>
+            </svg>
+            <span>{SITE_EMAIL}</span>
+          </a>
           <div class="flex items-center gap-3 mt-6">
             <a href={CONTACT_LINKS.whatsapp} target="_blank" rel="noopener noreferrer" class="w-11 h-11 p-3 rounded-full bg-green-600 hover:bg-green-700 transition-colors" aria-label="Написать в WhatsApp">
               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -44,8 +59,8 @@ import { CONTACT_LINKS, SITE_ADDRESS, SITE_PHONE_DISPLAY } from '../config/site.
             <Navigation class="w-5 h-5" />
             Построить маршрут
           </a>
-          <a href="#rooms" class="block text-slate-300 hover:text-white transition-colors">Варианты размещения</a>
-          <a href="#features" class="block text-slate-300 hover:text-white transition-colors">О пространстве</a>
+          <a href="#rooms" class="block text-slate-300 hover:text-white transition-colors">Номера и цены</a>
+          <a href="#features" class="block text-slate-300 hover:text-white transition-colors">Преимущества гостевого дома</a>
           <a href="#gallery" class="block text-slate-300 hover:text-white transition-colors">Галерея</a>
           <a href="#reviews" class="block text-slate-300 hover:text-white transition-colors">Отзывы</a>
           <a href="#faq" class="block text-slate-300 hover:text-white transition-colors">FAQ</a>
@@ -55,13 +70,13 @@ import { CONTACT_LINKS, SITE_ADDRESS, SITE_PHONE_DISPLAY } from '../config/site.
       <div>
         <h3 class="text-xl font-bold mb-6">Юридическая информация</h3>
         <div class="space-y-3">
-          <a href="/docs/offer" class="block text-slate-300 hover:text-white transition-colors">Правила краткосрочной аренды помещений и пользования территорией</a>
-          <a href="/docs/privacy" class="block text-slate-300 hover:text-white transition-colors">Политика конфиденциальности</a>
+          <a href="/docs/offer" class="block text-slate-300 hover:text-white transition-colors">Правила предоставления услуг</a>
+          <a href="/docs/privacy" class="block text-slate-300 hover:text-white transition-colors">Политика обработки персональных данных</a>
         </div>
       </div>
 
       <div>
-        <h3 class="text-xl tracking-wider font-bold mb-6">Режим связи</h3>
+        <h3 class="text-xl tracking-wider font-bold mb-6">Режим работы</h3>
         <ul class="space-y-2 text-sm text-gray-400">
           <li class="flex justify-between gap-3">
             <span>На связи</span>
@@ -69,11 +84,11 @@ import { CONTACT_LINKS, SITE_ADDRESS, SITE_PHONE_DISPLAY } from '../config/site.
           </li>
           <li class="flex justify-between gap-3">
             <span>Заезд</span>
-            <span class="text-white font-medium">с 12:00</span>
+            <span class="text-white font-medium">с {SITE_CHECKIN_TIME}</span>
           </li>
           <li class="flex justify-between gap-3">
             <span>Выезд</span>
-            <span class="text-white">до 10:00</span>
+            <span class="text-white">до {SITE_CHECKOUT_TIME}</span>
           </li>
         </ul>
       </div>
@@ -81,7 +96,7 @@ import { CONTACT_LINKS, SITE_ADDRESS, SITE_PHONE_DISPLAY } from '../config/site.
 
     <div class="border-t border-slate-800 pt-8">
       <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-slate-400 text-sm">
-        <p>&copy; 2026 Дельфин. Все права защищены.</p>
+        <p>&copy; 2026 {SITE_NAME}. Все права защищены.</p>
       </div>
     </div>
   </div>

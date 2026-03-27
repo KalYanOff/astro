@@ -32,7 +32,7 @@ export default function CookieConsent() {
           <p className="text-sm text-gray-700 dark:text-gray-300">
             Мы используем файлы cookie для улучшения работы сайта и анализа трафика. 
             Продолжая использовать сайт, вы соглашаетесь с нашей 
-            <a href="/docs/privacy" className="text-blue-600 underline ml-1 hover:text-blue-500">политикой конфиденциальности</a>.
+            <a href="/docs/privacy" className="text-blue-600 underline ml-1 hover:text-blue-500">политикой обработки персональных данных</a>.
           </p>
         </div>
         <div className="mt-4 flex items-center gap-4 shrink-0 md:mt-0">

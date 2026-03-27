@@ -3,15 +3,21 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import TravelLineSearch from '../components/TravelLineSearch.astro';
 import Layout from '../layouts/Layout.astro';
+
+const advantages = [
+  'Гостевой дом находится в центре курортной жизни Джубги, но при этом остаётся удобным для спокойного отдыха.',
+  'До пляжа и набережной всего несколько минут пешком, что особенно важно для семей с детьми и гостей без автомобиля.',
+  'Номера разных категорий помогают выбрать размещение под бюджет и сценарий поездки: на выходные, отпуск или транзитный отдых.',
+];
 ---
 
 <Layout
   seoProfileId="gostinicy_dzhubga"
   canonicalPath="/gostinicy-dzhubga"
-  schemaPageName="Комфортный отдых в Джубге"
+  schemaPageName="Гостиницы Джубги у моря"
   breadcrumbs={[
     { name: 'Главная', path: '/' },
-    { name: 'Комфортный отдых в Джубге', path: '/gostinicy-dzhubga' },
+    { name: 'Гостиницы Джубги у моря', path: '/gostinicy-dzhubga' },
   ]}
 >
   <Header />
@@ -24,15 +30,15 @@ import Layout from '../layouts/Layout.astro';
 
         <div class="bg-white rounded-3xl shadow-lg p-8 md:p-12">
           <h1 class="text-3xl md:text-5xl font-bold text-slate-900 leading-tight mb-6">
-            Комфортный формат отдыха в Джубге рядом с пляжем
+            Гостиницы Джубги у моря: чем выделяется гостевой дом «Дельфин»
           </h1>
           <p class="text-lg text-slate-700 leading-relaxed mb-4">
-            Лаконичные интерьеры, спокойная атмосфера и продуманная территория позволяют проводить время без суеты,
-            в нескольких минутах от моря.
+            Для тех, кто ищет гостиницу в Джубге с близостью к морю, семейной атмосферой и понятными условиями
+            проживания, гостевой дом «Дельфин» предлагает комфортное размещение на первой линии.
           </p>
           <p class="text-lg text-slate-700 leading-relaxed mb-8">
-            В пешей доступности находятся набережная, кафе и прогулочные зоны. Для гостей предусмотрена удобная
-            парковка и оперативная обратная связь по всем вопросам.
+            На официальном сайте можно быстро перейти к номерам, условиям бронирования и прямому контакту с объектом
+            размещения без посредников и лишних согласований.
           </p>
           <div class="flex flex-col sm:flex-row gap-4">
             <a
@@ -40,7 +46,7 @@ import Layout from '../layouts/Layout.astro';
               data-tl-booking-open="true"
               class="inline-flex items-center justify-center min-h-11 px-6 py-3 rounded-xl bg-accent-500 hover:bg-accent-600 text-white font-semibold transition-colors"
             >
-              Отправить запрос
+              Забронировать номер
             </a>
             <a
               href="/#gallery"
@@ -48,6 +54,49 @@ import Layout from '../layouts/Layout.astro';
             >
               Посмотреть фотогалерею
             </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pb-12">
+      <div class="container mx-auto max-w-5xl px-4">
+        <div class="rounded-3xl bg-white p-8 shadow-lg md:p-12">
+          <h2 class="text-3xl font-bold text-slate-900">Что важно при выборе гостиницы в Джубге</h2>
+          <div class="mt-6 space-y-4 text-lg leading-relaxed text-slate-700">
+            {advantages.map((item) => (
+              <p>{item}</p>
+            ))}
+            <p>
+              Именно поэтому гостевой дом «Дельфин» выбирают гости, которым нужно размещение у моря, парковка, Wi-Fi,
+              кухня и ухоженная территория. Такой набор удобств закрывает базовые ожидания от гостиницы в Джубге и
+              делает отдых предсказуемым и комфортным.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pb-20">
+      <div class="container mx-auto max-w-6xl px-4">
+        <div class="grid gap-6 md:grid-cols-3">
+          <div class="rounded-3xl bg-slate-900 p-6 text-white shadow-lg">
+            <h2 class="text-2xl font-bold">Первая линия</h2>
+            <p class="mt-3 text-slate-300">
+              Близость к морю экономит время на дорогу и делает отдых более насыщенным даже при коротком заезде.
+            </p>
+          </div>
+          <div class="rounded-3xl bg-white p-6 shadow-lg">
+            <h2 class="text-2xl font-bold text-slate-900">Семейный формат</h2>
+            <p class="mt-3 text-slate-600">
+              Номера и территория подходят для отдыха с детьми, а спокойная атмосфера помогает действительно выдохнуть.
+            </p>
+          </div>
+          <div class="rounded-3xl bg-white p-6 shadow-lg">
+            <h2 class="text-2xl font-bold text-slate-900">Официальный сайт</h2>
+            <p class="mt-3 text-slate-600">
+              Вы сразу получаете актуальные контакты, правила проживания и возможность забронировать номер напрямую.
+            </p>
           </div>
         </div>
       </div>

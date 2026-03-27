@@ -3,15 +3,30 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import TravelLineSearch from '../components/TravelLineSearch.astro';
 import Layout from '../layouts/Layout.astro';
+
+const seaBenefits = [
+  {
+    title: 'Первая береговая линия',
+    text: 'Если вам нужен отель в Джубге у моря, важнее всего реальное расстояние до пляжа. У нас это около 50 метров и примерно 1 минута пешком.',
+  },
+  {
+    title: 'Подходит для коротких и длинных заездов',
+    text: 'Гостевой дом удобен и для отпуска, и для нескольких ночей: море рядом, инфраструктура под рукой, а заселение проходит без лишней суеты.',
+  },
+  {
+    title: 'Номера у моря без посредников',
+    text: 'Официальный сайт помогает быстро перейти к бронированию, правилам проживания и прямому контакту с гостевым домом «Дельфин».',
+  },
+];
 ---
 
 <Layout
   seoProfileId="otel_u_morya"
   canonicalPath="/otel-dzhubga-u-morya"
-  schemaPageName="Отдых у моря в Джубге"
+  schemaPageName="Отель в Джубге у моря"
   breadcrumbs={[
     { name: 'Главная', path: '/' },
-    { name: 'Отдых у моря в Джубге', path: '/otel-dzhubga-u-morya' },
+    { name: 'Отель в Джубге у моря', path: '/otel-dzhubga-u-morya' },
   ]}
 >
   <Header />
@@ -24,15 +39,15 @@ import Layout from '../layouts/Layout.astro';
 
         <div class="bg-white rounded-3xl shadow-lg p-8 md:p-12">
           <h1 class="text-3xl md:text-5xl font-bold text-slate-900 leading-tight mb-6">
-            Первая береговая линия и спокойный отдых в Джубге
+            Отель в Джубге у моря: гостевой дом «Дельфин» на первой линии
           </h1>
           <p class="text-lg text-slate-700 leading-relaxed mb-4">
-            До пляжа можно дойти за пару минут. Локация подходит для тех, кто ценит удобный доступ к морю,
-            вечерним прогулкам и инфраструктуре курорта.
+            Когда нужен отель в Джубге у моря, ключевое преимущество «Дельфина» — реальная близость к пляжу.
+            До берега всего 50 метров, поэтому отдых у моря начинается сразу после выхода с территории гостевого дома.
           </p>
           <p class="text-lg text-slate-700 leading-relaxed mb-8">
-            Форматы размещения под разные сценарии поездки: короткие заезды, семейные каникулы и отдых в кругу друзей.
-            Мы поддерживаем комфортный темп отдыха и быстро отвечаем на заявки.
+            Номера разных категорий, семейный формат проживания, парковка, Wi-Fi и прямое бронирование на официальном
+            сайте делают этот вариант удобным для летнего отпуска, поездки с детьми и короткого курортного заезда.
           </p>
           <div class="flex flex-col sm:flex-row gap-4">
             <a
@@ -40,7 +55,7 @@ import Layout from '../layouts/Layout.astro';
               data-tl-booking-open="true"
               class="inline-flex items-center justify-center min-h-11 px-6 py-3 rounded-xl bg-accent-500 hover:bg-accent-600 text-white font-semibold transition-colors"
             >
-              Оставить заявку
+              Забронировать номер
             </a>
             <a
               href="/#features"
@@ -49,6 +64,36 @@ import Layout from '../layouts/Layout.astro';
               Изучить преимущества
             </a>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pb-12">
+      <div class="container mx-auto max-w-6xl px-4">
+        <div class="grid gap-6 md:grid-cols-3">
+          {seaBenefits.map((item) => (
+            <div class="rounded-3xl bg-white p-6 shadow-lg">
+              <h2 class="text-2xl font-bold text-slate-900">{item.title}</h2>
+              <p class="mt-3 text-slate-600">{item.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="pb-20">
+      <div class="container mx-auto max-w-5xl px-4">
+        <div class="rounded-3xl bg-slate-900 p-8 text-white shadow-lg md:p-12">
+          <h2 class="text-3xl font-bold">Кому подойдёт размещение у моря в Джубге</h2>
+          <p class="mt-5 text-lg leading-relaxed text-slate-300">
+            Эта страница создана для гостей, которые ищут отель в Джубге у моря и хотят жить рядом с пляжем, а не
+            тратить время на дорогу. «Дельфин» удобно подходит семьям, парам и тем, кто ценит первую линию, тишину во дворе
+            и быстрый доступ к набережной, кафе и магазинам.
+          </p>
+          <p class="mt-4 text-lg leading-relaxed text-slate-300">
+            Если вам важно сочетание моря, удобных номеров и прямого контакта с объектом размещения, переходите на
+            официальный сайт гостевого дома, выбирайте категорию номера и бронируйте проживание без посредников.
+          </p>
         </div>
       </div>
     </section>

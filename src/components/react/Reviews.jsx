@@ -71,21 +71,13 @@ const REVIEWS_DATA = [
 
 const TRUNCATE_LENGTH = 120;
 
-function sanitizeVisibleText(text) {
-  return text
-    .replace(/\bhotel\b/giu, 'пространство')
-    .replace(/гостиниц[а-яё]*/giu, 'пространства')
-    .replace(/отел[а-яё]*/giu, 'пространство');
-}
-
 function ReviewCard({ review, expandedReviewId, onToggleExpand }) {
   const isExpanded = expandedReviewId === review.id;
-  const safeReviewText = sanitizeVisibleText(review.review_text);
-  const needsTruncation = safeReviewText.length > TRUNCATE_LENGTH;
+  const needsTruncation = review.review_text.length > TRUNCATE_LENGTH;
   const displayText =
     !needsTruncation || isExpanded
-      ? safeReviewText
-      : safeReviewText.slice(0, TRUNCATE_LENGTH).trimEnd() + '…';
+      ? review.review_text
+      : review.review_text.slice(0, TRUNCATE_LENGTH).trimEnd() + '…';
 
   const getInitials = (name) =>
     name.split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2);
@@ -174,23 +166,23 @@ export default function Reviews() {
 
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-4">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-4">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
             </svg>
             Отзывы гостей
           </div>
           <h2 className="text-4xl font-bold text-slate-900 mb-4">Что говорят наши гости</h2>
-          <div class="flex items-center justify-center gap-3 mb-4">
-            <div class="flex gap-1">
-            {[1,2,3,4,5].map(i => (
-                <svg class="w-6 h-6 text-amber-400" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="flex gap-1">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <svg key={i} className="w-6 h-6 text-amber-400" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                 </svg>
               ))}
             </div>
-            <span class="text-2xl font-display font-bold text-brand-dark">4.9</span>
-            <span class="text-gray-500">из 5 на основе 250+ отзывов</span>
+            <span className="text-2xl font-display font-bold text-brand-dark">4.9</span>
+            <span className="text-slate-500">из 5 на основе 250+ отзывов</span>
           </div>
         </div>
 

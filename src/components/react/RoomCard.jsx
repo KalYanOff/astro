@@ -15,8 +15,8 @@ import { getNightPrice } from '../../lib/pricing';
 import { getTravelLineRoomId } from '../../config/travelline.js';
 
 const CTA_BADGES = {
-  'standard-3': { label: 'Популярный', icon: 'flame', color: 'bg-accent-500' },
-  'standard-2': { label: 'Осталось 2 комнаты', icon: 'alert', color: 'bg-red-500' },
+  'standard-3': { label: 'Популярный номер', icon: 'flame', color: 'bg-accent-500' },
+  'standard-2': { label: 'Мало свободных дат', icon: 'alert', color: 'bg-red-500' },
 };
 
 function getGuestsLabel(capacity) {
@@ -139,7 +139,7 @@ export default function RoomCard({ room, isActive = false }) {
             <img
               key={index}
               src={src}
-              alt={`${room.name} - фото ${index + 1}`}
+              alt={`${room.name} - номер, фото ${index + 1}`}
               className="h-full object-cover flex-shrink-0"
               style={{ width: `${100 / images.length}%` }}
               loading="lazy"
@@ -246,7 +246,7 @@ export default function RoomCard({ room, isActive = false }) {
             {...(tlRoomId ? { 'data-tl-room': String(tlRoomId) } : {})}
             className="w-full inline-flex items-center justify-center bg-accent-500 hover:bg-accent-600 text-white font-semibold py-3 rounded-xl transition-all hover:shadow-lg active:scale-95"
           >
-            Оставить заявку
+            Забронировать номер
           </a>
         </div>
       </div>

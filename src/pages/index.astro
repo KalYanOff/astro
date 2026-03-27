@@ -9,7 +9,21 @@ import FloatingBar from '../components/react/FloatingBar.jsx';
 import Gallery from '../components/react/Gallery.jsx';
 import Reviews from '../components/react/Reviews.jsx';
 import RoomsList from '../components/react/RoomsList.jsx';
+import { FAQ_DATA } from '../data/faq.js';
 import Layout from '../layouts/Layout.astro';
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ_DATA.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+};
 ---
 
 <Layout
@@ -17,6 +31,7 @@ import Layout from '../layouts/Layout.astro';
   canonicalPath="/"
   schemaPageName="Главная"
   breadcrumbs={[{ name: 'Главная', path: '/' }]}
+  extraJsonLd={[faqJsonLd]}
 >
   <Header />
   <main id="main-content">

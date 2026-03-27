@@ -400,11 +400,11 @@ export default function RoomsList() {
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/>
             </svg>
-            Варианты размещения
+            Номера и цены
           </div>
           <h2 className="text-4xl font-bold text-slate-900 mb-4">Выберите подходящий формат отдыха</h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Спокойная атмосфера, разные форматы размещения и удобства для всей семьи
+            Номера под поездку вдвоём, с детьми или небольшой компанией
           </p>
 
         </div>
@@ -415,7 +415,7 @@ export default function RoomsList() {
           {/* row 1: category filters */}
           <div className="grid grid-cols-2 gap-3 md:flex md:flex-row md:justify-center w-full md:w-auto">
             {[
-              { value: 'all', label: 'Все варианты' },
+              { value: 'all', label: 'Все номера' },
               { value: 'standard', label: 'Стандарт' },
               { value: 'econom', label: 'Эконом' },
             ].map(({ value, label }) => (
@@ -457,7 +457,7 @@ export default function RoomsList() {
         {filteredRooms.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-xl text-slate-500">
-              Нет вариантов с выбранными параметрами
+              Нет свободных категорий с выбранными параметрами
             </p>
             <button
               onClick={() => setFilter(INITIAL_FILTER)}
@@ -481,7 +481,7 @@ export default function RoomsList() {
         )}
 
         <p className="text-center text-sm text-slate-400 mt-12">
-          * Выбранный интерьер не гарантируется, но мы всегда стараемся учесть ваши пожелания по размещению.
+          * Конкретный интерьер номера не гарантируется, но мы всегда стараемся учесть пожелания гостей по размещению.
         </p>
       </div>
     </section>

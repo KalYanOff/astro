@@ -73,7 +73,7 @@ export default function FloatingBar() {
             className="flex items-center justify-center gap-2 w-full h-full bg-primary-600 hover:bg-primary-700 text-white font-semibold transition-colors"
           >
             <Calendar className="w-5 h-5" />
-            <span>Забронировать</span>
+            <span>Забронировать номер</span>
           </a>
         </div>
       </div>
