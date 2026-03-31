@@ -5,9 +5,9 @@ import MobileMenu from './react/MobileMenu.jsx';
 
 <header class="js-hide-on-booking fixed top-0 left-0 right-0 z-50 pb-4 duration-300 bg-white/95 backdrop-blur-md shadow-sm transition-shadow" role="banner">
   <div class="max-w-7xl mx-auto px-4">
-    <div class="grid grid-cols-[1fr_auto_1fr] items-center h-16">
-      <a href="/" class="justify-self-start flex items-stretch gap-3 h-auto py-2 group" aria-label="Дельфин, перейти на главную">
-        <div class="h-full aspect-square rounded-lg overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
+    <div class="grid min-h-16 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-2 py-2 sm:gap-3 md:h-16 md:py-0">
+      <a href="/" class="justify-self-start flex min-w-0 max-w-full items-stretch gap-2 py-2 group sm:gap-3" aria-label="Дельфин, перейти на главную">
+        <div class="h-full shrink-0 aspect-square rounded-lg overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform">
           <img
             src="/img/logo.webp"
             alt="Логотип Дельфин"
@@ -19,9 +19,9 @@ import MobileMenu from './react/MobileMenu.jsx';
             fetchpriority="high"
           />
         </div>
-        <div class="flex flex-col justify-center">
-          <span class="text-xl md:text-2xl font-bold text-primary-600 leading-tight">Гостевой дом «Дельфин»</span>
-          <span class="text-[10px] md:text-xs text-gray-500">Официальный сайт, Джубга, Набережная 7</span>
+        <div class="min-w-0 flex flex-col justify-center">
+          <span class="block text-base sm:text-lg md:text-2xl font-bold text-primary-600 leading-tight break-words">Гостевой дом «Дельфин»</span>
+          <span class="block text-[10px] sm:text-xs text-gray-500 leading-tight break-words">Официальный сайт, Джубга, Набережная 7</span>
         </div>
       </a>
 

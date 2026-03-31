@@ -1,209 +1,24 @@
-<section class="tl-search-section">
-  <div id="block-search">
-    <div id="tl-search-form" class="tl-container">
-      <noindex
-        ><a href="https://www.travelline.ru/products/tl-hotel/" rel="nofollow" target="_blank">TravelLine</a></noindex
-      >
-    </div>
-  </div>
-</section>
-
 <style>
-  #block-search,
-  #block-search * {
-    box-sizing: border-box;
-  }
+#block-search,
+#block-search * {
+  box-sizing: border-box;
+}
 
-  #block-search {
-    background: #fff;
-    border-radius: 15px;
-    max-width: 1160px;
-    margin: 0 auto;
-  }
+#block-search {
+  background: rgba(255, 255, 255, 1);
+  border-radius: 15px;
+  max-width: 1160px;
+  margin: 0 auto;
+}
 
-  .tl-container {
-    padding: 0 30px;
-  }
-
-  .tl-search-section {
-    width: min(1160px, 100%);
-    margin: 0 auto;
-  }
-
-  @media (max-width: 480px) {
-    .tl-container {
-      padding: 0 14px;
-    }
-  }
+.tl-container {
+  padding: 0 30px;
+}
 </style>
-
-<script>
-  (() => {
-    const ROOT_ID = 'tl-search-form';
-    const STYLE_ID = 'tl-visible-fields-only';
-    const RESIZE_OBSERVER_ATTR = 'data-tl-resize-observer';
-    const FORCE_HIDE_SELECTORS = [
-      '.sf-title-container',
-      '.sf-top-block-1',
-      '.sf-top-block-2',
-      '.sf-providers-container',
-      '.sf-nights-container',
-      '.sf-adults-container',
-      '.sf-extra-fields-expand-button-container',
-      '.sf-promo-code-container',
-      '.sf-extra-fields-top-container',
-      '.sf-extra-fields-bottom-container',
-      '.sf-submit-button-link-container',
-      '.compact-view-button',
-      '.sf-bottom-block-1',
-      '.sf-backlink-container',
-      '.sf-bottom-block-2',
-      '.sf-custom-block-1',
-      '.sf-custom-block-2',
-      '.sf-custom-block-3',
-    ];
-
-    const FRAME_STYLE = `
-      #search-form-container .sfl-container .sf-title-container,
-      #search-form-container .sfl-container .sf-top-block-1,
-      #search-form-container .sfl-container .sf-top-block-2,
-      #search-form-container .sfl-container .sf-providers-container,
-      #search-form-container .sfl-container .sf-nights-container,
-      #search-form-container .sfl-container .sf-adults-container,
-      #search-form-container .sfl-container .sf-extra-fields-expand-button-container,
-      #search-form-container .sfl-container .sf-promo-code-container,
-      #search-form-container .sfl-container .sf-extra-fields-top-container,
-      #search-form-container .sfl-container .sf-extra-fields-bottom-container,
-      #search-form-container .sfl-container .sf-submit-button-link-container,
-      #search-form-container .sfl-container .compact-view-button,
-      #search-form-container .sfl-container .sf-bottom-block-1,
-      #search-form-container .sfl-container .sf-backlink-container,
-      #search-form-container .sfl-container .sf-bottom-block-2,
-      #search-form-container .sfl-container .sf-custom-block-1,
-      #search-form-container .sfl-container .sf-custom-block-2,
-      #search-form-container .sfl-container .sf-custom-block-3 {
-        display: none !important;
-      }
-
-      #search-form-container .sfl-container .sf-controls-wrapper {
-        display: grid !important;
-        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-        align-items: end !important;
-        gap: 8px !important;
-      }
-
-      #search-form-container .sfl-container .sf-arrival-date-container,
-      #search-form-container .sfl-container .sf-departure-date-container,
-      #search-form-container .sfl-container .sf-extra-fields-container,
-      #search-form-container .sfl-container .sf-guests-container,
-      #search-form-container .sfl-container .sf-submit-button-input-container {
-        display: block !important;
-        width: 100% !important;
-        min-width: 0 !important;
-      }
-
-      @media (max-width: 900px) {
-        #search-form-container .sfl-container .sf-controls-wrapper {
-          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        }
-      }
-
-      @media (max-width: 560px) {
-        #search-form-container .sfl-container .sf-controls-wrapper {
-          grid-template-columns: 1fr !important;
-        }
-      }
-    `;
-
-    const resizeIframeToContent = (iframe, doc) => {
-      const body = doc.body;
-      const html = doc.documentElement;
-      if (!body || !html) return;
-
-      const height = Math.max(
-        body.scrollHeight,
-        body.offsetHeight,
-        html.scrollHeight,
-        html.offsetHeight,
-      );
-
-      if (height > 0) {
-        iframe.style.height = `${height}px`;
-        iframe.height = String(height);
-      }
-    };
-
-    const enforceVisibleFields = (doc) => {
-      FORCE_HIDE_SELECTORS.forEach((selector) => {
-        doc.querySelectorAll(selector).forEach((el) => {
-          el.style.setProperty('display', 'none', 'important');
-        });
-      });
-
-      doc.querySelectorAll('.sf-submit-button-input-container').forEach((el) => {
-        el.style.setProperty('display', 'block', 'important');
-      });
-    };
-
-    const attachResizeObserver = (iframe, doc) => {
-      if (iframe.getAttribute(RESIZE_OBSERVER_ATTR) === '1') return;
-      const body = doc.body;
-      if (!body) return;
-
-      const observer = new MutationObserver(() => {
-        enforceVisibleFields(doc);
-        resizeIframeToContent(iframe, doc);
-      });
-      observer.observe(body, { childList: true, subtree: true, attributes: true });
-
-      iframe.setAttribute(RESIZE_OBSERVER_ATTR, '1');
-      iframe.addEventListener('load', () => {
-        try {
-          const reloadDoc = iframe.contentDocument || iframe.contentWindow?.document;
-          if (reloadDoc) {
-            applyToIframe(iframe);
-          }
-        } catch {
-          // noop
-        }
-      });
-    };
-
-    function applyToIframe(iframe) {
-      try {
-        const doc = iframe.contentDocument || iframe.contentWindow?.document;
-        if (!doc || !doc.head) return;
-
-        let styleTag = doc.getElementById(STYLE_ID);
-        if (!styleTag) {
-          styleTag = doc.createElement('style');
-          styleTag.id = STYLE_ID;
-          styleTag.textContent = FRAME_STYLE;
-          doc.head.appendChild(styleTag);
-        }
-
-        enforceVisibleFields(doc);
-        resizeIframeToContent(iframe, doc);
-        attachResizeObserver(iframe, doc);
-      } catch {
-        // TL может поменять режим рендера iframe; в таком случае просто не вмешиваемся.
-      }
-    }
-
-    const root = document.getElementById(ROOT_ID);
-    if (!root) return;
-
-    const apply = () => {
-      const frames = root.querySelectorAll('iframe');
-      frames.forEach((iframe) => applyToIframe(iframe));
-    };
-
-    const observer = new MutationObserver(apply);
-    observer.observe(root, { childList: true, subtree: true });
-
-    apply();
-    window.addEventListener('load', apply, { once: true });
-    setTimeout(apply, 1500);
-    setTimeout(apply, 4000);
-  })();
-</script>
+<!-- start TL Search form script -->
+<div id="block-search">
+  <div id="tl-search-form" class="tl-container">
+    <noindex><a href="https://www.travelline.ru/products/tl-hotel/" rel="nofollow" target="_blank">TravelLine</a></noindex>
+  </div>
+</div>
+<!-- end TL Search form script -->

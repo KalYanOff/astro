@@ -12,9 +12,9 @@
     "seo:check-visible": "node scripts/seo-visible-terms-check.mjs"
   },
   "dependencies": {
-    "@astrojs/react": "^4.4.2",
+    "@astrojs/react": "^5.0.2",
     "@astrojs/tailwind": "^6.0.2",
-    "astro": "^5.2.5",
+    "astro": "^6.1.2",
     "lucide-react": "^0.575.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
