@@ -242,7 +242,7 @@ export default function RoomCard({ room, isActive = false }) {
         <div className="mt-auto pt-4 border-t border-slate-100">
           <a
             href="#"
-            onClick={ym(101427691,'reachGoal','click_booking')}
+            onClick={() => window.ym?.(101427691, 'reachGoal', 'click_booking')}
             data-tl-booking-open="true"
             {...(tlRoomId ? { 'data-tl-room': String(tlRoomId) } : {})}
             className="w-full inline-flex items-center justify-center bg-accent-500 hover:bg-accent-600 text-white font-semibold py-3 rounded-xl transition-all hover:shadow-lg active:scale-95"

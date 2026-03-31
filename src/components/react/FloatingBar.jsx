@@ -69,7 +69,7 @@ export default function FloatingBar() {
         <div className="h-16">
           <a
             href="#"
-            onClick={ym(101427691,'reachGoal','click_booking')}
+            onClick={() => window.ym?.(101427691, 'reachGoal', 'click_booking')}
             data-tl-booking-open="true"
             className="flex items-center justify-center gap-2 w-full h-full bg-primary-600 hover:bg-primary-700 text-white font-semibold transition-colors"
           >
