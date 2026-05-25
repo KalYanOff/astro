@@ -1,23 +1,11 @@
 ---
 import { readFileSync } from 'node:fs';
 import Layout from '../../layouts/Layout.astro';
-import {
-  SITE_ADDRESS,
-  SITE_CLASSIFICATION_REGISTRY_ID,
-  SITE_EMAIL,
-  SITE_LEGAL_NAME,
-  SITE_OBJECT_STATUS,
-  SITE_PHONE_DISPLAY,
-} from '../../config/site.js';
 
-const documentTitle = 'Правила предоставления услуг';
-const documentDate = '26.03.2026';
 const documentText = readFileSync(new URL('../../../src/legal/offer.txt', import.meta.url), 'utf8')
   .replace(/^\uFEFF/, '')
   .trim();
-
-const bodyStartIndex = documentText.indexOf('Настоящие Правила');
-const documentBody = bodyStartIndex >= 0 ? documentText.slice(bodyStartIndex).trim() : documentText;
+const documentTitle = documentText.split('\n').find((line) => line.trim())?.trim() ?? 'Правила предоставления услуг';
 
 const pageTitle = 'Правила предоставления услуг | Гостевой дом «Дельфин», Джубга';
 const pageDescription =
@@ -44,27 +32,8 @@ const pageDescription =
           </div>
 
           <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-white md:p-12">
-              <p class="mb-3 text-center text-sm font-semibold uppercase tracking-[0.25em] text-blue-100">
-                Официальный документ гостевого дома
-              </p>
-              <h1 class="text-center text-3xl font-bold md:text-4xl">{documentTitle}</h1>
-              <p class="mt-4 text-center text-blue-100/90">Редакция от: {documentDate}</p>
-            </div>
-
-            <div class="border-b border-slate-200 bg-slate-50/70 p-8 md:p-12">
-              <div class="grid gap-3 text-sm text-slate-700 md:grid-cols-2">
-                <p><span class="font-semibold text-slate-900">Исполнитель:</span> {SITE_LEGAL_NAME}</p>
-                <p><span class="font-semibold text-slate-900">Статус объекта:</span> {SITE_OBJECT_STATUS}</p>
-                <p><span class="font-semibold text-slate-900">e-mail:</span> <a href={`mailto:${SITE_EMAIL}`} class="text-blue-600 underline hover:text-blue-800">{SITE_EMAIL}</a></p>
-                <p><span class="font-semibold text-slate-900">Телефон:</span> {SITE_PHONE_DISPLAY}</p>
-                <p><span class="font-semibold text-slate-900">Адрес:</span> {SITE_ADDRESS}</p>
-                <p><span class="font-semibold text-slate-900">Реестр классификации:</span> {SITE_CLASSIFICATION_REGISTRY_ID}</p>
-              </div>
-            </div>
-
             <div class="p-8 md:p-12">
-              <pre class="whitespace-pre-wrap font-sans text-sm leading-relaxed text-slate-800 md:text-base">{documentBody}</pre>
+              <pre class="whitespace-pre-wrap font-sans text-sm leading-relaxed text-slate-800 md:text-base">{documentText}</pre>
             </div>
           </div>
         </div>

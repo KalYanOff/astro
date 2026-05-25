@@ -31,6 +31,12 @@ const TERRITORY_PATHS = [
   '/img/photo/terrytory/IMG_0670.webp',
   '/img/photo/terrytory/IMG_0692.webp',
   '/img/photo/terrytory/IMG_0714.webp',
+  '/img/photo/kitchen/IMG_5535.JPG',
+  '/img/photo/kitchen/IMG_5581.JPG',
+  '/img/photo/kitchen/IMG_5686.JPG',
+  '/img/photo/kitchen/IMG_5694.JPG',
+  '/img/photo/kitchen/IMG_5704.JPG',
+  '/img/photo/kitchen/IMG_5737.jpg',
 ];
 
 const BEACH_PATHS = ['/img/photo/beach/beach.webp'];
